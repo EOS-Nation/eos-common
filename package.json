@@ -1,0 +1,31 @@
+{
+  "name": "eos-common",
+  "version": "0.1.0",
+  "description": "EOS common library used for Typescript",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "files": [
+    "index.js",
+    "index.d.ts"
+  ],
+  "author": "Denis Carriere <denis@eosnation.io>",
+  "license": "MIT",
+  "scripts": {
+    "prepublishOnly": "tsc",
+    "test": "jest --coverage",
+    "posttest": "tslint -p .",
+    "docs": "tsc && documentation readme index.js -s API"
+  },
+  "repository": "git@github.com:EOS-Nation/eos-common.git",
+  "devDependencies": {
+    "@types/jest": "*",
+    "documentation": "*",
+    "jest": "*",
+    "ts-jest": "*",
+    "tslint": "*",
+    "typescript": "*"
+  },
+  "dependencies": {
+    "decimal.js": "10.x"
+  }
+}
