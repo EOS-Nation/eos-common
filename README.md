@@ -1,10 +1,10 @@
-# EOS common library used for Typescript
+# `eos-common`
 
 [![Build Status](https://travis-ci.org/EOS-Nation/eos-common.svg?branch=master)](https://travis-ci.org/EOS-Nation/eos-common)
 [![npm version](https://badge.fury.io/js/eos-common.svg)](https://badge.fury.io/js/eos-common)
 [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/EOS-Nation/eos-common/master/LICENSE)
 
-> General purpose library for the DAPP network
+> EOSIO Smart Contract common library used for Typescript
 
 ## Installation
 
@@ -25,7 +25,7 @@ npm install --save eos-common
 ```ts
 import { split } from "eos-common"
 
-const {amount} = split("1.0000 EOS");
+const { amount } = split("1.0000 EOS");
 amount //=> 10000
 ```
 
