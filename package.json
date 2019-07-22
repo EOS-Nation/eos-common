@@ -1,12 +1,13 @@
 {
   "name": "eos-common",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "EOSIO Smart Contract common library used for Typescript",
   "main": "index.js",
   "types": "index.d.ts",
   "files": [
     "index.js",
-    "index.d.ts"
+    "index.d.ts",
+    "libraries"
   ],
   "author": "Denis Carriere <denis@eosnation.io>",
   "license": "MIT",
