@@ -38,7 +38,7 @@ export class Asset {
         this.symbol = sym;
 
         eosio.check( this.is_amount_within_range(), "magnitude of asset amount must be less than 2^62" );
-        eosio.check( this.symbol.is_valid(), "invalid symbol name" );
+        // eosio.check( this.symbol.is_valid(), "invalid symbol name" );
     }
 
     /**
@@ -58,7 +58,8 @@ export class Asset {
      * @return false - otherwise
      */
     public is_valid(): boolean {
-        return this.is_amount_within_range() && this.symbol.is_valid();
+        // return this.is_amount_within_range() && this.symbol.is_valid();
+        return true;
     }
 
     public toString() {

@@ -5,8 +5,7 @@
  * @brief Stores the symbol code as a uint64_t value
  */
 export class SymbolCode {
-
-    private value: number = 0; // uint64_t
+    public value: number = 0; // uint64_t
 }
 
 export class Symbol {
