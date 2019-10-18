@@ -8,7 +8,7 @@ export class Asset {
     /**
      * {constexpr int64_t} Maximum amount possible for this asset. It's capped to 2^62 - 1
      */
-    public static max_amount: number = 2 ^ 62 - 1;
+    public static max_amount: number = 2 ** 62 - 1;
 
     /**
      * {int64_t} The amount of the asset

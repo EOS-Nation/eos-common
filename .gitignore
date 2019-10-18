@@ -1,4 +1,4 @@
-*.js
+*.js !jest.config.js	
 *.d.ts
 
 # Logs
@@ -9,6 +9,8 @@ yarn-debug.log*
 yarn-error.log*
 package-lock.json
 yarn.lock
+
+.DS_Store
 
 # Runtime data
 pids
