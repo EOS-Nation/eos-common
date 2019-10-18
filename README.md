@@ -6,6 +6,16 @@
 
 > EOSIO Smart Contract common library used for Typescript
 
+## Goal
+
+To implement the most commonly used EOSIO C++ Classes into Typescript:
+
+- [Asset](https://github.com/EOSIO/eosio.cdt/blob/master/libraries/eosiolib/asset.hpp)
+- [Symbol](https://github.com/EOSIO/eosio.cdt/blob/master/libraries/eosiolib/symbol.hpp)
+- [SymbolCode](https://github.com/EOSIO/eosio.cdt/blob/master/libraries/eosiolib/symbol.hpp)
+- [ExtendedAsset](https://github.com/EOSIO/eosio.cdt/blob/master/libraries/eosiolib/asset.hpp)
+- [ExtendedSymbol](https://github.com/EOSIO/eosio.cdt/blob/master/libraries/eosiolib/symbol.hpp)
+
 ## Installation
 
 Using Yarn:
@@ -59,7 +69,7 @@ Asset Class
 
 #### Parameters
 
--   `amount`  
+-   `amount`
 -   `sym` **[Symbol](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Symbol)** The name of the symbol
 -   `a` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** The amount of the asset
 
@@ -115,7 +125,7 @@ quantity.symbol.precision //=> 4
 quantity.symbol.code() //=> "EOS"
 ```
 
-Returns **Asset** 
+Returns **Asset**
 
 ### check
 
@@ -132,7 +142,7 @@ Assert if the predicate fails and use the supplied message.
 check(a == b, "a does not equal b");
 ```
 
-Returns **void** 
+Returns **void**
 
 ### SymbolCode
 
