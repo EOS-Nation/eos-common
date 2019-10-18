@@ -9,43 +9,31 @@ export class SymbolCode {
 }
 
 export class Symbol {
-    public symbol: string;
     public precision: number;
+    private _code: string;
 
     /**
      * Symbol Class
      *
-     * @param {string} sym Symbol
+     * @param {string} code Symbol Code
      * @param {number} precision Precision
      * @returns {Symbol} Symbol
      * @example
      *
      * const sym = new Symbol("EOS", 4);
-     * sym.symbol //=> "EOS"
+     * sym.code //=> "EOS"
      * sym.precision //=> 4
      */
-    constructor(sym: string, precision: number) {
-        this.symbol = sym;
+    constructor(code: string, precision: number) {
+        this._code = code;
         this.precision = precision;
     }
 
-    public isEqual(comparison: Symbol) {
-        return comparison.symbol === this.symbol && comparison.precision === this.precision;
+    public code() {
+        return this._code;
     }
-}
 
-/**
- * Symbol
- *
- * @param {string} sym Symbol
- * @param {number} precision Precision
- * @returns {Symbol} Symbol
- * @example
- *
- * const sym = symbol("EOS", 4);
- * sym.symbol //=> "EOS"
- * sym.precision //=> 4
- */
-export function symbol(sym: string, precision: number) {
-    return new Symbol(sym, precision);
+    public isEqual(comparison: Symbol) {
+        return comparison.code === this.code && comparison.precision === this.precision;
+    }
 }

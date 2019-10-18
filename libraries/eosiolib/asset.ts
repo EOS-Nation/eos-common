@@ -64,9 +64,8 @@ export class Asset {
 
     public toString() {
         const amount = this.toDecimal().toFixed(this.symbol.precision);
-        const symbol = `${this.symbol.symbol}`;
 
-        return `${amount} ${symbol}`;
+        return `${amount} ${this.symbol.code()}`;
     }
 
     public toDecimal() {
@@ -76,23 +75,6 @@ export class Asset {
     public toNumber() {
         return this.toDecimal().toNumber();
     }
-}
-
-/**
- * Asset
- *
- * @param {number} amount Amount (uint64_t)
- * @param {Symbol} symbol Symbol
- * @returns {Asset} Asset
- * @example
- *
- * const quantity = asset(10000, new Symbol("EOS", 4));
- * quantity.toString() //=> "1.0000 EOS";
- * quantity.symbol.symbol //=> "EOS"
- * quantity.symbol.precision //=> 4
- */
-export function asset(amount: number, symbol: Symbol) {
-    return new Asset(amount, symbol);
 }
 
 /**
