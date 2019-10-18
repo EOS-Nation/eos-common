@@ -30,7 +30,7 @@ export class Asset {
      *
      * const quantity = new Asset(10000, new Symbol("EOS", 4));
      * quantity.toString() //=> "1.0000 EOS";
-     * quantity.symbol.symbol //=> "EOS"
+     * quantity.symbol.code() //=> "EOS"
      * quantity.symbol.precision //=> 4
      */
     constructor(amount: number, sym: Symbol) {
@@ -86,8 +86,8 @@ export class Asset {
  *
  * const quantity = split("1.0000 EOS");
  * quantity.amount //=> 10000
- * quantity.symbol.precision() //=> 4
- * quantity.symbol.symbol() //=> "EOS"
+ * quantity.symbol.precision //=> 4
+ * quantity.symbol.code() //=> "EOS"
  */
 export function split(quantity: string): Asset {
     const [amount, symbol] = quantity.split(" ");

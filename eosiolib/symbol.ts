@@ -21,7 +21,7 @@ export class Symbol {
      * @example
      *
      * const sym = new Symbol("EOS", 4);
-     * sym.code //=> "EOS"
+     * sym.code() //=> "EOS"
      * sym.precision //=> 4
      */
     constructor(code: string, precision: number) {

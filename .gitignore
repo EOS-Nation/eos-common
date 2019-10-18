@@ -1,5 +1,6 @@
-*.js !jest.config.js	
+*.js
 *.d.ts
+!jest.config.js
 
 # Logs
 logs
