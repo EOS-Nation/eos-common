@@ -28,6 +28,10 @@ export class Symbol {
         this.symbol = sym;
         this.precision = precision;
     }
+
+    public isEqual(comparison: Symbol) {
+        return comparison.symbol === this.symbol && comparison.precision === this.precision;
+    }
 }
 
 /**
