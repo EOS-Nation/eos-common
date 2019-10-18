@@ -24,4 +24,6 @@ test("decimal conversions work as expected", () => {
     const amount2 = common.split(`1.0000 EOS`);
     expect(amount2.toNumber()).toBe(1.0000);
 
+    const amount3 = new common.Asset(100000000, BTC);
+    expect(amount3.toNumber()).toBe(1.00000000);
 });
