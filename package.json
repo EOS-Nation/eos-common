@@ -9,7 +9,10 @@
     "index.d.ts",
     "libraries"
   ],
-  "author": "Denis Carriere <denis@eosnation.io>",
+  "author": "Denis Carriere <@DenisCarriere>",
+  "contributors": [
+    "John Williamson <@Velua>"
+  ],
   "license": "MIT",
   "scripts": {
     "prepublishOnly": "tsc -d",
