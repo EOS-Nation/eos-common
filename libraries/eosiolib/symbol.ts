@@ -29,7 +29,7 @@ export class Symbol {
         this.precision = precision;
     }
 
-    public isEqual(comparison: Symbol) {
+    public isEqual(comparison: Symbol): boolean {
         return comparison.symbol === this.symbol && comparison.precision === this.precision;
     }
 }
