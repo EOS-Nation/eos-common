@@ -68,7 +68,7 @@ export class Asset {
         return `${amount} ${this.symbol.code()}`;
     }
 
-    public toDecimal() {
+    public toDecimal(): Decimal {
         return new Decimal(this.amount).div(Math.pow(10, this.symbol.precision));
     }
 

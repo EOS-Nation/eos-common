@@ -2,6 +2,7 @@
 *.d.ts
 !jest.config.js
 
+build
 # Logs
 logs
 *.log
