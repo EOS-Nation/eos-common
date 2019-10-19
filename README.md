@@ -6,6 +6,16 @@
 
 > EOSIO Smart Contract common library used for Typescript
 
+## Goal
+
+To implement the most commonly used EOSIO C++ Classes into Typescript:
+
+- [Asset](https://github.com/EOSIO/eosio.cdt/blob/master/libraries/eosiolib/asset.hpp)
+- [Symbol](https://github.com/EOSIO/eosio.cdt/blob/master/libraries/eosiolib/symbol.hpp)
+- [SymbolCode](https://github.com/EOSIO/eosio.cdt/blob/master/libraries/eosiolib/symbol.hpp)
+- [ExtendedAsset](https://github.com/EOSIO/eosio.cdt/blob/master/libraries/eosiolib/asset.hpp)
+- [ExtendedSymbol](https://github.com/EOSIO/eosio.cdt/blob/master/libraries/eosiolib/symbol.hpp)
+
 ## Installation
 
 Using Yarn:
@@ -38,56 +48,20 @@ amount //=> 10000
 -   [constructor](#constructor)
     -   [Parameters](#parameters)
     -   [Examples](#examples)
--   [symbol](#symbol)
+-   [amount](#amount)
+-   [is_amount_within_range](#is_amount_within_range)
+-   [is_valid](#is_valid)
+-   [max_amount](#max_amount)
+-   [split](#split)
     -   [Parameters](#parameters-1)
     -   [Examples](#examples-1)
--   [constructor](#constructor-1)
+-   [check](#check)
     -   [Parameters](#parameters-2)
     -   [Examples](#examples-2)
--   [asset](#asset)
+-   [SymbolCode](#symbolcode)
+-   [constructor](#constructor-1)
     -   [Parameters](#parameters-3)
     -   [Examples](#examples-3)
--   [split](#split)
-    -   [Parameters](#parameters-4)
-    -   [Examples](#examples-4)
-
-### constructor
-
-Symbol Class
-
-#### Parameters
-
--   `symbol` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Symbol
--   `precision` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** Precision
-
-#### Examples
-
-```javascript
-const sym = new Symbol("EOS", 4);
-sym.symbol //=> "EOS"
-sym.precision //=> 4
-```
-
-Returns **[Symbol](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Symbol)** Symbol
-
-### symbol
-
-Symbol
-
-#### Parameters
-
--   `symbol` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Symbol
--   `precision` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** Precision
-
-#### Examples
-
-```javascript
-const sym = symbol("EOS", 4);
-sym.symbol //=> "EOS"
-sym.precision //=> 4
-```
-
-Returns **[Symbol](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Symbol)** Symbol
 
 ### constructor
 
@@ -95,39 +69,44 @@ Asset Class
 
 #### Parameters
 
--   `amount` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** Amount (uint64_t)
--   `symbol` **[Symbol](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Symbol)** Symbol
+-   `amount`
+-   `sym` **[Symbol](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Symbol)** The name of the symbol
+-   `a` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** The amount of the asset
 
 #### Examples
 
 ```javascript
 const quantity = new Asset(10000, new Symbol("EOS", 4));
 quantity.toString() //=> "1.0000 EOS";
-quantity.symbol.symbol //=> "EOS"
+quantity.symbol.code() //=> "EOS"
 quantity.symbol.precision //=> 4
 ```
 
 Returns **Asset** Asset
 
-### asset
+### amount
 
-Asset
+{int64_t} The amount of the asset
 
-#### Parameters
+### is_amount_within_range
 
--   `amount` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** Amount (uint64_t)
--   `symbol` **[Symbol](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Symbol)** Symbol
+Check if the amount doesn't exceed the max amount
 
-#### Examples
+Returns **any** true - if the amount doesn't exceed the max amount
 
-```javascript
-const quantity = asset(10000, new Symbol("EOS", 4));
-quantity.toString() //=> "1.0000 EOS";
-quantity.symbol.symbol //=> "EOS"
-quantity.symbol.precision //=> 4
-```
+Returns **any** false - otherwise
 
-Returns **Asset** Asset
+### is_valid
+
+Check if the asset is valid. %A valid asset has its amount &lt;= max_amount and its symbol name valid
+
+Returns **any** true - if the asset is valid
+
+Returns **any** false - otherwise
+
+### max_amount
+
+{constexpr int64_t} Maximum amount possible for this asset. It's capped to 2^62 - 1
 
 ### split
 
@@ -142,8 +121,46 @@ Split quantity string
 ```javascript
 const quantity = split("1.0000 EOS");
 quantity.amount //=> 10000
-quantity.symbol.precision() //=> 4
-quantity.symbol.symbol() //=> "EOS"
+quantity.symbol.precision //=> 4
+quantity.symbol.code() //=> "EOS"
 ```
 
-Returns **Asset** 
+Returns **Asset**
+
+### check
+
+Assert if the predicate fails and use the supplied message.
+
+#### Parameters
+
+-   `pred` **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Pre-condition
+-   `msg` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Error Message
+
+#### Examples
+
+```javascript
+check(a == b, "a does not equal b");
+```
+
+Returns **void**
+
+### SymbolCode
+
+### constructor
+
+Symbol Class
+
+#### Parameters
+
+-   `code` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Symbol Code
+-   `precision` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** Precision
+
+#### Examples
+
+```javascript
+const sym = new Symbol("EOS", 4);
+sym.code() //=> "EOS"
+sym.precision //=> 4
+```
+
+Returns **[Symbol](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Symbol)** Symbol

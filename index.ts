@@ -1,2 +1,2 @@
-export * from "./libraries/eosiolib/asset";
-export * from "./libraries/eosiolib/symbol";
+export * from "./eosiolib/asset";
+export * from "./eosiolib/symbol";

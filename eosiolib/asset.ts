@@ -30,7 +30,7 @@ export class Asset {
      *
      * const quantity = new Asset(10000, new Symbol("EOS", 4));
      * quantity.toString() //=> "1.0000 EOS";
-     * quantity.symbol.symbol //=> "EOS"
+     * quantity.symbol.code() //=> "EOS"
      * quantity.symbol.precision //=> 4
      */
     constructor(amount: number, sym: Symbol) {
@@ -64,9 +64,8 @@ export class Asset {
 
     public toString() {
         const amount = this.toDecimal().toFixed(this.symbol.precision);
-        const symbol = `${this.symbol.symbol}`;
 
-        return `${amount} ${symbol}`;
+        return `${amount} ${this.symbol.code()}`;
     }
 
     public toDecimal(): Decimal {
@@ -79,23 +78,6 @@ export class Asset {
 }
 
 /**
- * Asset
- *
- * @param {number} amount Amount (uint64_t)
- * @param {Symbol} symbol Symbol
- * @returns {Asset} Asset
- * @example
- *
- * const quantity = asset(10000, new Symbol("EOS", 4));
- * quantity.toString() //=> "1.0000 EOS";
- * quantity.symbol.symbol //=> "EOS"
- * quantity.symbol.precision //=> 4
- */
-export function asset(amount: number, symbol: Symbol) {
-    return new Asset(amount, symbol);
-}
-
-/**
  * Split quantity string
  *
  * @param {string} quantity Quantity string
@@ -104,8 +86,8 @@ export function asset(amount: number, symbol: Symbol) {
  *
  * const quantity = split("1.0000 EOS");
  * quantity.amount //=> 10000
- * quantity.symbol.precision() //=> 4
- * quantity.symbol.symbol() //=> "EOS"
+ * quantity.symbol.precision //=> 4
+ * quantity.symbol.code() //=> "EOS"
  */
 export function split(quantity: string): Asset {
     const [amount, symbol] = quantity.split(" ");
