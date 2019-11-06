@@ -33,10 +33,12 @@ npm install --save eos-common
 ## Quick Start
 
 ```ts
-import { split } from "eos-common"
+import { Asset, Symbol } from "eos-common"
 
-const { amount } = split("1.0000 EOS");
-amount //=> 10000
+const quantity = new Asset(10000, new Symbol("EOS", 4));
+quantity.toString() //=> "1.0000 EOS";
+quantity.symbol.code() //=> "EOS"
+quantity.symbol.precision //=> 4
 ```
 
 ## API
