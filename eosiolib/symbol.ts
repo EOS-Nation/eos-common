@@ -13,8 +13,9 @@ export class Symbol {
     private _code: string;
 
     /**
-     * Symbol Class
+     * Symbol
      *
+     * @name Symbol
      * @param {string} code Symbol Code
      * @param {number} precision Precision
      * @returns {Symbol} Symbol

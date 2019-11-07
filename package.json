@@ -16,7 +16,7 @@
     "prepublishOnly": "tsc -d",
     "test": "jest --coverage",
     "posttest": "tslint -p .",
-    "docs": "tsc && documentation readme index.js -s API"
+    "docs": "tsc && documentation readme build/index.js -s API"
   },
   "repository": "git@github.com:EOS-Nation/eos-common.git",
   "devDependencies": {

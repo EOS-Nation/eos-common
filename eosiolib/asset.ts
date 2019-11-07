@@ -4,6 +4,20 @@ import { Decimal } from "decimal.js";
 import { Symbol } from "./symbol";
 import * as eosio from "./core/eosio";
 
+/**
+ * Asset
+ *
+ * @name Asset
+ * @param {number} amount The amount of the asset
+ * @param {Symbol} sym  The name of the symbol
+ * @returns {Asset} Asset
+ * @example
+ *
+ * const quantity = new Asset(10000, new Symbol("EOS", 4));
+ * quantity.toString() //=> "1.0000 EOS";
+ * quantity.symbol.code() //=> "EOS"
+ * quantity.symbol.precision //=> 4
+ */
 export class Asset {
     /**
      * {constexpr int64_t} Maximum amount possible for this asset. It's capped to 2^62 - 1
@@ -20,19 +34,6 @@ export class Asset {
      */
     public symbol: Symbol;
 
-    /**
-     * Asset Class
-     *
-     * @param {number} a The amount of the asset
-     * @param {Symbol} sym  The name of the symbol
-     * @returns {Asset} Asset
-     * @example
-     *
-     * const quantity = new Asset(10000, new Symbol("EOS", 4));
-     * quantity.toString() //=> "1.0000 EOS";
-     * quantity.symbol.code() //=> "EOS"
-     * quantity.symbol.precision //=> 4
-     */
     constructor(amount: number, sym: Symbol) {
         this.amount = amount;
         this.symbol = sym;
@@ -75,24 +76,4 @@ export class Asset {
     public toNumber() {
         return this.toDecimal().toNumber();
     }
-}
-
-/**
- * Split quantity string
- *
- * @param {string} quantity Quantity string
- * @returns {Asset}
- * @example
- *
- * const quantity = split("1.0000 EOS");
- * quantity.amount //=> 10000
- * quantity.symbol.precision //=> 4
- * quantity.symbol.code() //=> "EOS"
- */
-export function split(quantity: string): Asset {
-    const [amount, symbol] = quantity.split(" ");
-    const precision = (amount.split(".")[1] || []).length;
-    const amount_uint64 = new Decimal(amount).times(new Decimal(10).pow(precision)).toNumber();
-
-    return new Asset(amount_uint64, new Symbol(symbol, precision));
 }

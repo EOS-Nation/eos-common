@@ -10,11 +10,11 @@
 
 To implement the most commonly used EOSIO C++ Classes into Typescript:
 
-- [Asset](https://github.com/EOSIO/eosio.cdt/blob/master/libraries/eosiolib/asset.hpp)
-- [Symbol](https://github.com/EOSIO/eosio.cdt/blob/master/libraries/eosiolib/symbol.hpp)
-- [SymbolCode](https://github.com/EOSIO/eosio.cdt/blob/master/libraries/eosiolib/symbol.hpp)
-- [ExtendedAsset](https://github.com/EOSIO/eosio.cdt/blob/master/libraries/eosiolib/asset.hpp)
-- [ExtendedSymbol](https://github.com/EOSIO/eosio.cdt/blob/master/libraries/eosiolib/symbol.hpp)
+-   [Asset](https://github.com/EOSIO/eosio.cdt/blob/master/libraries/eosiolib/asset.hpp)
+-   [Symbol](https://github.com/EOSIO/eosio.cdt/blob/master/libraries/eosiolib/symbol.hpp)
+-   [SymbolCode](https://github.com/EOSIO/eosio.cdt/blob/master/libraries/eosiolib/symbol.hpp)
+-   [ExtendedAsset](https://github.com/EOSIO/eosio.cdt/blob/master/libraries/eosiolib/asset.hpp)
+-   [ExtendedSymbol](https://github.com/EOSIO/eosio.cdt/blob/master/libraries/eosiolib/symbol.hpp)
 
 ## Installation
 
@@ -47,33 +47,32 @@ quantity.symbol.precision //=> 4
 
 #### Table of Contents
 
--   [constructor](#constructor)
+-   [Asset](#asset)
     -   [Parameters](#parameters)
     -   [Examples](#examples)
--   [amount](#amount)
--   [is_amount_within_range](#is_amount_within_range)
--   [is_valid](#is_valid)
--   [max_amount](#max_amount)
--   [split](#split)
+    -   [amount](#amount)
+    -   [is_amount_within_range](#is_amount_within_range)
+    -   [is_valid](#is_valid)
+    -   [max_amount](#max_amount)
+-   [check](#check)
     -   [Parameters](#parameters-1)
     -   [Examples](#examples-1)
--   [check](#check)
+-   [SymbolCode](#symbolcode)
+-   [Symbol](#symbol)
     -   [Parameters](#parameters-2)
     -   [Examples](#examples-2)
--   [SymbolCode](#symbolcode)
--   [constructor](#constructor-1)
+-   [split](#split)
     -   [Parameters](#parameters-3)
     -   [Examples](#examples-3)
 
-### constructor
+### Asset
 
-Asset Class
+Asset
 
 #### Parameters
 
--   `amount`
--   `sym` **[Symbol](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Symbol)** The name of the symbol
--   `a` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** The amount of the asset
+-   `amount` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** The amount of the asset
+-   `sym` **[Symbol](#symbol)** The name of the symbol
 
 #### Examples
 
@@ -84,13 +83,13 @@ quantity.symbol.code() //=> "EOS"
 quantity.symbol.precision //=> 4
 ```
 
-Returns **Asset** Asset
+Returns **[Asset](#asset)** Asset
 
-### amount
+#### amount
 
 {int64_t} The amount of the asset
 
-### is_amount_within_range
+#### is_amount_within_range
 
 Check if the amount doesn't exceed the max amount
 
@@ -98,7 +97,7 @@ Returns **any** true - if the amount doesn't exceed the max amount
 
 Returns **any** false - otherwise
 
-### is_valid
+#### is_valid
 
 Check if the asset is valid. %A valid asset has its amount &lt;= max_amount and its symbol name valid
 
@@ -106,9 +105,47 @@ Returns **any** true - if the asset is valid
 
 Returns **any** false - otherwise
 
-### max_amount
+#### max_amount
 
 {constexpr int64_t} Maximum amount possible for this asset. It's capped to 2^62 - 1
+
+### check
+
+Assert if the predicate fails and use the supplied message.
+
+#### Parameters
+
+-   `pred` **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Pre-condition
+-   `msg` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Error Message
+
+#### Examples
+
+```javascript
+check(a == b, "a does not equal b");
+```
+
+Returns **void** 
+
+### SymbolCode
+
+### Symbol
+
+Symbol
+
+#### Parameters
+
+-   `code` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Symbol Code
+-   `precision` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** Precision
+
+#### Examples
+
+```javascript
+const sym = new Symbol("EOS", 4);
+sym.code() //=> "EOS"
+sym.precision //=> 4
+```
+
+Returns **[Symbol](#symbol)** Symbol
 
 ### split
 
@@ -127,42 +164,4 @@ quantity.symbol.precision //=> 4
 quantity.symbol.code() //=> "EOS"
 ```
 
-Returns **Asset**
-
-### check
-
-Assert if the predicate fails and use the supplied message.
-
-#### Parameters
-
--   `pred` **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Pre-condition
--   `msg` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Error Message
-
-#### Examples
-
-```javascript
-check(a == b, "a does not equal b");
-```
-
-Returns **void**
-
-### SymbolCode
-
-### constructor
-
-Symbol Class
-
-#### Parameters
-
--   `code` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Symbol Code
--   `precision` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** Precision
-
-#### Examples
-
-```javascript
-const sym = new Symbol("EOS", 4);
-sym.code() //=> "EOS"
-sym.precision //=> 4
-```
-
-Returns **[Symbol](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Symbol)** Symbol
+Returns **[Asset](#asset)** 
