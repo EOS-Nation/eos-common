@@ -2,7 +2,7 @@
 
 import { Decimal } from "decimal.js";
 import { Symbol } from "./symbol";
-import * as eosio from "./core/eosio";
+import { check } from "./check";
 
 /**
  * Asset
@@ -38,8 +38,8 @@ export class Asset {
         this.amount = amount;
         this.symbol = sym;
 
-        eosio.check( this.is_amount_within_range(), "magnitude of asset amount must be less than 2^62" );
-        // eosio.check( this.symbol.is_valid(), "invalid symbol name" );
+        check( this.is_amount_within_range(), "magnitude of asset amount must be less than 2^62" );
+        // check( this.symbol.is_valid(), "invalid symbol name" );
     }
 
     /**

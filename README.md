@@ -61,8 +61,13 @@ quantity.symbol.precision //=> 4
 -   [Symbol](#symbol)
     -   [Parameters](#parameters-2)
     -   [Examples](#examples-2)
--   [split](#split)
+-   [stake2vote](#stake2vote)
     -   [Parameters](#parameters-3)
+-   [vote2stake](#vote2stake)
+    -   [Parameters](#parameters-4)
+-   [voteWeightToday](#voteweighttoday)
+-   [split](#split)
+    -   [Parameters](#parameters-5)
     -   [Examples](#examples-3)
 
 ### Asset
@@ -146,6 +151,28 @@ sym.precision //=> 4
 ```
 
 Returns **[Symbol](#symbol)** Symbol
+
+### stake2vote
+
+Convert EOS stake into decaying value
+
+#### Parameters
+
+-   `staked`  
+-   `vote` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** vote
+
+### vote2stake
+
+Convert vote decay value into EOS stake
+
+#### Parameters
+
+-   `vote`  
+-   `staked` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** staked
+
+### voteWeightToday
+
+voteWeightToday computes the stake2vote weight for EOS, in order to compute the decaying value.
 
 ### split
 

@@ -9,7 +9,8 @@
         "variable-name": false,
         "no-bitwise": false,
         "ordered-imports": false,
-        "max-classes-per-file": false
+        "max-classes-per-file": false,
+        "max-line-length": false
     },
     "rulesDirectory": []
 }
