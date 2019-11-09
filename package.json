@@ -1,6 +1,6 @@
 {
   "name": "eos-common",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "EOSIO Smart Contract common library used for Typescript",
   "main": "build/index.js",
   "types": "build/index.d.ts",

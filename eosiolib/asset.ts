@@ -63,7 +63,7 @@ export class Asset {
         return true;
     }
 
-    public toString() {
+    public toString(): string {
         const amount = this.toDecimal().toFixed(this.symbol.precision);
 
         return `${amount} ${this.symbol.code()}`;
@@ -73,7 +73,7 @@ export class Asset {
         return new Decimal(this.amount).div(Math.pow(10, this.symbol.precision));
     }
 
-    public toNumber() {
-        return this.toDecimal().toNumber();
+    public toNumber(): number {
+        return Number(this.toDecimal().toNumber().toFixed(this.symbol.precision));
     }
 }
