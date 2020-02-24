@@ -27,7 +27,7 @@ export class Asset {
     /**
      * {int64_t} The amount of the asset
      */
-    public amount: number = 0;
+    public amount = 0;
 
     /**
      * {symbol} The symbol name of the asset
@@ -64,16 +64,16 @@ export class Asset {
     }
 
     public toString(): string {
-        const amount = this.toDecimal().toFixed(this.symbol.precision);
+        const amount = this.toDecimal().toFixed(this.symbol.precision());
 
         return `${amount} ${this.symbol.code()}`;
     }
 
     public toDecimal(): Decimal {
-        return new Decimal(this.amount).div(Math.pow(10, this.symbol.precision));
+        return new Decimal(this.amount).div(Math.pow(10, this.symbol.precision()));
     }
 
     public toNumber(): number {
-        return Number(this.toDecimal().toNumber().toFixed(this.symbol.precision));
+        return Number(this.toDecimal().toNumber().toFixed(this.symbol.precision()));
     }
 }

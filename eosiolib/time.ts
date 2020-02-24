@@ -1,10 +1,10 @@
 class Time {
-  public sec_since_epoch() {
+  public sec_since_epoch(): number {
     return Date.now();
   }
 }
 
-export function current_time_point() {
+export function current_time_point(): Time {
   return new Time();
 }
 

@@ -15,16 +15,18 @@
   "scripts": {
     "prepublishOnly": "tsc -d",
     "test": "jest --coverage",
-    "posttest": "tslint -p .",
+    "posttest": "eslint . --ext .ts",
     "docs": "tsc && documentation readme build/index.js -s API"
   },
   "repository": "git@github.com:EOS-Nation/eos-common.git",
   "devDependencies": {
     "@types/jest": "*",
-    "documentation": "*",
+    "@typescript-eslint/eslint-plugin": "^2.20.0",
+    "@typescript-eslint/parser": "*",
+    "eslint": "*",
+    "eslint-plugin-jest": "*",
     "jest": "*",
     "ts-jest": "*",
-    "tslint": "*",
     "typescript": "*"
   },
   "dependencies": {
