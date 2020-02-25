@@ -88,7 +88,7 @@ export class symbol_code {
 
 export class Symbol {
     public _precision: number;
-    private _code: string;
+    private _code: symbol_code;
 
     /**
      * Symbol
@@ -103,12 +103,12 @@ export class Symbol {
      * sym.code() //=> "EOS"
      * sym.precision //=> 4
      */
-    constructor(code: string, precision: number) {
-        this._code = code;
+    constructor(code: string | symbol_code, precision: number) {
+        this._code = (typeof code == "string") ? new symbol_code(code) : code;
         this._precision = precision;
     }
 
-    public code(): string {
+    public code(): symbol_code {
         return this._code;
     }
 

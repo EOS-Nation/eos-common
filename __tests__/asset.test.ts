@@ -17,11 +17,11 @@ test(`comparison works as expected`, async () => {
 
 test("decimal conversions work as expected", () => {
     const amount1 = new Asset(10000, EOS);
-    expect(amount1.toNumber()).toBe(1.0000);
+    expect(amount1.to_double()).toBe(1.0000);
 
     const amount2 = split(`1.0000 EOS`);
-    expect(amount2.toNumber()).toBe(1.0000);
+    expect(amount2.to_double()).toBe(1.0000);
 
     const amount3 = new Asset(100000000, BTC);
-    expect(amount3.toNumber()).toBe(1.00000000);
+    expect(amount3.to_double()).toBe(1.00000000);
 });

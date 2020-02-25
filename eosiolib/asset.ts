@@ -1,8 +1,9 @@
 // https://github.com/EOSIO/eosio.cdt/blob/master/libraries/eosiolib/asset.hpp
 
-import { Decimal } from "decimal.js";
+// import { Decimal } from "decimal.js";
 import { Symbol } from "./symbol";
 import { check } from "./check";
+import { asset_to_double } from "./utils";
 
 /**
  * Asset
@@ -63,17 +64,12 @@ export class Asset {
         return true;
     }
 
-    public toString(): string {
-        const amount = this.toDecimal().toFixed(this.symbol.precision());
-
-        return `${amount} ${this.symbol.code()}`;
+    public to_string(): string {
+        const amount = this.to_double().toFixed(this.symbol.precision());
+        return `${amount} ${this.symbol.code().to_string()}`;
     }
 
-    public toDecimal(): Decimal {
-        return new Decimal(this.amount).div(Math.pow(10, this.symbol.precision()));
-    }
-
-    public toNumber(): number {
-        return Number(this.toDecimal().toNumber().toFixed(this.symbol.precision()));
+    public to_double(): number {
+        return asset_to_double( this );
     }
 }

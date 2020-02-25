@@ -4,8 +4,8 @@ import copy from "rollup-plugin-copy";
 import resolve from "@rollup/plugin-node-resolve";
 import external from "rollup-plugin-peer-deps-external";
 import progress from "rollup-plugin-progress";
-import { terser } from "rollup-plugin-terser";
 import typescript from "rollup-plugin-typescript2";
+// import { terser } from "rollup-plugin-terser";
 
 export default {
   input: "index.ts",
@@ -35,17 +35,18 @@ export default {
     external(),
     resolve(),
     typescript({
+      tsconfig: "rollup.tsconfig.json",
       rollupCommonJSResolveHack: true,
       clean: true,
     }),
     commonjs(),
-    terser({
-      ecma: 5,
-    }),
+    // terser({
+    //   ecma: 5,
+    // }),
     copy({
       targets: [
         { src: "examples/*", dest: "dist/examples" },
       ],
-    }),
+    })
   ],
 };
