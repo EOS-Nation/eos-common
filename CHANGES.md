@@ -4,6 +4,7 @@
 - add test cases for `Symbol`
 
 ## 2020-02-25
+- add `symbol_code` unit tests from C++ tests
 - add `symbol` method
 - add `symbol_code` method
 - fix 7 character symcode

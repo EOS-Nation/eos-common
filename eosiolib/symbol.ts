@@ -19,7 +19,7 @@ export class Symbol {
      * sym.code() //=> "EOS"
      * sym.precision //=> 4
      */
-    constructor(sc?: string | SymbolCode | number, precision?: number) {
+    constructor(sc?: string | SymbolCode | number | BigInt, precision?: number) {
         if ( sc != undefined ) check( precision != undefined, "[precision] is required");
 
         if (typeof sc == "string" && precision) {
@@ -29,7 +29,7 @@ export class Symbol {
         else if (typeof sc == "number" || typeof sc == "bigint") {
             this.value = BigInt(sc);
         }
-        else {
+        else if (typeof sc == typeof SymbolCode) {
             const symcode: any = sc;
             this.value = BigInt(symcode.raw() << 8 | Number(precision));
         }
@@ -59,8 +59,8 @@ export class Symbol {
     /**
      * Returns uint64_t repreresentation of the symbol
      */
-    public raw(): number {
-        return Number(this.value);
+    public raw(): BigInt {
+        return this.value;
     }
 
     public isTruthy(): boolean {
@@ -95,7 +95,7 @@ export class Symbol {
      * @return boolean - true if symbol `a` is less than `b`
      */
     public isLessThan(comparison: Symbol): boolean {
-        return comparison.value < this.value;
+        return this.value < comparison.value;
     }
 }
 
@@ -104,6 +104,8 @@ export function symbol(sc?: number | string | SymbolCode, precision?: number): S
 }
 
 // (() => {
+//     console.log(typeof new SymbolCode)
+//     console.log(typeof new SymbolCode("EOS"))
 //     console.log(symbol("A", 4).raw());
 //     console.log(symbol("AB", 4).raw());
 //     console.log(symbol("ABC", 4).raw());

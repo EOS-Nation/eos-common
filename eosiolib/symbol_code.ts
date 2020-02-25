@@ -38,15 +38,23 @@ export class SymbolCode {
     private value: BigInt = BigInt(0);
 
     // constructor()
-    constructor( str?: string | number | bigint ) {
+    constructor( str?: string | number | BigInt ) {
         if ( str ) {
-            if (typeof str == 'bigint' || typeof str == 'number') this.value = BigInt(str);
-            else this.value = BigInt(str_to_symbol_code(str));
+            if (typeof str == "string") this.value = str_to_symbol_code(str);
+            else if (typeof str == "number" || typeof str == 'bigint') this.value = BigInt(str);
         }
     }
 
-    public raw(): number {
-        return Number(this.value);
+    public raw(): BigInt {
+        return this.value;
+    }
+
+    public isTruthy(): boolean {
+        return this.value != BigInt(0);
+    }
+
+    public isFalsy(): boolean {
+        return this.value == BigInt(0);
     }
 
     public length(): number {
@@ -65,14 +73,14 @@ export class SymbolCode {
 
     public is_valid(): boolean {
         let sym = BigInt(this.value);
-        for ( let i=0; i < 7; i++ ) {
-           const c = String.fromCharCode(Number(sym) & 0xFF);
+        for ( let i= BigInt(0); i < 7; i++ ) {
+           const c = String.fromCharCode(Number(BigInt(sym) & BigInt(0xFF)));
            if ( !("A" <= c && c <= "Z") ) return false;
            sym >>= BigInt(8);
-           if ( !(Number(sym) & 0xFF) ) {
+           if ( !(BigInt(sym) & BigInt(0xFF)) ) {
               do {
                  sym >>= BigInt(8);
-                 if ( (Number(sym) & 0xFF) ) return false;
+                 if ( (BigInt(sym) & BigInt(0xFF)) ) return false;
                  i++;
               } while( i < 7 );
            }
@@ -104,20 +112,18 @@ export class SymbolCode {
      * @return boolean - true if symbol_code `a` is less than `b`
      */
     public isLessThan(comparison: SymbolCode): boolean {
-        return comparison.value < this.value;
+        return this.value < comparison.value;
     }
 }
 
-export function symbol_code( str?: number | string ): SymbolCode {
+export function symbol_code( str?: string | number | BigInt ): SymbolCode {
     return new SymbolCode(str);
 }
 
 // (() => {
-//     console.log(symbol_code("A").to_string());
-//     console.log(symbol_code("AB").to_string());
-//     console.log(symbol_code("ABC").to_string());
-//     console.log(symbol_code("ABCD").to_string());
-//     console.log(symbol_code("ABCDE").to_string());
-//     console.log(symbol_code("ABCDEF").to_string());
-//     console.log(symbol_code("ABCDEFG").to_string());
+//     const symcode = symbol_code(BigInt(18367622009667905n))
+//     console.log(symcode);
+//     console.log(symcode.raw());
+//     console.log(symcode.is_valid());
+//     console.log(symcode.to_string());
 // })();

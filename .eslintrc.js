@@ -14,6 +14,7 @@ module.exports = {
     rules: {
         "@typescript-eslint/camelcase": "off",
         "@typescript-eslint/ban-types": "off",
-        "@typescript-eslint/class-name-casing": "off"
+        "@typescript-eslint/class-name-casing": "off",
+        "@typescript-eslint/no-explicit-any": "off"
     }
 };

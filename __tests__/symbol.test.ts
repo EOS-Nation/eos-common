@@ -1,6 +1,6 @@
 import { symbol } from "..";
 
-test("symbol", async () => {
+test("symbol", () => {
   const A = symbol("A", 4);
 
   // equal
