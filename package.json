@@ -2,10 +2,14 @@
   "name": "eos-common",
   "version": "0.2.1",
   "description": "EOSIO Smart Contract common library used for Typescript",
-  "main": "build/index.js",
-  "types": "build/index.d.ts",
+  "main": "dist/index.js",
+  "module": "dist/index.es.js",
+  "browser": "dist/index.es.js",
+  "jsnext:main": "dist/index.es.js",
+  "types": "dist/index.d.ts",
+  "runkitExampleFilename": "dist/examples/basic.js",
   "files": [
-    "build"
+    "dist"
   ],
   "author": "Denis Carriere <@DenisCarriere>",
   "contributors": [
@@ -13,19 +17,33 @@
   ],
   "license": "MIT",
   "scripts": {
-    "prepublishOnly": "tsc -d",
+    "build": "rollup -c rollup.config.ts",
+    "prepublishOnly": "npm run test && npm run build",
     "test": "jest --coverage",
     "posttest": "eslint . --ext .ts",
     "docs": "tsc && documentation readme build/index.js -s API"
   },
   "repository": "git@github.com:EOS-Nation/eos-common.git",
+  "engines": {
+    "node": ">=8",
+    "npm": ">=5"
+  },
   "devDependencies": {
+    "@rollup/plugin-commonjs": "*",
+    "@rollup/plugin-node-resolve": "*",
     "@types/jest": "*",
     "@typescript-eslint/eslint-plugin": "^2.20.0",
     "@typescript-eslint/parser": "*",
     "eslint": "*",
     "eslint-plugin-jest": "*",
     "jest": "*",
+    "rollup": "*",
+    "rollup-plugin-cleaner": "^1.0.0",
+    "rollup-plugin-copy": "*",
+    "rollup-plugin-peer-deps-external": "*",
+    "rollup-plugin-progress": "*",
+    "rollup-plugin-terser": "*",
+    "rollup-plugin-typescript2": "*",
     "ts-jest": "*",
     "typescript": "*"
   },

@@ -2,8 +2,8 @@
 *.d.ts
 !jest.config.js
 !.eslintrc.js
+dist
 
-build
 # Logs
 logs
 *.log
