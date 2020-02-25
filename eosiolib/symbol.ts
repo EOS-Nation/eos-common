@@ -1,94 +1,10 @@
 import { check } from "./check";
+import { SymbolCode } from "./symbol_code";
 
 // https://github.com/EOSIO/eosio.cdt/blob/master/libraries/eosiolib/symbol.hpp
 
-function str_to_symbol_code( str: string ): number {
-    let value = BigInt(0);
-    if( str.length > 7 ) {
-        check( false, "string is too long to be a valid symbol_code" );
-    }
-    for( const itr of str.split("").reverse().join("") ) {
-        if( itr < 'A' || itr > 'Z') {
-            check( false, "only uppercase letters allowed in symbol_code string" );
-        }
-        value <<= BigInt(8);
-        value |= BigInt(itr.charCodeAt(0));
-    }
-    return Number(value);
-}
-
-function write_as_string( value: number ): string {
-
-    const mask = BigInt(0x00000000000000FF);
-    if (value == 0) return '';
-
-    let begin = "";
-    let v = BigInt(value);
-    for( let i = 0; i < 7; ++i, v >>= BigInt(8) ) {
-        if ( v == BigInt(0) ) return begin;
-        begin += String.fromCharCode(Number(v & mask));
-    }
-
-    return begin;
-}
-
-/**
- * @class Stores the symbol code
- * @brief Stores the symbol code as a uint64_t value
- */
-export class symbol_code {
-    private value = 0; // uint64_t
-
-    // constructor()
-    constructor( str?: number | string ) {
-        if ( str ) {
-            if (typeof str == 'number') this.value = Number(str);
-            else this.value = str_to_symbol_code(str);
-        }
-    }
-    public raw(): number {
-        return this.value;
-    }
-
-    public length(): number {
-        let sym = BigInt(this.value);
-        let len = 0;
-        while (Number(sym) & 0xFF && len <= 7) {
-           len++;
-           sym >>= BigInt(8);
-        }
-        return len;
-     }
-
-    public to_string(): string {
-        return write_as_string(this.value);
-    }
-
-    public is_valid(): boolean {
-        let sym = BigInt(this.value);
-        for ( let i=0; i < 7; i++ ) {
-           const c = String.fromCharCode(Number(sym) & 0xFF);
-           if ( !("A" <= c && c <= "Z") ) return false;
-           sym >>= BigInt(8);
-           if ( !(Number(sym) & 0xFF) ) {
-              do {
-                 sym >>= BigInt(8);
-                 if ( (Number(sym) & 0xFF) ) return false;
-                 i++;
-              } while( i < 7 );
-           }
-        }
-        return true;
-     }
-
-    public isEqual(comparison: symbol_code): boolean {
-        return comparison.value === this.value;
-    }
-}
-
 export class Symbol {
-    public _precision: number;
-    private _code: symbol_code;
+    public value: BigInt = BigInt(0);
 
     /**
      * Symbol
@@ -103,20 +19,96 @@ export class Symbol {
      * sym.code() //=> "EOS"
      * sym.precision //=> 4
      */
-    constructor(code: string | symbol_code, precision: number) {
-        this._code = (typeof code == "string") ? new symbol_code(code) : code;
-        this._precision = precision;
+    constructor(sc?: string | SymbolCode | number, precision?: number) {
+        if ( sc != undefined ) check( precision != undefined, "[precision] is required");
+
+        if (typeof sc == "string" && precision) {
+            const symcode = new SymbolCode(sc).raw();
+            this.value = BigInt(symcode) << BigInt(8) | BigInt(precision);
+        }
+        else if (typeof sc == "number" || typeof sc == "bigint") {
+            this.value = BigInt(sc);
+        }
+        else {
+            const symcode: any = sc;
+            this.value = BigInt(symcode.raw() << 8 | Number(precision));
+        }
     }
 
-    public code(): symbol_code {
-        return this._code;
+    /**
+     * Is this symbol valid
+     */
+    public is_valid(): boolean {
+        return this.code().is_valid();
     }
 
-    public isEqual(comparison: Symbol): boolean {
-        return comparison.code === this.code && comparison.precision() === this.precision();
-    }
-
+    /**
+     * This symbol's precision
+     */
     public precision(): number {
-        return this._precision;
+        return Number(BigInt(this.value) & BigInt(0x00000000000000FF));
+    }
+
+    /**
+     * Returns representation of symbol name
+     */
+    public code(): SymbolCode {
+        return new SymbolCode(Number(this.value) >> 8);
+    }
+
+    /**
+     * Returns uint64_t repreresentation of the symbol
+     */
+    public raw(): number {
+        return Number(this.value);
+    }
+
+    public isTruthy(): boolean {
+        return this.value != BigInt(0);
+    }
+
+    public isFalsy(): boolean {
+        return this.value == BigInt(0);
+    }
+
+    /**
+     * Equivalency operator. Returns true if a == b (are the same)
+     *
+     * @return boolean - true if both provided symbols are the same
+     */
+    public isEqual(comparison: Symbol): boolean {
+        return comparison.value === this.value;
+    }
+
+    /**
+     * Inverted equivalency operator. Returns true if a != b (are different)
+     *
+     * @return boolean - true if both provided symbols are not the same
+     */
+    public isNotEqual(comparison: Symbol): boolean {
+        return comparison.value !== this.value;
+    }
+
+    /**
+     * Less than operator. Returns true if a < b.
+     * @brief Less than operator
+     * @return boolean - true if symbol `a` is less than `b`
+     */
+    public isLessThan(comparison: Symbol): boolean {
+        return comparison.value < this.value;
     }
 }
+
+export function symbol(sc?: number | string | SymbolCode, precision?: number): Symbol {
+    return new Symbol(sc, precision);
+}
+
+// (() => {
+//     console.log(symbol("A", 4).raw());
+//     console.log(symbol("AB", 4).raw());
+//     console.log(symbol("ABC", 4).raw());
+//     console.log(symbol("ABCD", 4).raw());
+//     console.log(symbol("ABCDE", 4).raw());
+//     console.log(symbol("ABCDEF", 4).raw());
+//     console.log(symbol("ABCDEFG", 4).raw());
+// })();

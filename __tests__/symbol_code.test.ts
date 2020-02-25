@@ -1,13 +1,13 @@
 import { symbol_code } from "..";
 
 test("symbol_code", async () => {
-  const A = new symbol_code("A");
-  const AB = new symbol_code("AB");
-  const ABC = new symbol_code("ABC");
-  const ABCD = new symbol_code("ABCD");
-  const ABCDE = new symbol_code("ABCDE");
-  const ABCDEF = new symbol_code("ABCDEF");
-  const ABCDEFG = new symbol_code("ABCDEFG");
+  const A = symbol_code("A");
+  const AB = symbol_code("AB");
+  const ABC = symbol_code("ABC");
+  const ABCD = symbol_code("ABCD");
+  const ABCDE = symbol_code("ABCDE");
+  const ABCDEF = symbol_code("ABCDEF");
+  const ABCDEFG = symbol_code("ABCDEFG");
 
   // equal
   expect(A == A).toBeTruthy();
@@ -52,9 +52,5 @@ test("symbol_code", async () => {
   expect(ABCD.to_string()).toBe("ABCD");
   expect(ABCDE.to_string()).toBe("ABCDE");
   expect(ABCDEF.to_string()).toBe("ABCDEF");
-
-  // ERROR
-  // Expected: "ABCDEFG"
-  // Received: "@BCDEFG"
-  // expect(ABCDEFG.to_string()).toBe("ABCDEFG");
+  expect(ABCDEFG.to_string()).toBe("ABCDEFG");
 });
