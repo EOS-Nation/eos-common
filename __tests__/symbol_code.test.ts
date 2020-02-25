@@ -52,5 +52,9 @@ test("symbol_code", async () => {
   expect(ABCD.to_string()).toBe("ABCD");
   expect(ABCDE.to_string()).toBe("ABCDE");
   expect(ABCDEF.to_string()).toBe("ABCDEF");
+
+  // ERROR
+  // Expected: "ABCDEFG"
+  // Received: "@BCDEFG"
   expect(ABCDEFG.to_string()).toBe("ABCDEFG");
 });

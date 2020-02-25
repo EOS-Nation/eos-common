@@ -120,39 +120,3 @@ export class Symbol {
         return this._precision;
     }
 }
-
-// const A = new symbol_code("A");
-// const AB = new symbol_code("AB");
-// const ABC = new symbol_code("ABC");
-// const ABCD = new symbol_code("ABCD");
-// const ABCDE = new symbol_code("ABCDE");
-// const ABCDEF = new symbol_code("ABCDEF");
-// const ABCDEFG = new symbol_code("ABCDEFG");
-
-// console.log(A.raw());
-// console.log(AB.raw());
-// console.log(ABC.raw());
-// console.log(ABCD.raw());
-// console.log(ABCDE.raw());
-// console.log(ABCDEF.raw());
-// console.log(ABCDEFG.raw());
-
-// console.log(new symbol_code("A").is_valid());
-// console.log(new symbol_code("A1").is_valid());
-
-// console.log(A.to_string());
-// console.log(AB.to_string());
-// console.log(ABC.to_string());
-// console.log(ABCD.to_string());
-// console.log(ABCDE.to_string());
-// console.log(ABCDEF.to_string());
-// console.log(ABCDEFG.to_string());
-// console.log(ABCDEFG.raw());
-
-console.log("XBCDEFG =>", write_as_string(20061986658402904));
-console.log("ABCDEFA =>", write_as_string(18373136798138945));
-console.log("BBCDEFA =>", write_as_string(18373136798138946));
-
-console.log("BCDEFA =>", write_as_string(71770065617730));
-console.log("ACDEFA =>", write_as_string(71770065617729));
-console.log("XCDEFA =>", write_as_string(71770065617752));
