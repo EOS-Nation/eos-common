@@ -31,7 +31,7 @@ export class Symbol {
         }
         else if (typeof sc == typeof SymbolCode) {
             const symcode: any = sc;
-            this.value = BigInt(symcode.raw() << 8 | Number(precision));
+            this.value = BigInt(symcode.raw()) << BigInt(8) | BigInt(precision);
         }
     }
 
@@ -53,7 +53,7 @@ export class Symbol {
      * Returns representation of symbol name
      */
     public code(): SymbolCode {
-        return new SymbolCode(Number(this.value) >> 8);
+        return new SymbolCode(BigInt(this.value) >> BigInt(8));
     }
 
     /**
@@ -102,6 +102,13 @@ export class Symbol {
 export function symbol(sc?: number | string | SymbolCode, precision?: number): Symbol {
     return new Symbol(sc, precision);
 }
+
+(() => {
+    console.log("EOSDT", "=>", symbol("EOSDT", 8).code().to_string());
+    console.log("EBTC", "=>", symbol("EBTC", 8).code().to_string());
+    console.log("USDE", "=>", symbol("USDE", 4).code().to_string());
+    console.log("USDT", "=>", symbol("USDT", 4).code().to_string());
+})();
 
 // (() => {
 //     console.log(typeof new SymbolCode)

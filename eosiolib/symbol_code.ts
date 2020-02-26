@@ -121,9 +121,8 @@ export function symbol_code( str?: string | number | BigInt ): SymbolCode {
 }
 
 // (() => {
-//     const symcode = symbol_code(BigInt(18367622009667905n))
-//     console.log(symcode);
-//     console.log(symcode.raw());
-//     console.log(symcode.is_valid());
-//     console.log(symcode.to_string());
+//     console.log(symbol_code("EOSDT").to_string());
+//     console.log(symbol_code("EBTC").to_string());
+//     console.log(symbol_code("USDE").to_string());
+//     console.log(symbol_code("USDT").to_string());
 // })();
