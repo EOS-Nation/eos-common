@@ -103,12 +103,12 @@ export function symbol(sc?: number | string | SymbolCode, precision?: number): S
     return new Symbol(sc, precision);
 }
 
-(() => {
-    console.log("EOSDT", "=>", symbol("EOSDT", 8).code().to_string());
-    console.log("EBTC", "=>", symbol("EBTC", 8).code().to_string());
-    console.log("USDE", "=>", symbol("USDE", 4).code().to_string());
-    console.log("USDT", "=>", symbol("USDT", 4).code().to_string());
-})();
+// (() => {
+//     console.log("EOSDT", "=>", symbol("EOSDT", 8).code().to_string());
+//     console.log("EBTC", "=>", symbol("EBTC", 8).code().to_string());
+//     console.log("USDE", "=>", symbol("USDE", 4).code().to_string());
+//     console.log("USDT", "=>", symbol("USDT", 4).code().to_string());
+// })();
 
 // (() => {
 //     console.log(typeof new SymbolCode)
