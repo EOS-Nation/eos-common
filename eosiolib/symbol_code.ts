@@ -1,6 +1,6 @@
 import { check } from "./check";
 
-function str_to_symbol_code( str: string ): BigInt {
+function str_to_symbol_code( str: string ): bigint {
     let value = BigInt(0);
     if( str.length > 7 ) {
         check( false, "string is too long to be a valid symbol_code" );
@@ -15,8 +15,7 @@ function str_to_symbol_code( str: string ): BigInt {
     return BigInt(value);
 }
 
-function write_as_string( value: BigInt ): string {
-
+function write_as_string( value: bigint ): string {
     const mask = BigInt(0x00000000000000FF);
     if (value == BigInt(0)) return '';
 
@@ -35,17 +34,17 @@ function write_as_string( value: BigInt ): string {
  * @brief Stores the symbol code as a uint64_t value
  */
 export class SymbolCode {
-    private value: BigInt = BigInt(0);
+    private value = BigInt(0);
 
     // constructor()
-    constructor( str?: string | number | BigInt ) {
+    constructor( str?: string | number | bigint ) {
         if ( str ) {
             if (typeof str == "string") this.value = str_to_symbol_code(str);
             else if (typeof str == "number" || typeof str == 'bigint') this.value = BigInt(str);
         }
     }
 
-    public raw(): BigInt {
+    public raw(): bigint {
         return this.value;
     }
 
@@ -116,7 +115,7 @@ export class SymbolCode {
     }
 }
 
-export function symbol_code( str?: string | number | BigInt ): SymbolCode {
+export function symbol_code( str?: string | number | bigint ): SymbolCode {
     return new SymbolCode(str);
 }
 

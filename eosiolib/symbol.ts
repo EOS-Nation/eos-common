@@ -4,7 +4,7 @@ import { SymbolCode } from "./symbol_code";
 // https://github.com/EOSIO/eosio.cdt/blob/master/libraries/eosiolib/symbol.hpp
 
 export class Symbol {
-    public value: BigInt = BigInt(0);
+    public value = BigInt(0);
 
     /**
      * Symbol
@@ -19,7 +19,7 @@ export class Symbol {
      * sym.code() //=> "EOS"
      * sym.precision //=> 4
      */
-    constructor(sc: string | SymbolCode | number | BigInt, precision: number | BigInt) {
+    constructor(sc: string | SymbolCode | number | bigint, precision: number | bigint) {
         if ( sc != undefined ) check( precision != undefined, "[precision] is required");
 
         if (typeof sc == "string" && precision) {
@@ -59,7 +59,7 @@ export class Symbol {
     /**
      * Returns uint64_t repreresentation of the symbol
      */
-    public raw(): BigInt {
+    public raw(): bigint {
         return this.value;
     }
 
@@ -99,7 +99,7 @@ export class Symbol {
     }
 }
 
-export function symbol( sc: number | string | SymbolCode, precision: number | BigInt ): Symbol {
+export function symbol( sc: number | string | SymbolCode, precision: number | bigint ): Symbol {
     return new Symbol( sc, precision );
 }
 

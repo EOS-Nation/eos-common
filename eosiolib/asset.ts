@@ -2,7 +2,7 @@
 
 import { Symbol } from "./symbol";
 import { check } from "./check";
-import { asset_to_number } from "./utils";
+import { asset_to_number, number_to_bigint } from "./utils";
 
 /**
  * Asset
@@ -34,14 +34,14 @@ export class Asset {
      */
     public symbol: Symbol;
 
-    constructor(amount?: string | number | BigInt, sym?: Symbol) {
+    constructor(amount?: string | number | bigint, sym?: Symbol) {
         if ( typeof amount == "string") {
             const [amount_str, symbol_str] = amount.split(" ");
             const precision = (amount_str.split(".")[1] || []).length;
-            this.amount = BigInt( Math.round(Number(amount_str) * Math.pow(10, precision)));
+            this.amount = number_to_bigint( Number(amount_str) * Math.pow(10, precision));
             this.symbol = new Symbol( symbol_str, precision );
         } else if ( sym ) {
-            this.amount = BigInt(amount);
+            this.amount = (typeof amount == "number") ? number_to_bigint(amount) : BigInt(amount);
             this.symbol = sym;
         } else {
             throw new Error("[sym] is required");
@@ -58,7 +58,7 @@ export class Asset {
      * @return false - otherwise
      */
     public is_amount_within_range(): boolean {
-        return - Asset.max_amount <= this.amount && this.amount <= Asset.max_amount;
+        return -BigInt(Asset.max_amount) <= BigInt(this.amount) && this.amount <= Asset.max_amount;
     }
 
     /**
@@ -77,11 +77,11 @@ export class Asset {
     }
 }
 
-export function asset(amount?: number | BigInt, sym?: Symbol): Asset {
+export function asset( amount?: bigint, sym?: Symbol ): Asset {
     return new Asset( amount, sym );
 }
 
 // (() => {
-//     const quantity = new Asset("9643.4600 USD");
+//     const quantity = new Asset(9643, new Symbol("USD", 4));
 //     console.log(quantity);
 // })()
