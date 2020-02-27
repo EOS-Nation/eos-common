@@ -1,9 +1,8 @@
 // https://github.com/EOSIO/eosio.cdt/blob/master/libraries/eosiolib/asset.hpp
 
-// import { Decimal } from "decimal.js";
 import { Symbol } from "./symbol";
 import { check } from "./check";
-import { asset_to_double } from "./utils";
+import { asset_to_number } from "./utils";
 
 /**
  * Asset
@@ -23,24 +22,34 @@ export class Asset {
     /**
      * {constexpr int64_t} Maximum amount possible for this asset. It's capped to 2^62 - 1
      */
-    public static max_amount: number = 2 ** 62 - 1;
+    public static max_amount = BigInt(2 ** 62 - 1);
 
     /**
      * {int64_t} The amount of the asset
      */
-    public amount = 0;
+    public amount = BigInt(0);
 
     /**
      * {symbol} The symbol name of the asset
      */
     public symbol: Symbol;
 
-    constructor(amount: number, sym: Symbol) {
-        this.amount = amount;
-        this.symbol = sym;
+    constructor(amount?: string | number | BigInt, sym?: Symbol) {
+        if ( typeof amount == "string") {
+            const [amount_str, symbol_str] = amount.split(" ");
+            const precision = (amount_str.split(".")[1] || []).length;
+
+            this.amount = BigInt( Number(amount_str) ) * BigInt(Math.pow(10, precision));
+            this.symbol = new Symbol( symbol_str, precision );
+        } else if ( sym ) {
+            this.amount = BigInt(amount);
+            this.symbol = sym;
+        } else {
+            throw new Error("[sym] is required");
+        }
 
         check( this.is_amount_within_range(), "magnitude of asset amount must be less than 2^62" );
-        // check( this.symbol.is_valid(), "invalid symbol name" );
+        check( this.symbol.is_valid(), "invalid symbol name" );
     }
 
     /**
@@ -60,16 +69,20 @@ export class Asset {
      * @return false - otherwise
      */
     public is_valid(): boolean {
-        // return this.is_amount_within_range() && this.symbol.is_valid();
-        return true;
+        return this.is_amount_within_range() && this.symbol.is_valid();
     }
 
     public to_string(): string {
-        const amount = this.to_double().toFixed(this.symbol.precision());
-        return `${amount} ${this.symbol.code().to_string()}`;
-    }
-
-    public to_double(): number {
-        return asset_to_double( this );
+        const fixed = asset_to_number(this).toFixed(this.symbol.precision());
+        return `${fixed} ${this.symbol.code().to_string()}`;
     }
 }
+
+export function asset(amount?: number | BigInt, sym?: Symbol): Asset {
+    return new Asset( amount, sym );
+}
+
+// (() => {
+//     const quantity = new Asset("1.0000 EOS");
+//     console.log(quantity);
+// })()

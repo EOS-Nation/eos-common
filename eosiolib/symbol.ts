@@ -19,7 +19,7 @@ export class Symbol {
      * sym.code() //=> "EOS"
      * sym.precision //=> 4
      */
-    constructor(sc?: string | SymbolCode | number | BigInt, precision?: number) {
+    constructor(sc: string | SymbolCode | number | BigInt, precision: number | BigInt) {
         if ( sc != undefined ) check( precision != undefined, "[precision] is required");
 
         if (typeof sc == "string" && precision) {
@@ -99,8 +99,8 @@ export class Symbol {
     }
 }
 
-export function symbol(sc?: number | string | SymbolCode, precision?: number): Symbol {
-    return new Symbol(sc, precision);
+export function symbol( sc: number | string | SymbolCode, precision: number | BigInt ): Symbol {
+    return new Symbol( sc, precision );
 }
 
 // (() => {
