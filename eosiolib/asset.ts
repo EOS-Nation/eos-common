@@ -38,7 +38,7 @@ export class Asset {
         if ( typeof amount == "string") {
             const [amount_str, symbol_str] = amount.split(" ");
             const precision = (amount_str.split(".")[1] || []).length;
-            this.amount = BigInt( Number(amount_str) * Math.pow(10, precision));
+            this.amount = BigInt( Math.round(Number(amount_str) * Math.pow(10, precision)));
             this.symbol = new Symbol( symbol_str, precision );
         } else if ( sym ) {
             this.amount = BigInt(amount);
@@ -82,6 +82,6 @@ export function asset(amount?: number | BigInt, sym?: Symbol): Asset {
 }
 
 // (() => {
-//     const quantity = new Asset("911.7285 EOS");
+//     const quantity = new Asset("9643.4600 USD");
 //     console.log(quantity);
 // })()
