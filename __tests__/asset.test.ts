@@ -20,8 +20,8 @@ test("decimal conversions work as expected", () => {
     const amount1 = new Asset(10000, EOS);
     expect(asset_to_number(amount1)).toBe(1.0000);
 
-    const amount2 = new Asset('1.0000 EOS');
-    expect(asset_to_number(amount2)).toBe(1.0000);
+    const amount2 = new Asset('911.7285 EOS');
+    expect(asset_to_number(amount2)).toBe(911.7285);
 
     const amount3 = new Asset(100000000, BTC);
     expect(asset_to_number(amount3)).toBe(1.00000000);
