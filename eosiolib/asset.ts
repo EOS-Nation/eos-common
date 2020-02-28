@@ -77,7 +77,7 @@ export class Asset {
     }
 }
 
-export function asset( amount?: bigint, sym?: Symbol ): Asset {
+export function asset( amount?: string | number | bigint, sym?: Symbol ): Asset {
     return new Asset( amount, sym );
 }
 
