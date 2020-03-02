@@ -2,7 +2,8 @@
 
 import { Symbol, symbol } from "./symbol";
 import { check } from "./check";
-import { asset_to_number, number_to_bigint, isNull } from "./utils";
+import { write_decimal } from "./eosiolib";
+import { number_to_bigint, isNull } from "./utils";
 
 /**
  * Asset
@@ -34,7 +35,13 @@ export class Asset {
      */
     public symbol: Symbol = symbol();
 
-    constructor(amount?: string | number | bigint, sym?: Symbol) {
+    /**
+     * Construct a new asset given the symbol name and the amount
+     *
+     * @param amount - The amount of the asset
+     * @param sym - The name of the symbol
+     */
+    constructor ( amount?: string | number | bigint, sym?: Symbol ) {
         if ( isNull(amount) && isNull(sym) ) {
             return;
         }
@@ -74,15 +81,48 @@ export class Asset {
         return this.is_amount_within_range() && this.symbol.is_valid();
     }
 
-    public to_string(): string {
-        const fixed = asset_to_number(this).toFixed(this.symbol.precision());
-        return `${fixed} ${this.symbol.code().to_string()}`;
+    /**
+     * Set the amount of the asset
+     *
+     * @param a - New amount for the asset
+     */
+    public set_amount( amount: bigint | number ): void {
+        this.amount = BigInt(amount);
+        check( this.is_amount_within_range(), "magnitude of asset amount must be less than 2^62" );
     }
+
+    /**
+     * Unary minus operator
+     *
+     * @return asset - New asset with its amount is the negative amount of this asset
+     */
+    public minus( amount: bigint | number ): Asset {
+        const r = new Asset( this.amount, this.symbol );
+        r.amount -= BigInt(amount);
+        return r;
+    }
+
+    public to_string(): string {
+        const amount = write_decimal(this.amount, this.symbol.precision(), true);
+        const symcode = this.symbol.code().to_string();
+        return `${amount} ${symcode}`;
+    }
+
 }
 
 export function asset( amount?: string | number | bigint, sym?: Symbol ): Asset {
     return new Asset( amount, sym );
 }
+
+// const asset_mask: bigint = (BigInt(1) << BigInt(62)) - BigInt(1);
+// const asset_min: bigint = -asset_mask; // -4611686018427387903
+// const asset_max: bigint = asset_mask; //  4611686018427387903
+// const sym_no_prec = symbol("SYMBOLL", 0n); // Symbol with no precision
+// const sym_prec = symbol("SYMBOLL", 63n);   // Symbol with precision
+
+// console.log( "asset_min", asset_min );
+// console.log( asset( asset_min, sym_no_prec ).to_string() )
+// .toBe( "-4611686018427387903 SYMBOLL" )
 
 // asset( asset_min - 1n, symbol() )
 
