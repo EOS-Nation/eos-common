@@ -28,6 +28,15 @@ export function number_to_bigint( num: number ): bigint {
     return BigInt( num.toFixed(0) );
 }
 
+export function isNull( value: any ): boolean {
+    return value == undefined || value == null
+}
+
+// console.log(isNull(undefined))
+// console.log(isNull(null))
+// console.log(isNull("foo"))
+// console.log(isNull(0))
+
 // (() => {
 //     const asset = number_to_asset(3.6587120707054996, new Symbol("EOS", 4));
 // })();

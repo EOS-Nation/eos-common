@@ -17,11 +17,11 @@ test("symbol_code_type_test", () => {
    expect( symbol_code("AAAAAAA").raw()).toBe( 18367622009667905n )
    expect( symbol_code("ZZZZZZZ").raw()).toBe( 25432092013386330n )
 
-  //  CHECK_ASSERT( "string is too long to be a valid symbol_code", ([]() {symbol_code{"ABCDEFGH"};}) )
-  //  CHECK_ASSERT( "only uppercase letters allowed in symbol_code string", ([]() {symbol_code{"a"};}) )
-  //  CHECK_ASSERT( "only uppercase letters allowed in symbol_code string", ([]() {symbol_code{"z"};}) )
-  //  CHECK_ASSERT( "only uppercase letters allowed in symbol_code string", ([]() {symbol_code{"@"};}) )
-  //  CHECK_ASSERT( "only uppercase letters allowed in symbol_code string", ([]() {symbol_code{"["};}) )
+   expect( () => symbol_code("ABCDEFGH")).toThrow("string is too long to be a valid symbol_code");
+   expect( () => symbol_code("a")).toThrow("only uppercase letters allowed in symbol_code string");
+   expect( () => symbol_code("z")).toThrow("only uppercase letters allowed in symbol_code string");
+   expect( () => symbol_code("@")).toThrow("only uppercase letters allowed in symbol_code string");
+   expect( () => symbol_code("[")).toThrow("only uppercase letters allowed in symbol_code string");
 
    // ------------------------------
    // constexpr bool is_valid()const

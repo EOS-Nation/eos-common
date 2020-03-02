@@ -1,8 +1,8 @@
 // https://github.com/EOSIO/eosio.cdt/blob/master/libraries/eosiolib/asset.hpp
 
-import { Symbol } from "./symbol";
+import { Symbol, symbol } from "./symbol";
 import { check } from "./check";
-import { asset_to_number, number_to_bigint } from "./utils";
+import { asset_to_number, number_to_bigint, isNull } from "./utils";
 
 /**
  * Asset
@@ -22,7 +22,7 @@ export class Asset {
     /**
      * {constexpr int64_t} Maximum amount possible for this asset. It's capped to 2^62 - 1
      */
-    public static max_amount = BigInt(2 ** 62 - 1);
+    public static max_amount = (BigInt(1) << BigInt(62)) - BigInt(1);
 
     /**
      * {int64_t} The amount of the asset
@@ -32,10 +32,13 @@ export class Asset {
     /**
      * {symbol} The symbol name of the asset
      */
-    public symbol: Symbol;
+    public symbol: Symbol = symbol();
 
     constructor(amount?: string | number | bigint, sym?: Symbol) {
-        if ( typeof amount == "string") {
+        if ( isNull(amount) && isNull(sym) ) {
+            return;
+        }
+        else if ( typeof amount == "string") {
             const [amount_str, symbol_str] = amount.split(" ");
             const precision = (amount_str.split(".")[1] || []).length;
             this.amount = number_to_bigint( Number(amount_str) * Math.pow(10, precision));
@@ -80,6 +83,8 @@ export class Asset {
 export function asset( amount?: string | number | bigint, sym?: Symbol ): Asset {
     return new Asset( amount, sym );
 }
+
+// asset( asset_min - 1n, symbol() )
 
 // (() => {
 //     const quantity = new Asset(9643, new Symbol("USD", 4));

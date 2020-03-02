@@ -1,5 +1,6 @@
 import { check } from "./check";
 import { SymbolCode } from "./symbol_code";
+import { isNull } from "./utils";
 
 // https://github.com/EOSIO/eosio.cdt/blob/master/libraries/eosiolib/symbol.hpp
 
@@ -19,19 +20,24 @@ export class Symbol {
      * sym.code() //=> "EOS"
      * sym.precision //=> 4
      */
-    constructor(sc: string | SymbolCode | number | bigint, precision: number | bigint) {
-        if ( sc != undefined ) check( precision != undefined, "[precision] is required");
-
-        if (typeof sc == "string" && precision) {
-            const symcode = new SymbolCode(sc).raw();
-            this.value = BigInt(symcode) << BigInt(8) | BigInt(precision);
+    constructor(sc?: string | SymbolCode | number | bigint, precision?: number | bigint) {
+        if ( isNull(sc) && isNull( precision )) {
+            this.value = BigInt(0);
         }
         else if (typeof sc == "number" || typeof sc == "bigint") {
             this.value = BigInt(sc);
         }
+        else if (typeof sc == "string") {
+            check( !isNull(precision), "[precision] is required");
+            const symcode = new SymbolCode(sc).raw();
+            this.value = BigInt(symcode) << BigInt(8) | BigInt(precision);
+        }
         else if (typeof sc == typeof SymbolCode) {
+            check( !isNull(precision), "[precision] is required");
             const symcode: any = sc;
             this.value = BigInt(symcode.raw()) << BigInt(8) | BigInt(precision);
+        } else {
+            check( false, "invalid symbol parameters");
         }
     }
 
@@ -99,7 +105,7 @@ export class Symbol {
     }
 }
 
-export function symbol( sc: number | string | SymbolCode, precision: number | bigint ): Symbol {
+export function symbol( sc?: string | SymbolCode | number | bigint, precision?: number | bigint ): Symbol {
     return new Symbol( sc, precision );
 }
 
