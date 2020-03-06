@@ -20,19 +20,19 @@ export class Symbol {
      * sym.code() //=> "EOS"
      * sym.precision //=> 4
      */
-    constructor(sc?: string | SymbolCode | number | bigint, precision?: number | bigint) {
+    constructor(sc?: string | Symbol | SymbolCode | number | bigint, precision?: number | bigint) {
         if ( isNull(sc) && isNull( precision )) {
             this.value = BigInt(0);
         }
-        else if (typeof sc == "number" || typeof sc == "bigint") {
+        else if ( typeof sc == "number" || typeof sc == "bigint" ) {
             this.value = BigInt(sc);
         }
-        else if (typeof sc == "string") {
+        else if ( typeof sc == "string" ) {
             check( !isNull(precision), "[precision] is required");
             const symcode = new SymbolCode(sc).raw();
             this.value = BigInt(symcode) << BigInt(8) | BigInt(precision);
         }
-        else if (typeof sc == typeof SymbolCode) {
+        else if ( typeof sc == "object" ) {
             check( !isNull(precision), "[precision] is required");
             const symcode: any = sc;
             this.value = BigInt(symcode.raw()) << BigInt(8) | BigInt(precision);

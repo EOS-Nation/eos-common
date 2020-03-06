@@ -1,7 +1,21 @@
 ## TO-DO
 
-- add support for `new Asset("1.0000 EOS")`
 - add test cases for `Symbol`
+
+## 2020-03-06
+
+- Add operators to `asset`
+  - max_amount
+  - plus
+  - minus
+  - times
+  - div
+  - isEqual
+  - isNotEqual
+  - isLessThan
+  - isLessThanOrEqual
+  - isGreaterThan
+  - isGreaterThanOrEqual
 
 ## 2020-02-25
 - add `symbol_code` unit tests from C++ tests

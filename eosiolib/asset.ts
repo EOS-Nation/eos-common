@@ -92,14 +92,251 @@ export class Asset {
     }
 
     /**
-     * Unary minus operator
+     * Subtraction assignment operator
      *
-     * @return asset - New asset with its amount is the negative amount of this asset
+     * @param a - Another asset to subtract this asset with
+     * @return asset& - Reference to this asset
+     * @post The amount of this asset is subtracted by the amount of asset a
      */
-    public minus( amount: bigint | number ): Asset {
-        const r = new Asset( this.amount, this.symbol );
-        r.amount -= BigInt(amount);
-        return r;
+    public minus( a: Asset | number | bigint ): Asset {
+        if ( typeof a == "number" || typeof a == "bigint") {
+            this.amount -= BigInt( a );
+        } else {
+            check( a.symbol == this.symbol, "attempt to subtract asset with different symbol" );
+            this.amount -= a.amount;
+        }
+        check( -Asset.max_amount <= this.amount, "subtraction underflow" );
+        check( this.amount <= Asset.max_amount,  "subtraction overflow" );
+        return this;
+    }
+
+    /**
+     * Addition Assignment  operator
+     *
+     * @param a - Another asset to subtract this asset with
+     * @return asset& - Reference to this asset
+     * @post The amount of this asset is added with the amount of asset a
+     */
+    public plus( a: Asset | number | bigint ): Asset {
+        if ( typeof a == "number" || typeof a == "bigint") {
+            this.amount += BigInt( a );
+        } else {
+            check( a.symbol == this.symbol, "attempt to add asset with different symbol" );
+            this.amount += a.amount;
+        }
+        check( -Asset.max_amount <= this.amount, "addition underflow" );
+        check( this.amount <= Asset.max_amount,  "addition overflow" );
+        return this;
+    }
+
+    /**
+     * Addition operator
+     *
+     * @param a - The first asset to be added
+     * @param b - The second asset to be added
+     * @return asset - New asset as the result of addition
+     */
+    public static plus( a: Asset, b: Asset ): Asset {
+        const result = new Asset(a.amount, a.symbol);
+        result.plus( b );
+        return result;
+    }
+
+    /**
+     * Subtraction operator
+     *
+     * @param a - The asset to be subtracted
+     * @param b - The asset used to subtract
+     * @return asset - New asset as the result of subtraction of a with b
+     */
+    public static minus( a: Asset, b: Asset ): Asset {
+        const result = new Asset(a.amount, a.symbol);
+        result.minus( b );
+        return result;
+    }
+
+    /**
+     * Multiplication assignment operator, with a number
+     *
+     * @details Multiplication assignment operator. Multiply the amount of this asset with a number and then assign the value to itself.
+     * @param a - The multiplier for the asset's amount
+     * @return asset - Reference to this asset
+     * @post The amount of this asset is multiplied by a
+     */
+    public times( a: number | bigint | Asset ): Asset {
+        let amount: bigint;
+        if ( typeof a == "number" || typeof a == "bigint") {
+            amount = BigInt(a)
+        } else {
+            check( a.symbol == this.symbol, "comparison of assets with different symbols is not allowed" );
+            amount = a.amount;
+        }
+        const tmp = this.amount * amount;
+        check( tmp <= Asset.max_amount, "multiplication overflow" );
+        check( tmp >= -Asset.max_amount, "multiplication underflow" );
+        this.amount = tmp;
+        return this;
+    }
+
+    /**
+     * Multiplication operator, with a number proceeding
+     *
+     * @brief Multiplication operator, with a number proceeding
+     * @param a - The asset to be multiplied
+     * @param b - The multiplier for the asset's amount
+     * @return asset - New asset as the result of multiplication
+     */
+    public static times( a: Asset, b: number | bigint | Asset ): Asset {
+        const result = new Asset(a.amount, a.symbol);
+        result.times(b);
+        return result;
+    }
+
+    /**
+     * @brief Division assignment operator, with a number
+     *
+     * @details Division assignment operator. Divide the amount of this asset with a number and then assign the value to itself.
+     * @param a - The divisor for the asset's amount
+     * @return asset - Reference to this asset
+     * @post The amount of this asset is divided by a
+     */
+    public div( a: number | bigint | Asset ): Asset {
+        let amount: bigint;
+        if ( typeof a == "number" || typeof a == "bigint") {
+            amount = BigInt(a)
+        } else {
+            check( a.symbol == this.symbol, "comparison of assets with different symbols is not allowed" );
+            amount = a.amount;
+        }
+        check( amount != BigInt(0), "divide by zero" );
+        check( !(this.amount == -Asset.max_amount && amount == BigInt(-1)), "signed division overflow" );
+        this.amount /= amount;
+        return this;
+    }
+
+    /**
+     * Division operator, with a number proceeding
+     *
+     * @param a - The asset to be divided
+     * @param b - The divisor for the asset's amount
+     * @return asset - New asset as the result of division
+     */
+    public static div( a: Asset, b: number | bigint | Asset ): Asset {
+        const result = new Asset( a.amount, a.symbol );
+        result.div(b);
+        return result;
+    }
+
+    /**
+     * Equality operator
+     *
+     * @param a - The first asset to be compared
+     * @param b - The second asset to be compared
+     * @return true - if both asset has the same amount
+     * @return false - otherwise
+     * @pre Both asset must have the same symbol
+     */
+    public static isEqual( a: Asset, b: Asset ): boolean {
+        check( a.symbol == b.symbol, "comparison of assets with different symbols is not allowed" );
+        return a.amount == b.amount;
+    }
+
+    public isEqual( a: Asset ): boolean {
+        check( a.symbol == this.symbol, "comparison of assets with different symbols is not allowed" );
+        return a.amount == this.amount;
+    }
+
+    /**
+     * Inequality operator
+     *
+     * @param a - The first asset to be compared
+     * @param b - The second asset to be compared
+     * @return true - if both asset doesn't have the same amount
+     * @return false - otherwise
+     * @pre Both asset must have the same symbol
+     */
+    public static isNotEqual( a: Asset, b: Asset ): boolean {
+        return !( a == b);
+    }
+
+    public isNotEqual( a: Asset ): boolean {
+        return !( a == this );
+    }
+
+    /**
+     * Less than operator
+     *
+     * @param a - The first asset to be compared
+     * @param b - The second asset to be compared
+     * @return true - if the first asset's amount is less than the second asset amount
+     * @return false - otherwise
+     * @pre Both asset must have the same symbol
+     */
+    public static isLessThan( a: Asset, b: Asset ): boolean {
+        check( a.symbol == b.symbol, "comparison of assets with different symbols is not allowed" );
+        return a.amount < b.amount;
+    }
+
+    public isLessThan( a: Asset ): boolean {
+        check( a.symbol == this.symbol, "comparison of assets with different symbols is not allowed" );
+        return this.amount < a.amount;
+    }
+
+    /**
+     * Less or equal to operator
+     *
+     * @param a - The first asset to be compared
+     * @param b - The second asset to be compared
+     * @return true - if the first asset's amount is less or equal to the second asset amount
+     * @return false - otherwise
+     * @pre Both asset must have the same symbol
+     */
+    public static isLessThanOrEqual( a: Asset, b: Asset ): boolean {
+        check( a.symbol == b.symbol, "comparison of assets with different symbols is not allowed" );
+        return a.amount <= b.amount;
+    }
+
+    public isLessThanOrEqual( a: Asset ): boolean {
+        check( a.symbol == this.symbol, "comparison of assets with different symbols is not allowed" );
+        return this.amount <= a.amount;
+    }
+
+    /**
+     * Greater than operator
+     *
+     * @param a - The first asset to be compared
+     * @param b - The second asset to be compared
+     * @return true - if the first asset's amount is greater than the second asset amount
+     * @return false - otherwise
+     * @pre Both asset must have the same symbol
+     */
+    public static isGreaterThan( a: Asset, b: Asset ): boolean {
+        check( a.symbol == b.symbol, "comparison of assets with different symbols is not allowed" );
+        return a.amount > b.amount;
+    }
+
+    public isGreaterThan( a: Asset ): boolean {
+        check( a.symbol == this.symbol, "comparison of assets with different symbols is not allowed" );
+        return this.amount > a.amount;
+    }
+
+    /**
+     * Greater or equal to operator
+     *
+     * @param a - The first asset to be compared
+     * @param b - The second asset to be compared
+     * @return true - if the first asset's amount is greater or equal to the second asset amount
+     * @return false - otherwise
+     * @pre Both asset must have the same symbol
+     */
+    public static isGreaterThanOrEqual( a: Asset, b: Asset ): boolean {
+        check( a.symbol == b.symbol, "comparison of assets with different symbols is not allowed" );
+        return a.amount >= b.amount;
+    }
+
+    public isGreaterThanOrEqual( a: Asset ): boolean {
+        check( a.symbol == this.symbol, "comparison of assets with different symbols is not allowed" );
+        return this.amount >= a.amount;
     }
 
     public to_string(): string {
@@ -107,7 +344,6 @@ export class Asset {
         const symcode = this.symbol.code().to_string();
         return `${amount} ${symcode}`;
     }
-
 }
 
 export function asset( amount?: string | number | bigint, sym?: Symbol ): Asset {
@@ -125,6 +361,8 @@ export function asset( amount?: string | number | bigint, sym?: Symbol ): Asset 
 // .toBe( "-4611686018427387903 SYMBOLL" )
 
 // asset( asset_min - 1n, symbol() )
+
+// console.log( asset( asset_min, sym_no_prec ).minus( 1 ).amount );
 
 // (() => {
 //     const quantity = new Asset(9643, new Symbol("USD", 4));
