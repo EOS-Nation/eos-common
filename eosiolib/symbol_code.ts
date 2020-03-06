@@ -72,7 +72,7 @@ export class SymbolCode {
 
     public is_valid(): boolean {
         let sym = BigInt(this.value);
-        for ( let i= BigInt(0); i < 7; i++ ) {
+        for ( let i = BigInt(0); i < 7; i++ ) {
            const c = String.fromCharCode(Number(BigInt(sym) & BigInt(0xFF)));
            if ( !("A" <= c && c <= "Z") ) return false;
            sym >>= BigInt(8);
@@ -118,10 +118,3 @@ export class SymbolCode {
 export function symbol_code( str?: string | number | bigint ): SymbolCode {
     return new SymbolCode(str);
 }
-
-// (() => {
-//     console.log(symbol_code("EOSDT").to_string());
-//     console.log(symbol_code("EBTC").to_string());
-//     console.log(symbol_code("USDE").to_string());
-//     console.log(symbol_code("USDT").to_string());
-// })();

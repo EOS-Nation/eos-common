@@ -349,22 +349,3 @@ export class Asset {
 export function asset( amount?: string | number | bigint, sym?: Symbol ): Asset {
     return new Asset( amount, sym );
 }
-
-// const asset_mask: bigint = (BigInt(1) << BigInt(62)) - BigInt(1);
-// const asset_min: bigint = -asset_mask; // -4611686018427387903
-// const asset_max: bigint = asset_mask; //  4611686018427387903
-// const sym_no_prec = symbol("SYMBOLL", 0n); // Symbol with no precision
-// const sym_prec = symbol("SYMBOLL", 63n);   // Symbol with precision
-
-// console.log( "asset_min", asset_min );
-// console.log( asset( asset_min, sym_no_prec ).to_string() )
-// .toBe( "-4611686018427387903 SYMBOLL" )
-
-// asset( asset_min - 1n, symbol() )
-
-// console.log( asset( asset_min, sym_no_prec ).minus( 1 ).amount );
-
-// (() => {
-//     const quantity = new Asset(9643, new Symbol("USD", 4));
-//     console.log(quantity);
-// })()

@@ -52,14 +52,14 @@ export class Symbol {
      * This symbol's precision
      */
     public precision(): number {
-        return Number(BigInt(this.value) & BigInt(0x00000000000000FF));
+        return Number(this.value & BigInt(0x00000000000000FF));
     }
 
     /**
      * Returns representation of symbol name
      */
     public code(): SymbolCode {
-        return new SymbolCode(BigInt(this.value) >> BigInt(8));
+        return new SymbolCode(this.value >> BigInt(8) );
     }
 
     /**
@@ -69,61 +69,55 @@ export class Symbol {
         return this.value;
     }
 
-    public isTruthy(): boolean {
+    /**
+     * Explicit cast to bool of the symbol
+     *
+     * @return Returns true if the symbol is set to the default value of 0 else true.
+     */
+    public bool(): boolean {
         return this.value != BigInt(0);
-    }
-
-    public isFalsy(): boolean {
-        return this.value == BigInt(0);
     }
 
     /**
      * Equivalency operator. Returns true if a == b (are the same)
      *
-     * @return boolean - true if both provided symbols are the same
+     * @return boolean - true if both provided symbol_codes are the same
      */
-    public isEqual(comparison: Symbol): boolean {
-        return comparison.value === this.value;
+    public static isEqual( a: SymbolCode, b: SymbolCode ): boolean {
+        return a.raw() == b.raw();
+    }
+
+    public isEqual( a: SymbolCode ): boolean {
+        return a.raw() == this.raw();
     }
 
     /**
      * Inverted equivalency operator. Returns true if a != b (are different)
      *
-     * @return boolean - true if both provided symbols are not the same
+     * @return boolean - true if both provided symbol_codes are not the same
      */
-    public isNotEqual(comparison: Symbol): boolean {
-        return comparison.value !== this.value;
+    public static isNotEqual( a: SymbolCode, b: SymbolCode ): boolean {
+        return a.raw() != b.raw();
+    }
+
+    public isNotEqual( a: SymbolCode ): boolean {
+        return a.raw() != this.raw();
     }
 
     /**
      * Less than operator. Returns true if a < b.
      * @brief Less than operator
-     * @return boolean - true if symbol `a` is less than `b`
+     * @return boolean - true if symbol_code `a` is less than `b`
      */
-    public isLessThan(comparison: Symbol): boolean {
-        return this.value < comparison.value;
+    public static isLessThan( a: SymbolCode, b: SymbolCode ): boolean {
+        return a.raw() < b.raw();
+    }
+
+    public isLessThan( a: SymbolCode ): boolean {
+        return this.raw() < a.raw();
     }
 }
 
 export function symbol( sc?: string | SymbolCode | number | bigint, precision?: number | bigint ): Symbol {
     return new Symbol( sc, precision );
 }
-
-// (() => {
-//     console.log("EOSDT", "=>", symbol("EOSDT", 8).code().to_string());
-//     console.log("EBTC", "=>", symbol("EBTC", 8).code().to_string());
-//     console.log("USDE", "=>", symbol("USDE", 4).code().to_string());
-//     console.log("USDT", "=>", symbol("USDT", 4).code().to_string());
-// })();
-
-// (() => {
-//     console.log(typeof new SymbolCode)
-//     console.log(typeof new SymbolCode("EOS"))
-//     console.log(symbol("A", 4).raw());
-//     console.log(symbol("AB", 4).raw());
-//     console.log(symbol("ABC", 4).raw());
-//     console.log(symbol("ABCD", 4).raw());
-//     console.log(symbol("ABCDE", 4).raw());
-//     console.log(symbol("ABCDEF", 4).raw());
-//     console.log(symbol("ABCDEFG", 4).raw());
-// })();
