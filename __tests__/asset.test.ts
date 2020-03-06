@@ -148,6 +148,9 @@ test("asset_type_test", () => {
     expect( asset( 0, sym_no_prec ).plus( asset( 0, sym_no_prec) ) ).toStrictEqual( asset( 0, sym_no_prec ) );
     expect( asset( 1, sym_no_prec ).plus( asset( -1, sym_no_prec) ) ).toStrictEqual( asset( 0, sym_no_prec ) );
 
+    expect( asset( "0.0000 A" ).plus( asset( "0.0000 A") ) ).toStrictEqual( asset( "0.0000 A" ) );
+    expect( asset( "1.0000 A" ).plus( asset( "-1.0000 A") ) ).toStrictEqual( asset( "0.0000 A" ) );
+
     expect(() => {
         asset( 1, sym_no_prec ).plus( asset( 1, symbol( "LLOBMYS", 0 )) )
     }).toThrow("attempt to add asset with different symbol");

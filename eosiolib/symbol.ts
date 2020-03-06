@@ -83,11 +83,11 @@ export class Symbol {
      *
      * @return boolean - true if both provided symbol_codes are the same
      */
-    public static isEqual( a: SymbolCode, b: SymbolCode ): boolean {
+    public static isEqual( a: Symbol, b: Symbol ): boolean {
         return a.raw() == b.raw();
     }
 
-    public isEqual( a: SymbolCode ): boolean {
+    public isEqual( a: Symbol ): boolean {
         return a.raw() == this.raw();
     }
 
@@ -96,11 +96,11 @@ export class Symbol {
      *
      * @return boolean - true if both provided symbol_codes are not the same
      */
-    public static isNotEqual( a: SymbolCode, b: SymbolCode ): boolean {
+    public static isNotEqual( a: Symbol, b: Symbol ): boolean {
         return a.raw() != b.raw();
     }
 
-    public isNotEqual( a: SymbolCode ): boolean {
+    public isNotEqual( a: Symbol ): boolean {
         return a.raw() != this.raw();
     }
 
@@ -109,11 +109,11 @@ export class Symbol {
      * @brief Less than operator
      * @return boolean - true if symbol_code `a` is less than `b`
      */
-    public static isLessThan( a: SymbolCode, b: SymbolCode ): boolean {
+    public static isLessThan( a: Symbol, b: Symbol ): boolean {
         return a.raw() < b.raw();
     }
 
-    public isLessThan( a: SymbolCode ): boolean {
+    public isLessThan( a: Symbol ): boolean {
         return this.raw() < a.raw();
     }
 }

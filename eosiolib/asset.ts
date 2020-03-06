@@ -102,7 +102,7 @@ export class Asset {
         if ( typeof a == "number" || typeof a == "bigint") {
             this.amount -= BigInt( a );
         } else {
-            check( a.symbol == this.symbol, "attempt to subtract asset with different symbol" );
+            check( a.symbol.isEqual( this.symbol ), "attempt to subtract asset with different symbol" );
             this.amount -= a.amount;
         }
         check( -Asset.max_amount <= this.amount, "subtraction underflow" );
@@ -121,7 +121,7 @@ export class Asset {
         if ( typeof a == "number" || typeof a == "bigint") {
             this.amount += BigInt( a );
         } else {
-            check( a.symbol == this.symbol, "attempt to add asset with different symbol" );
+            check( a.symbol.isEqual( this.symbol ), "attempt to add asset with different symbol" );
             this.amount += a.amount;
         }
         check( -Asset.max_amount <= this.amount, "addition underflow" );
@@ -168,7 +168,7 @@ export class Asset {
         if ( typeof a == "number" || typeof a == "bigint") {
             amount = BigInt(a)
         } else {
-            check( a.symbol == this.symbol, "comparison of assets with different symbols is not allowed" );
+            check( a.symbol.isEqual( this.symbol ), "comparison of assets with different symbols is not allowed" );
             amount = a.amount;
         }
         const tmp = this.amount * amount;
@@ -205,7 +205,7 @@ export class Asset {
         if ( typeof a == "number" || typeof a == "bigint") {
             amount = BigInt(a)
         } else {
-            check( a.symbol == this.symbol, "comparison of assets with different symbols is not allowed" );
+            check( a.symbol.isEqual( this.symbol ), "comparison of assets with different symbols is not allowed" );
             amount = a.amount;
         }
         check( amount != BigInt(0), "divide by zero" );
@@ -237,12 +237,12 @@ export class Asset {
      * @pre Both asset must have the same symbol
      */
     public static isEqual( a: Asset, b: Asset ): boolean {
-        check( a.symbol == b.symbol, "comparison of assets with different symbols is not allowed" );
+        check( a.symbol.isEqual( b.symbol ), "comparison of assets with different symbols is not allowed" );
         return a.amount == b.amount;
     }
 
     public isEqual( a: Asset ): boolean {
-        check( a.symbol == this.symbol, "comparison of assets with different symbols is not allowed" );
+        check( a.symbol.isEqual( this.symbol ), "comparison of assets with different symbols is not allowed" );
         return a.amount == this.amount;
     }
 
@@ -273,12 +273,12 @@ export class Asset {
      * @pre Both asset must have the same symbol
      */
     public static isLessThan( a: Asset, b: Asset ): boolean {
-        check( a.symbol == b.symbol, "comparison of assets with different symbols is not allowed" );
+        check( a.symbol.isEqual( b.symbol ), "comparison of assets with different symbols is not allowed" );
         return a.amount < b.amount;
     }
 
     public isLessThan( a: Asset ): boolean {
-        check( a.symbol == this.symbol, "comparison of assets with different symbols is not allowed" );
+        check( a.symbol.isEqual( this.symbol ), "comparison of assets with different symbols is not allowed" );
         return this.amount < a.amount;
     }
 
@@ -292,12 +292,12 @@ export class Asset {
      * @pre Both asset must have the same symbol
      */
     public static isLessThanOrEqual( a: Asset, b: Asset ): boolean {
-        check( a.symbol == b.symbol, "comparison of assets with different symbols is not allowed" );
+        check( a.symbol.isEqual( b.symbol ), "comparison of assets with different symbols is not allowed" );
         return a.amount <= b.amount;
     }
 
     public isLessThanOrEqual( a: Asset ): boolean {
-        check( a.symbol == this.symbol, "comparison of assets with different symbols is not allowed" );
+        check( a.symbol.isEqual( this.symbol ), "comparison of assets with different symbols is not allowed" );
         return this.amount <= a.amount;
     }
 
@@ -311,12 +311,12 @@ export class Asset {
      * @pre Both asset must have the same symbol
      */
     public static isGreaterThan( a: Asset, b: Asset ): boolean {
-        check( a.symbol == b.symbol, "comparison of assets with different symbols is not allowed" );
+        check( a.symbol.isEqual( b.symbol ), "comparison of assets with different symbols is not allowed" );
         return a.amount > b.amount;
     }
 
     public isGreaterThan( a: Asset ): boolean {
-        check( a.symbol == this.symbol, "comparison of assets with different symbols is not allowed" );
+        check( a.symbol.isEqual( this.symbol ), "comparison of assets with different symbols is not allowed" );
         return this.amount > a.amount;
     }
 
@@ -330,12 +330,12 @@ export class Asset {
      * @pre Both asset must have the same symbol
      */
     public static isGreaterThanOrEqual( a: Asset, b: Asset ): boolean {
-        check( a.symbol == b.symbol, "comparison of assets with different symbols is not allowed" );
+        check( a.symbol.isEqual( b.symbol ), "comparison of assets with different symbols is not allowed" );
         return a.amount >= b.amount;
     }
 
     public isGreaterThanOrEqual( a: Asset ): boolean {
-        check( a.symbol == this.symbol, "comparison of assets with different symbols is not allowed" );
+        check( a.symbol.isEqual( this.symbol ), "comparison of assets with different symbols is not allowed" );
         return this.amount >= a.amount;
     }
 
