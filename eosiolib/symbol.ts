@@ -20,7 +20,7 @@ export class Symbol {
      * sym.code() //=> "EOS"
      * sym.precision //=> 4
      */
-    constructor(sc?: string | Symbol | SymbolCode | number | bigint, precision?: number | bigint) {
+    constructor ( sc?: string | Symbol | SymbolCode | number | bigint, precision?: number | bigint ) {
         if ( isNull(sc) && isNull( precision )) {
             this.value = BigInt(0);
         }
@@ -76,6 +76,16 @@ export class Symbol {
      */
     public bool(): boolean {
         return this.value != BigInt(0);
+    }
+
+    /**
+     * %Print the symbol
+     */
+    public print( show_precision = true ): void {
+        if ( show_precision ) {
+            process.stdout.write( String( this.precision() ) + "," );
+        }
+        process.stdout.write( this.code().to_string() );
     }
 
     /**

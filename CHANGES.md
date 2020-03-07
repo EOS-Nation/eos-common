@@ -4,7 +4,8 @@
 
 ## 2020-03-07
 
-- add `name` Class
+- added `name` Class
+- added `extended_symbol` Class
 
 ## 2020-03-06
 
