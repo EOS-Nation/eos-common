@@ -1,5 +1,24 @@
 import { check } from "./check";
 
+/**
+ *  Converts a %name Base32 symbol into its corresponding value
+ *
+ *  @param c - Character to be converted
+ *  @return constexpr char - Converted value
+ */
+function char_to_value( c: string ): bigint {
+    if ( c == '.')
+        return BigInt(0);
+    else if( c >= '1' && c <= '5' )
+        return BigInt(c.charCodeAt(0) - '1'.charCodeAt(0)) + BigInt(1);
+    else if( c >= 'a' && c <= 'z' )
+        return BigInt(c.charCodeAt(0) - 'a'.charCodeAt(0)) + BigInt(6);
+    else
+        check( false, "character is not in allowed character set for names" );
+
+    return BigInt(0); // control flow will never reach here; just added to suppress warning
+}
+
 function str_to_name( str?: string | number | bigint ): bigint {
     let value = BigInt(0);
     if ( typeof str == "number" || typeof str == "bigint" ) {
@@ -11,11 +30,11 @@ function str_to_name( str?: string | number | bigint ): bigint {
     const n = BigInt(Math.min(str.length, 12 ));
     for( let i = 0; i < n; ++i ) {
        value <<= BigInt( 5 );
-       value |= BigInt( str[i].charCodeAt(0) );
+       value |= char_to_value( str[i] );
     }
     value <<= ( BigInt(4) + BigInt(5) * (BigInt(12) - n) );
     if ( str.length == 13 ) {
-       const v = BigInt(str[12].charCodeAt(0));
+       const v = char_to_value(str[12]);
        if ( v > 0x0Fn ) {
           check(false, "thirteenth character in name cannot be a letter that comes after j");
        }
@@ -110,6 +129,6 @@ export function name( str?: string | number | bigint ): Name {
     return new Name(str);
 }
 
-const a = new Name("eosio")
+// const a = new Name("eosio")
 
-console.log(a)
+// console.log(a)
