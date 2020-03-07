@@ -1,34 +1,5 @@
 import { check } from "./check";
 
-function str_to_symbol_code( str: string ): bigint {
-    let value = BigInt(0);
-    if( str.length > 7 ) {
-        check( false, "string is too long to be a valid symbol_code" );
-    }
-    for( const itr of str.split("").reverse().join("") ) {
-        if( itr < 'A' || itr > 'Z') {
-            check( false, "only uppercase letters allowed in symbol_code string" );
-        }
-        value <<= BigInt(8);
-        value |= BigInt(itr.charCodeAt(0));
-    }
-    return BigInt(value);
-}
-
-function write_as_string( value: bigint ): string {
-    const mask = BigInt(0x00000000000000FF);
-    if (value == BigInt(0)) return '';
-
-    let begin = "";
-    let v = BigInt(value);
-    for( let i = 0; i < 7; ++i, v >>= BigInt(8) ) {
-        if ( v == BigInt(0) ) return begin;
-        begin += String.fromCharCode(Number(v & mask));
-    }
-
-    return begin;
-}
-
 /**
  * @class Stores the symbol code
  * @brief Stores the symbol code as a uint64_t value
@@ -38,9 +9,21 @@ export class SymbolCode {
 
     // constructor()
     constructor( str?: string | number | bigint ) {
-        if ( str ) {
-            if (typeof str == "string") this.value = str_to_symbol_code(str);
-            else if (typeof str == "number" || typeof str == 'bigint') this.value = BigInt(str);
+        if (typeof str == "number" || typeof str == 'bigint') {
+            this.value = BigInt(str);
+        } else if ( str ) {
+            let value = BigInt(0);
+            if ( str.length > 7 ) {
+                check( false, "string is too long to be a valid symbol_code" );
+            }
+            for ( const itr of str.split("").reverse().join("") ) {
+                if ( itr < 'A' || itr > 'Z') {
+                    check( false, "only uppercase letters allowed in symbol_code string" );
+                }
+                value <<= BigInt(8);
+                value |= BigInt(itr.charCodeAt(0));
+            }
+            this.value = value;
         }
     }
 
@@ -66,8 +49,18 @@ export class SymbolCode {
         return len;
      }
 
-    public to_string(): string {
-        return write_as_string(BigInt(this.value));
+    public to_string(): string  {
+        const mask = BigInt(0x00000000000000FF);
+        if (this.value == BigInt(0)) return '';
+
+        let begin = "";
+        let v = BigInt(this.value);
+        for( let i = 0; i < 7; ++i, v >>= BigInt(8) ) {
+            if ( v == BigInt(0) ) return begin;
+            begin += String.fromCharCode(Number(v & mask));
+        }
+
+        return begin;
     }
 
     public is_valid(): boolean {

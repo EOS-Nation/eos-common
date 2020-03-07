@@ -1,49 +1,6 @@
 import { check } from "./check";
 
 /**
- *  Converts a %name Base32 symbol into its corresponding value
- *
- *  @param c - Character to be converted
- *  @return constexpr char - Converted value
- */
-function char_to_value( c: string ): bigint {
-    if ( c == '.')
-        return BigInt(0);
-    else if( c >= '1' && c <= '5' )
-        return BigInt(c.charCodeAt(0) - '1'.charCodeAt(0)) + BigInt(1);
-    else if( c >= 'a' && c <= 'z' )
-        return BigInt(c.charCodeAt(0) - 'a'.charCodeAt(0)) + BigInt(6);
-    else
-        check( false, "character is not in allowed character set for names" );
-
-    return BigInt(0); // control flow will never reach here; just added to suppress warning
-}
-
-function str_to_name( str?: string | number | bigint ): bigint {
-    let value = BigInt(0);
-    if ( typeof str == "number" || typeof str == "bigint" ) {
-        return BigInt( str );
-    }
-    else if ( str && str.length > 13 ) check( false, "string is too long to be a valid name" );
-    else if ( str == undefined || str == null || str.length == 0 ) return value;
-
-    const n = BigInt(Math.min(str.length, 12 ));
-    for( let i = 0; i < n; ++i ) {
-       value <<= BigInt( 5 );
-       value |= char_to_value( str[i] );
-    }
-    value <<= ( BigInt(4) + BigInt(5) * (BigInt(12) - n) );
-    if ( str.length == 13 ) {
-       const v = char_to_value(str[12]);
-       if ( v > 0x0Fn ) {
-          check(false, "thirteenth character in name cannot be a letter that comes after j");
-       }
-       value |= v;
-    }
-    return value;
-}
-
-/**
  * @class Stores the name
  * @brief Stores the name as a uint64_t value
  */
@@ -51,84 +8,182 @@ export class Name {
     readonly value = BigInt(0);
 
     constructor( str?: string | number | bigint ) {
-        this.value = str_to_name( str );
-     }
+        let value = BigInt(0);
+        if ( typeof str == "number" || typeof str == "bigint" ) {
+            this.value = BigInt( str );
+            return;
+        }
+        else if ( str && str.length > 13 ) check( false, "string is too long to be a valid name" );
+        else if ( str == undefined || str == null || str.length == 0 ) return;
 
+        const n = Math.min(str.length, 12 );
+        for( let i = 0; i < n; ++i ) {
+           value <<= BigInt( 5 );
+           value |= BigInt(Name.char_to_value( str[i] ));
+        }
+        value <<= BigInt( 4 + 5 * (12 - n) );
+        if ( str.length == 13 ) {
+           const v = Name.char_to_value(str[12]);
+           if ( v > 0x0F ) {
+              check(false, "thirteenth character in name cannot be a letter that comes after j");
+           }
+           value |= BigInt(v);
+        }
+        this.value = value;
+    }
+
+    /**
+     *  Converts a %name Base32 symbol into its corresponding value
+     *
+     *  @param c - Character to be converted
+     *  @return constexpr char - Converted value
+     */
+    public static char_to_value( c: string ): number {
+        if ( c == '.')
+            return 0;
+        else if( c >= '1' && c <= '5' )
+            return c.charCodeAt(0) - '1'.charCodeAt(0) + 1;
+        else if( c >= 'a' && c <= 'z' )
+            return c.charCodeAt(0) - 'a'.charCodeAt(0) + 6;
+        else
+            check( false, "character is not in allowed character set for names" );
+
+        return 0; // control flow will never reach here; just added to suppress warning
+    }
+
+    /**
+     *  Returns the length of the %name
+     */
+    public length(): number {
+       const mask = BigInt(0xF800000000000000);
+
+        if ( this.value == BigInt(0) )
+           return 0;
+
+        let l = 0;
+        let i = 0;
+        for ( let v = this.value; i < 13; ++i, v <<= BigInt(5) ) {
+           if ( (v & mask) > 0 ) {
+              l = i;
+           }
+        }
+
+        return l + 1;
+    }
+
+
+    /**
+     *  Returns the suffix of the %name
+     */
+    public suffix(): Name {
+        let remaining_bits_after_last_actual_dot = BigInt(0);
+        let tmp = BigInt(0);
+        for( let remaining_bits = BigInt(59); remaining_bits >= BigInt(4); remaining_bits -= BigInt(5) ) { // Note: remaining_bits must remain signed integer
+            // Get characters one-by-one in name in order from left to right (not including the 13th character)
+            const c = (this.value >> remaining_bits) & BigInt(0x1F);
+            if( !c ) { // if this character is a dot
+                tmp = remaining_bits;
+            } else { // if this character is not a dot
+                remaining_bits_after_last_actual_dot = tmp;
+            }
+        }
+
+        const thirteenth_character = this.value & BigInt(0x0F);
+        if ( thirteenth_character ) { // if 13th character is not a dot
+            remaining_bits_after_last_actual_dot = tmp;
+        }
+
+        if ( remaining_bits_after_last_actual_dot == BigInt(0) ) // there is no actual dot in the %name other than potentially leading dots
+            return new Name(this.value);
+
+        // At this point remaining_bits_after_last_actual_dot has to be within the range of 4 to 59 (and restricted to increments of 5).
+
+        // Mask for remaining bits corresponding to characters after last actual dot, except for 4 least significant bits (corresponds to 13th character).
+        const mask = (BigInt(1) << remaining_bits_after_last_actual_dot) - BigInt(16);
+        const shift = BigInt(64) - remaining_bits_after_last_actual_dot;
+
+        return new Name( ((this.value & mask) << shift) + (thirteenth_character << (shift - BigInt(1))) );
+    }
+
+    /**
+     * Returns uint64_t repreresentation of the name
+     */
     public raw(): bigint {
         return this.value;
     }
 
-    // public isTruthy(): boolean {
-    //     return this.value != BigInt(0);
-    // }
+    /**
+     * Explicit cast to bool of the name
+     *
+     * @return Returns true if the name is set to the default value of 0 else true.
+     */
+    public bool(): boolean {
+        return this.value != BigInt(0);
+    }
 
-    // public isFalsy(): boolean {
-    //     return this.value == BigInt(0);
-    // }
+    /**
+     *  Returns the name as a string.
+     *
+     *  @brief Returns the name value as a string by calling write_as_string() and returning the buffer produced by write_as_string()
+     */
+    public to_string(): string{
+        const charmap = ".12345abcdefghijklmnopqrstuvwxyz";
+        const mask = BigInt(0xF800000000000000);
 
-    // public length(): number {
-    //     let sym = BigInt(this.value);
-    //     let len = 0;
-    //     while (Number(sym) & 0xFF && len <= 7) {
-    //        len++;
-    //        sym >>= BigInt(8);
-    //     }
-    //     return len;
-    //  }
+        let begin = "";
+        let v = this.value;
+        const actual_end = this.length();
+        for( let i = 0; i < 13; ++i, v <<= BigInt(5) ) {
+            if ( v == BigInt(0) ) return begin;
+            if ( i >= actual_end ) return begin;
 
-    // public to_string(): string {
-    //     return write_as_string(BigInt(this.value));
-    // }
+            const indx = (v & mask) >> (i == 12 ? BigInt(60) : BigInt(59));
+            begin += charmap[Number(indx)];
+        }
 
-    // public is_valid(): boolean {
-    //     let sym = BigInt(this.value);
-    //     for ( let i = BigInt(0); i < 7; i++ ) {
-    //        const c = String.fromCharCode(Number(BigInt(sym) & BigInt(0xFF)));
-    //        if ( !("A" <= c && c <= "Z") ) return false;
-    //        sym >>= BigInt(8);
-    //        if ( !(BigInt(sym) & BigInt(0xFF)) ) {
-    //           do {
-    //              sym >>= BigInt(8);
-    //              if ( (BigInt(sym) & BigInt(0xFF)) ) return false;
-    //              i++;
-    //           } while( i < 7 );
-    //        }
-    //     }
-    //     return true;
-    // }
+        return begin;
+    }
 
-    // /**
-    //  * Equivalency operator. Returns true if a == b (are the same)
-    //  *
-    //  * @return boolean - true if both provided symbol_codes are the same
-    //  */
-    // public isEqual(comparison: SymbolCode): boolean {
-    //     return comparison.value === this.value;
-    // }
+    /**
+     * Equivalency operator. Returns true if a == b (are the same)
+     *
+     * @return boolean - true if both provided name are the same
+     */
+    public static isEqual( a: Name, b: Name ): boolean {
+        return a.raw() == b.raw();
+    }
 
-    // /**
-    //  * Inverted equivalency operator. Returns true if a != b (are different)
-    //  *
-    //  * @return boolean - true if both provided symbol_codes are not the same
-    //  */
-    // public isNotEqual(comparison: SymbolCode): boolean {
-    //     return comparison.value !== this.value;
-    // }
+    public isEqual( a: Name ): boolean {
+        return a.raw() == this.raw();
+    }
 
-    // /**
-    //  * Less than operator. Returns true if a < b.
-    //  * @brief Less than operator
-    //  * @return boolean - true if symbol_code `a` is less than `b`
-    //  */
-    // public isLessThan(comparison: SymbolCode): boolean {
-    //     return this.value < comparison.value;
-    // }
+    /**
+     * Inverted equivalency operator. Returns true if a != b (are different)
+     *
+     * @return boolean - true if both provided name are not the same
+     */
+    public static isNotEqual( a: Name, b: Name ): boolean {
+        return a.raw() != b.raw();
+    }
+
+    public isNotEqual( a: Name ): boolean {
+        return a.raw() != this.raw();
+    }
+
+    /**
+     * Less than operator. Returns true if a < b.
+     * @brief Less than operator
+     * @return boolean - true if name `a` is less than `b`
+     */
+    public static isLessThan( a: Name, b: Name ): boolean {
+        return a.raw() < b.raw();
+    }
+
+    public isLessThan( a: Name ): boolean {
+        return this.raw() < a.raw();
+    }
 }
 
 export function name( str?: string | number | bigint ): Name {
     return new Name(str);
 }
-
-// const a = new Name("eosio")
-
-// console.log(a)

@@ -2,6 +2,10 @@
 
 - add test cases for `Symbol`
 
+## 2020-03-07
+
+- add `name` Class
+
 ## 2020-03-06
 
 - Add operators to `asset`
