@@ -4,6 +4,7 @@
 
 ## 2020-03-07
 
+- rename `Symbol` => `Sym` (conflict with native Symbol class)
 - added `name` Class
 - added `extended_symbol` Class
 

@@ -1,6 +1,6 @@
 // https://github.com/EOSIO/eosio.cdt/blob/master/libraries/eosiolib/asset.hpp
 
-import { Symbol, symbol } from "./symbol";
+import { Sym, symbol } from "./symbol";
 import { check } from "./check";
 import { write_decimal } from "./eosiolib";
 import { number_to_bigint, isNull } from "./utils";
@@ -20,6 +20,12 @@ import { number_to_bigint, isNull } from "./utils";
  * quantity.symbol.precision //=> 4
  */
 export class Asset {
+    get [Symbol.toStringTag](): string {
+        return 'asset';
+    }
+
+    public typeof(): string { return 'asset' }
+
     /**
      * {constexpr int64_t} Maximum amount possible for this asset. It's capped to 2^62 - 1
      */
@@ -33,7 +39,7 @@ export class Asset {
     /**
      * {symbol} The symbol name of the asset
      */
-    public symbol: Symbol = symbol();
+    public symbol: Sym = symbol();
 
     /**
      * Construct a new asset given the symbol name and the amount
@@ -41,7 +47,7 @@ export class Asset {
      * @param amount - The amount of the asset
      * @param sym - The name of the symbol
      */
-    constructor ( amount?: string | number | bigint, sym?: Symbol ) {
+    constructor ( amount?: string | number | bigint, sym?: Sym ) {
         if ( isNull(amount) && isNull(sym) ) {
             return;
         }
@@ -49,7 +55,7 @@ export class Asset {
             const [amount_str, symbol_str] = amount.split(" ");
             const precision = (amount_str.split(".")[1] || []).length;
             this.amount = number_to_bigint( Number(amount_str) * Math.pow(10, precision));
-            this.symbol = new Symbol( symbol_str, precision );
+            this.symbol = new Sym( symbol_str, precision );
         } else if ( sym ) {
             this.amount = (typeof amount == "number") ? number_to_bigint(amount) : BigInt(amount);
             this.symbol = sym;
@@ -344,8 +350,17 @@ export class Asset {
         const symcode = this.symbol.code().to_string();
         return `${amount} ${symcode}`;
     }
+
+    /**
+     * %Print the asset
+     *
+     * @brief %Print the asset
+     */
+    public print(): void {
+        process.stdout.write(this.to_string());
+    }
 }
 
-export function asset( amount?: string | number | bigint, sym?: Symbol ): Asset {
+export function asset( amount?: string | number | bigint, sym?: Sym ): Asset {
     return new Asset( amount, sym );
 }

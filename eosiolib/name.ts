@@ -5,6 +5,12 @@ import { check } from "./check";
  * @brief Stores the name as a uint64_t value
  */
 export class Name {
+    get [Symbol.toStringTag](): string {
+        return 'name';
+    }
+
+    public typeof(): string { return 'name' }
+
     readonly value = BigInt(0);
 
     constructor( str?: string | number | bigint ) {

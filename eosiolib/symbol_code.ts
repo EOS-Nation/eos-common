@@ -5,6 +5,10 @@ import { check } from "./check";
  * @brief Stores the symbol code as a uint64_t value
  */
 export class SymbolCode {
+    get [Symbol.toStringTag](): string {
+        return 'symbol_code';
+    }
+
     private value = BigInt(0);
 
     // constructor()

@@ -73,16 +73,16 @@ test("extended_symbol", () => {
 
     // -------------------------------------------------------------------------------
     // friend constexpr bool operator!=(const extended_symbol&, const extended_symbol&)
-    expect( extended_symbol().isNotEqual( extended_symbol( s0, null ))).toBeTruthy()
-    expect( extended_symbol(s0, null).isNotEqual( extended_symbol( s1, null ))).toBeTruthy()
-    expect( extended_symbol(s1, null).isNotEqual( extended_symbol( s2, null ))).toBeTruthy()
-    expect( extended_symbol(s2, null).isNotEqual( extended_symbol( s3, null ))).toBeTruthy()
+    expect( extended_symbol().isNotEqual( extended_symbol( s0, undefined ))).toBeTruthy()
+    expect( extended_symbol(s0, undefined).isNotEqual( extended_symbol( s1, undefined ))).toBeTruthy()
+    expect( extended_symbol(s1, undefined).isNotEqual( extended_symbol( s2, undefined ))).toBeTruthy()
+    expect( extended_symbol(s2, undefined).isNotEqual( extended_symbol( s3, undefined ))).toBeTruthy()
 
     // -------------------------------------------------------------------------------
     // friend constexpr bool operator<(const extended_symbol&, const extended_symbol&)
-    expect( extended_symbol().isLessThan( extended_symbol( s0, null ))).toBeTruthy()
-    expect( extended_symbol().isLessThan( extended_symbol( s1, null ))).toBeTruthy()
-    expect( extended_symbol().isLessThan( extended_symbol( s2, null ))).toBeTruthy()
-    expect( extended_symbol().isLessThan( extended_symbol( s3, null ))).toBeTruthy()
+    expect( extended_symbol().isLessThan( extended_symbol( s0, undefined ))).toBeTruthy()
+    expect( extended_symbol().isLessThan( extended_symbol( s1, undefined ))).toBeTruthy()
+    expect( extended_symbol().isLessThan( extended_symbol( s2, undefined ))).toBeTruthy()
+    expect( extended_symbol().isLessThan( extended_symbol( s3, undefined ))).toBeTruthy()
 
 })

@@ -4,7 +4,11 @@ import { isNull } from "./utils";
 
 // https://github.com/EOSIO/eosio.cdt/blob/master/libraries/eosiolib/symbol.hpp
 
-export class Symbol {
+export class Sym {
+    get [Symbol.toStringTag](): string {
+        return 'symbol';
+    }
+
     public value = BigInt(0);
 
     /**
@@ -20,7 +24,7 @@ export class Symbol {
      * sym.code() //=> "EOS"
      * sym.precision //=> 4
      */
-    constructor ( sc?: string | Symbol | SymbolCode | number | bigint, precision?: number | bigint ) {
+    constructor ( sc?: string | Sym | SymbolCode | number | bigint, precision?: number | bigint ) {
         if ( isNull(sc) && isNull( precision )) {
             this.value = BigInt(0);
         }
@@ -93,11 +97,11 @@ export class Symbol {
      *
      * @return boolean - true if both provided symbol_codes are the same
      */
-    public static isEqual( a: Symbol, b: Symbol ): boolean {
+    public static isEqual( a: Sym, b: Sym ): boolean {
         return a.raw() == b.raw();
     }
 
-    public isEqual( a: Symbol ): boolean {
+    public isEqual( a: Sym ): boolean {
         return a.raw() == this.raw();
     }
 
@@ -106,11 +110,11 @@ export class Symbol {
      *
      * @return boolean - true if both provided symbol_codes are not the same
      */
-    public static isNotEqual( a: Symbol, b: Symbol ): boolean {
+    public static isNotEqual( a: Sym, b: Sym ): boolean {
         return a.raw() != b.raw();
     }
 
-    public isNotEqual( a: Symbol ): boolean {
+    public isNotEqual( a: Sym ): boolean {
         return a.raw() != this.raw();
     }
 
@@ -119,15 +123,15 @@ export class Symbol {
      * @brief Less than operator
      * @return boolean - true if symbol_code `a` is less than `b`
      */
-    public static isLessThan( a: Symbol, b: Symbol ): boolean {
+    public static isLessThan( a: Sym, b: Sym ): boolean {
         return a.raw() < b.raw();
     }
 
-    public isLessThan( a: Symbol ): boolean {
+    public isLessThan( a: Sym ): boolean {
         return this.raw() < a.raw();
     }
 }
 
-export function symbol( sc?: string | SymbolCode | number | bigint, precision?: number | bigint ): Symbol {
-    return new Symbol( sc, precision );
+export function symbol( sc?: string | SymbolCode | number | bigint, precision?: number | bigint ): Sym {
+    return new Sym( sc, precision );
 }

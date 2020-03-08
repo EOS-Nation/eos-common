@@ -1,12 +1,17 @@
 import { Name } from "./name";
-import { Symbol } from "./symbol";
+import { Sym } from "./symbol";
 
 /**
  * @class Stores the extended_symbol
  * @brief Stores the extended_symbol as a uint64_t value
  */
 export class ExtendedSymbol {
-    private sym = new Symbol();
+    get [Symbol.toStringTag](): string {
+        return 'extended_symbol';
+    }
+    public typeof(): string { return 'name' }
+
+    private sym = new Sym();
     private contract = new Name();
 
     /**
@@ -15,9 +20,9 @@ export class ExtendedSymbol {
      * @param sym - The symbol
      * @param con - The name of the contract
      */
-    constructor ( sym?: Symbol | null, contract?: Name | null ) {
-        if ( sym ) this.sym = sym;
-        if ( contract ) this.contract = contract;
+    constructor ( sym?: Sym | string, contract?: Name | string ) {
+        if ( sym ) this.sym = typeof sym == "string" ? new Sym( sym ) : sym;
+        if ( contract ) this.contract = typeof contract == "string" ? new Name( contract ) : contract;
     }
 
     /**
@@ -25,7 +30,7 @@ export class ExtendedSymbol {
      *
      * @return symbol
      */
-    public get_symbol(): Symbol { return this.sym; }
+    public get_symbol(): Sym { return this.sym; }
 
     /**
      * Returns the name of the contract in the extended_symbol
@@ -84,6 +89,6 @@ export class ExtendedSymbol {
     }
 }
 
-export function extended_symbol( sym?: Symbol | null, contract?: Name | null ): ExtendedSymbol {
+export function extended_symbol( sym?: Sym | string, contract?: Name | string ): ExtendedSymbol {
     return new ExtendedSymbol( sym, contract );
 }

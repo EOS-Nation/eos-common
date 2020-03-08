@@ -1,4 +1,4 @@
-import { Symbol } from "./symbol";
+import { Sym } from "./symbol";
 import { Asset } from "./asset";
 
 export function asset_to_bigint( quantity: Asset ): bigint
@@ -7,7 +7,7 @@ export function asset_to_bigint( quantity: Asset ): bigint
     return BigInt(quantity.amount) / BigInt( Math.pow(10, quantity.symbol.precision()) );
 }
 
-export function bigint_to_asset( amount: number | bigint, sym: Symbol ): Asset
+export function bigint_to_asset( amount: number | bigint, sym: Sym ): Asset
 {
     return new Asset( BigInt(amount) * BigInt(Math.pow(10, sym.precision())), sym );
 }
@@ -18,7 +18,7 @@ export function asset_to_number( quantity: Asset ): number
     return Number(quantity.amount) / Math.pow(10, quantity.symbol.precision());
 }
 
-export function number_to_asset( amount: number, sym: Symbol ): Asset
+export function number_to_asset( amount: number, sym: Sym ): Asset
 {
     return new Asset( amount * Math.pow(10, sym.precision()), sym );
 }
