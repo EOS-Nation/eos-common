@@ -9,7 +9,7 @@ export class ExtendedSymbol {
     get [Symbol.toStringTag](): string {
         return 'extended_symbol';
     }
-    public typeof(): string { return 'name' }
+    public typeof(): string { return 'extended_symbol' }
 
     private sym = new Sym();
     private contract = new Name();

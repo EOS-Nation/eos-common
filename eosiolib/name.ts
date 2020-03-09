@@ -8,7 +8,6 @@ export class Name {
     get [Symbol.toStringTag](): string {
         return 'name';
     }
-
     public typeof(): string { return 'name' }
 
     readonly value = BigInt(0);

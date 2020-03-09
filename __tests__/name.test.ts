@@ -1,6 +1,6 @@
 import { name, Name } from "../";
 
-const u64min = 0n;
+// const u64min = 0n;
 const u64max = 18446744073709551615n;
 
 test("name", () => {

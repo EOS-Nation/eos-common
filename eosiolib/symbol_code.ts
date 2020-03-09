@@ -8,6 +8,7 @@ export class SymbolCode {
     get [Symbol.toStringTag](): string {
         return 'symbol_code';
     }
+    public typeof(): string { return 'symbol_code' }
 
     private value = BigInt(0);
 

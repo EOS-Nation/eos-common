@@ -23,7 +23,6 @@ export class Asset {
     get [Symbol.toStringTag](): string {
         return 'asset';
     }
-
     public typeof(): string { return 'asset' }
 
     /**

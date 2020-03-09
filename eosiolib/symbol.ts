@@ -8,6 +8,7 @@ export class Sym {
     get [Symbol.toStringTag](): string {
         return 'symbol';
     }
+    public typeof(): string { return 'symbol' }
 
     public value = BigInt(0);
 

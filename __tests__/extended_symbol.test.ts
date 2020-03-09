@@ -1,6 +1,6 @@
 import { name, symbol, extended_symbol } from ".."
 
-const u64min = 0n;
+// const u64min = 0n;
 const u64max = 18446744073709551615n;
 
 test("extended_symbol", () => {
@@ -55,15 +55,6 @@ test("extended_symbol", () => {
     // CHECK_PRINT( "255,ZZZZZZZ@aaaaaaaaaaaaj", [&](){extended_symbol{s3, n6}.print(true);} );
     // CHECK_PRINT( "255,ZZZZZZZ@zzzzzzzzzzzzj", [&](){extended_symbol{s3, n7}.print(true);} );
 
-    // extended_symbol( s0, n0).print(true)
-    // extended_symbol( s0, n1).print(true)
-    // extended_symbol( s1, n2).print(true)
-    // extended_symbol( s1, n3).print(true)
-    // extended_symbol( s2, n4).print(true)
-    // extended_symbol( s2, n5).print(true)
-    // extended_symbol( s3, n6).print(true)
-    // extended_symbol( s3, n7).print(true)
-
     // -------------------------------------------------------------------------------
     // friend constexpr bool operator==(const extended_symbol&, const extended_symbol&)
     expect( extended_symbol(s0, n0).isEqual( extended_symbol(s0, n0))).toBeTruthy()
@@ -84,5 +75,4 @@ test("extended_symbol", () => {
     expect( extended_symbol().isLessThan( extended_symbol( s1, undefined ))).toBeTruthy()
     expect( extended_symbol().isLessThan( extended_symbol( s2, undefined ))).toBeTruthy()
     expect( extended_symbol().isLessThan( extended_symbol( s3, undefined ))).toBeTruthy()
-
 })
