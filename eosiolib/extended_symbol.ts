@@ -99,9 +99,3 @@ export class ExtendedSymbol {
 export function extended_symbol( sym?: Sym | string, contract?: Name | string ): ExtendedSymbol {
     return new ExtendedSymbol( sym, contract );
 }
-
-// string
-extended_symbol("EOS,4", "eosio.token")
-
-// class
-new ExtendedSymbol(new Sym("EOS", 4), new Name("eosio.token"))
