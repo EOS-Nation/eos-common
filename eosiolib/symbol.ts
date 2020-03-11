@@ -36,7 +36,7 @@ export class Sym {
             const [ symcode_str, precision_str ] = sc.split(",");
             check( !isNull(precision_str) || !isNull(precision), "[precision] is required");
             const symcode = new SymbolCode(symcode_str).raw();
-            this.value = BigInt(symcode) << BigInt(8) | BigInt(precision || Number( precision_str ));
+            this.value = BigInt(symcode) << BigInt(8) | BigInt(precision || Number( precision_str || "" ));
         }
         else if ( typeof sc == "object" ) {
             check( !isNull(precision), "[precision] is required");
