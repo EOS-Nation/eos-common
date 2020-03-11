@@ -19,6 +19,13 @@ export class ExtendedSymbol {
      *
      * @param sym - The symbol
      * @param con - The name of the contract
+     * @example
+     *
+     * // string
+     * extended_symbol("EOS,4", "eosio.token")
+     *
+     * // class
+     * new ExtendedSymbol(new Sym("EOS", 4), new Name("eosio.token"))
      */
     constructor ( sym?: Sym | string, contract?: Name | string ) {
         if ( sym ) this.sym = typeof sym == "string" ? new Sym( sym ) : sym;
@@ -92,3 +99,9 @@ export class ExtendedSymbol {
 export function extended_symbol( sym?: Sym | string, contract?: Name | string ): ExtendedSymbol {
     return new ExtendedSymbol( sym, contract );
 }
+
+// string
+extended_symbol("EOS,4", "eosio.token")
+
+// class
+new ExtendedSymbol(new Sym("EOS", 4), new Name("eosio.token"))

@@ -28,3 +28,12 @@ export function stake2vote( staked: number ): number {
 export function vote2stake( vote: number ): number {
   return vote / Math.pow(2, voteWeightToday());
 }
+
+/**
+ * Calculate producer vpay
+ *
+ * @return {bigint} producer pay as int64t
+ */
+export function calculate_producer_per_vote_pay( total_votes: bigint, pervote_bucket: bigint, total_producer_vote_weight: bigint ): bigint {
+  return ( pervote_bucket * total_votes ) / total_producer_vote_weight;
+}
