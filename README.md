@@ -36,9 +36,11 @@ npm install --save eos-common
 import { Asset, Symbol } from "eos-common"
 
 const quantity = new Asset(10000, new Symbol("EOS", 4));
-quantity.toString() //=> "1.0000 EOS";
+// or
+const quantity = new Asset('1.0000 EOS');
+quantity.to_string() //=> "1.0000 EOS";
 quantity.symbol.code() //=> "EOS"
-quantity.symbol.precision //=> 4
+quantity.symbol.precision() //=> 4
 ```
 
 ## API
@@ -66,9 +68,6 @@ quantity.symbol.precision //=> 4
 -   [vote2stake](#vote2stake)
     -   [Parameters](#parameters-4)
 -   [voteWeightToday](#voteweighttoday)
--   [split](#split)
-    -   [Parameters](#parameters-5)
-    -   [Examples](#examples-3)
 
 ### Asset
 
@@ -83,7 +82,7 @@ Asset
 
 ```javascript
 const quantity = new Asset(10000, new Symbol("EOS", 4));
-quantity.toString() //=> "1.0000 EOS";
+quantity.to_string() //=> "1.0000 EOS";
 quantity.symbol.code() //=> "EOS"
 quantity.symbol.precision //=> 4
 ```
@@ -146,8 +145,10 @@ Symbol
 
 ```javascript
 const sym = new Symbol("EOS", 4);
+// or
+const sym = new Symbol("4,EOS");
 sym.code() //=> "EOS"
-sym.precision //=> 4
+sym.precision() //=> 4
 ```
 
 Returns **[Symbol](#symbol)** Symbol
@@ -173,22 +174,3 @@ Convert vote decay value into EOS stake
 ### voteWeightToday
 
 voteWeightToday computes the stake2vote weight for EOS, in order to compute the decaying value.
-
-### split
-
-Split quantity string
-
-#### Parameters
-
--   `quantity` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Quantity string
-
-#### Examples
-
-```javascript
-const quantity = split("1.0000 EOS");
-quantity.amount //=> 10000
-quantity.symbol.precision //=> 4
-quantity.symbol.code() //=> "EOS"
-```
-
-Returns **[Asset](#asset)** 
