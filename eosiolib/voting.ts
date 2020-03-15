@@ -1,6 +1,3 @@
-// https://github.com/EOSIO/eosio.contracts/blob/master/contracts/eosio.system/src/voting.cpp
-
-
 /**
  * voteWeightToday computes the stake2vote weight for EOS, in order to compute the decaying value.
  */

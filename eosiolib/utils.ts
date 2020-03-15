@@ -22,11 +22,3 @@ export function number_to_asset( amount: number, sym: Sym ): Asset
 {
     return new Asset( amount * Math.pow(10, sym.precision()), sym );
 }
-
-export function number_to_bigint( num: number ): bigint {
-    return BigInt( num.toFixed(0) );
-}
-
-export function isNull( value: any ): boolean {
-    return value == undefined || value == null
-}

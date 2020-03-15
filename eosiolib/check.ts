@@ -1,5 +1,3 @@
-// https://github.com/EOSIO/eosio.cdt/blob/master/libraries/eosiolib/core/eosio/check.hpp
-
 /**
  * Assert if the predicate fails and use the supplied message.
  *

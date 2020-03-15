@@ -1,8 +1,9 @@
 import { check } from "./check";
 import { SymbolCode } from "./symbol_code";
-import { isNull } from "./utils";
 
-// https://github.com/EOSIO/eosio.cdt/blob/master/libraries/eosiolib/symbol.hpp
+function isNull( value: any ): boolean {
+    return value == undefined || value == null
+}
 
 export class Sym {
     get [Symbol.toStringTag](): string {
@@ -33,10 +34,25 @@ export class Sym {
             this.value = BigInt(sc);
         }
         else if ( typeof sc == "string" ) {
-            const [ precision_str, symcode_str ] = sc.split(",");
-            check( !isNull(precision_str) || !isNull(precision), "[precision] is required");
-            const symcode = new SymbolCode(symcode_str).raw();
-            this.value = BigInt(symcode) << BigInt(8) | BigInt(precision || Number( precision_str || "" ));
+            // "precision,symbol_code" (ex: "4,EOS")
+            if ( sc.includes(",")) {
+                const [ precision_str, symcode_str ] = sc.split(",");
+                const precision = Number( precision_str );
+                check( !isNaN(precision), "[precision] must be number type");
+                check( !isNull(precision), "[precision] is required");
+                check( !isNull(symcode_str), "[symcode] is required");
+
+                const symcode = new SymbolCode(symcode_str).raw();
+                this.value = BigInt(symcode) << BigInt(8) | BigInt(precision || Number( precision_str || "" ));
+            // "symbol_code" + @param: precision
+            } else {
+                check( !isNaN( Number(precision) ), "[precision] must be number type");
+                check( !isNull(precision), "[precision] is required");
+                check( !isNull(sc), "[symcode] is required");
+
+                const symcode = new SymbolCode(sc).raw();
+                this.value = BigInt(symcode) << BigInt(8) | BigInt(precision);
+            }
         }
         else if ( typeof sc == "object" ) {
             check( !isNull(precision), "[precision] is required");

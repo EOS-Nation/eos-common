@@ -2,8 +2,9 @@ import { symbol } from "..";
 
 test("symbol", () => {
   const A = symbol("A", 4);
-  const B = symbol("B,4");
+  const B = symbol("4,B");
 
   // equal
-  expect(A.isEqual(A)).toBeTruthy();
+  expect(A.precision() ).toBe( 4 )
+  expect(B.precision() ).toBe( 4 )
 });

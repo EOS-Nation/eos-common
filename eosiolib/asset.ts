@@ -1,9 +1,14 @@
-// https://github.com/EOSIO/eosio.cdt/blob/master/libraries/eosiolib/asset.hpp
-
 import { Sym, symbol } from "./symbol";
 import { check } from "./check";
 import { write_decimal } from "./eosiolib";
-import { number_to_bigint, isNull } from "./utils";
+
+function number_to_bigint( num: number ): bigint {
+    return BigInt( num.toFixed(0) );
+}
+
+function isNull( value: any ): boolean {
+    return value == undefined || value == null
+}
 
 /**
  * Asset
