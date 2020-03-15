@@ -33,7 +33,7 @@ export class Sym {
             this.value = BigInt(sc);
         }
         else if ( typeof sc == "string" ) {
-            const [ symcode_str, precision_str ] = sc.split(",");
+            const [ precision_str, symcode_str ] = sc.split(",");
             check( !isNull(precision_str) || !isNull(precision), "[precision] is required");
             const symcode = new SymbolCode(symcode_str).raw();
             this.value = BigInt(symcode) << BigInt(8) | BigInt(precision || Number( precision_str || "" ));
