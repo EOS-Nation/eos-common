@@ -1,7 +1,6 @@
 import { symbol_code } from "..";
 
-// Definitions in `eosio.cdt/libraries/eosio/symbol.hpp`
-test("symbol_code_type_test", () => {
+test("symbol_code", () => {
    //// constexpr symbol_code()
    // constexpr uint64_t raw()const
    expect( symbol_code().raw()).toBe( 0n );
