@@ -9,7 +9,7 @@ export class ExtendedSymbol {
     get [Symbol.toStringTag](): string {
         return 'extended_symbol';
     }
-    public typeof(): string { return 'extended_symbol' }
+    public get typeof(): string { return 'extended_symbol' }
 
     private sym = new Sym();
     private contract = new Name();
@@ -46,15 +46,15 @@ export class ExtendedSymbol {
      */
     public get_contract(): Name { return this.contract; }
 
-    /**
-     * %Print the extended symbol
-     *
-     * @brief %Print the extended symbol
-     */
-    public print( show_precision = true ): void {
-        this.sym.print( show_precision );
-        process.stdout.write("@" + this.contract.to_string() );
-    }
+    // /**
+    //  * %Print the extended symbol
+    //  *
+    //  * @brief %Print the extended symbol
+    //  */
+    // public print( show_precision = true ): void {
+    //     this.sym.print( show_precision );
+    //     process.stdout.write("@" + this.contract.to_string() );
+    // }
 
     /**
      * Equivalency operator. Returns true if a == b (are the same)

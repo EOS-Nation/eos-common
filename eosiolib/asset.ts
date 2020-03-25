@@ -28,7 +28,7 @@ export class Asset {
     get [Symbol.toStringTag](): string {
         return 'asset';
     }
-    public typeof(): string { return 'asset' }
+    public get typeof(): string { return 'asset' }
 
     /**
      * {constexpr int64_t} Maximum amount possible for this asset. It's capped to 2^62 - 1
@@ -355,14 +355,14 @@ export class Asset {
         return `${amount} ${symcode}`;
     }
 
-    /**
-     * %Print the asset
-     *
-     * @brief %Print the asset
-     */
-    public print(): void {
-        process.stdout.write(this.to_string());
-    }
+    // /**
+    //  * %Print the asset
+    //  *
+    //  * @brief %Print the asset
+    //  */
+    // public print(): void {
+    //     process.stdout.write(this.to_string());
+    // }
 }
 
 export function asset( amount?: string | number | bigint, sym?: Sym ): Asset {

@@ -11,7 +11,7 @@ export class ExtendedAsset {
     get [Symbol.toStringTag](): string {
         return 'extended_asset';
     }
-    public typeof(): string { return 'extended_asset' }
+    public get typeof(): string { return 'extended_asset' }
 
     /**
      * The asset
@@ -66,13 +66,13 @@ export class ExtendedAsset {
         }
     }
 
-    /**
-     * %Print the extended asset
-     */
-    public print(): void {
-        this.quantity.print();
-        process.stdout.write("@" + this.contract.to_string());
-    }
+    // /**
+    //  * %Print the extended asset
+    //  */
+    // public print(): void {
+    //     this.quantity.print();
+    //     process.stdout.write("@" + this.contract.to_string());
+    // }
 
     /// @cond OPERATORS
 
