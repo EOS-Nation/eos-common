@@ -1,7 +1,8 @@
 import { symbol, symbol_code } from "..";
+import bigInt from "big-integer";
 
 // const u64min = 0n;
-const u64max = 18446744073709551615n;
+const u64max = bigInt("18446744073709551615");
 
 test("symbol", () => {
   const sc0 = symbol_code("A");
@@ -11,36 +12,36 @@ test("symbol", () => {
 
   //// constexpr symbol()
   // constexpr uint64_t raw()const
-  expect( symbol().raw() ).toBe( 0n )
+  expect( symbol().raw() ).toStrictEqual( bigInt(0) )
 
   //// constexpr explicit symbol(uint64_t)
-  expect( symbol( 0n ).raw()).toBe( 0n )
-  expect( symbol( 1n ).raw()).toBe( 1n )
-  expect( symbol( u64max ).raw()).toBe( u64max )
+  expect( symbol( 0 ).raw()).toStrictEqual( bigInt(0) )
+  expect( symbol( 1 ).raw()).toStrictEqual( bigInt(1) )
+  expect( symbol( u64max ).raw()).toStrictEqual( u64max )
 
   //// constexpr symbol(string_view, uint8_t)
   // Note:
   // Unless constructed with `initializer_list`, precision does not check for wrap-around
-  expect( symbol( sc0, 0 ).raw()).toBe( 16640n )
-  expect( symbol( sc1, 0 ).raw()).toBe( 23040n )
-  expect( symbol( sc2, 0 ).raw()).toBe( 4702111234474983680n )
-  expect( symbol( sc3, 0 ).raw()).toBe( 6510615555426900480n )
+  expect( symbol( sc0, 0 ).raw()).toStrictEqual( bigInt(16640) )
+  expect( symbol( sc1, 0 ).raw()).toStrictEqual( bigInt(23040) )
+  expect( symbol( sc2, 0 ).raw()).toStrictEqual( bigInt("4702111234474983680") )
+  expect( symbol( sc3, 0 ).raw()).toStrictEqual( bigInt("6510615555426900480") )
 
   //// constexpr symbol(symbol_code, uint8_t)
-  expect( symbol( sc0, 0 ).raw()).toBe( 16640n )
-  expect( symbol( sc1, 0 ).raw()).toBe( 23040n )
-  expect( symbol( sc2, 0 ).raw()).toBe( 4702111234474983680n )
-  expect( symbol( sc3, 0 ).raw()).toBe( 6510615555426900480n )
+  expect( symbol( sc0, 0 ).raw()).toStrictEqual( bigInt("16640") )
+  expect( symbol( sc1, 0 ).raw()).toStrictEqual( bigInt("23040") )
+  expect( symbol( sc2, 0 ).raw()).toStrictEqual( bigInt("4702111234474983680") )
+  expect( symbol( sc3, 0 ).raw()).toStrictEqual( bigInt("6510615555426900480") )
 
   // --------------------
   // bool is_valid()const
-  expect( symbol( 16640n ).is_valid()).toBeTruthy() // "A", precision: 0
-  expect( symbol( 23040n ).is_valid()).toBeTruthy() // "Z", precision: 0
-  expect( symbol( 4702111234474983680n ).is_valid()).toBeTruthy() // "AAAAAAA", precision: 0
-  expect( symbol( 6510615555426900480n ).is_valid()).toBeTruthy() // "ZZZZZZZ", precision: 0
+  expect( symbol( 16640 ).is_valid()).toBeTruthy() // "A", precision: 0
+  expect( symbol( 23040 ).is_valid()).toBeTruthy() // "Z", precision: 0
+  expect( symbol( bigInt("4702111234474983680") ).is_valid()).toBeTruthy() // "AAAAAAA", precision: 0
+  expect( symbol( bigInt("6510615555426900480") ).is_valid()).toBeTruthy() // "ZZZZZZZ", precision: 0
 
-  expect( symbol( 16639n ).is_valid()).toBeFalsy();
-  expect( symbol( 6510615555426900736n ).is_valid()).toBeFalsy();
+  expect( symbol( 16639 ).is_valid()).toBeFalsy();
+  expect( symbol( bigInt("6510615555426900736") ).is_valid()).toBeFalsy();
 
   // -------------------------
   // uint8_t precision()const
@@ -54,24 +55,24 @@ test("symbol", () => {
   expect( symbol( sc2, 255 ).precision()).toBe( 255 )
   expect( symbol( sc3, 255 ).precision()).toBe( 255 )
 
-  // // -----------------------
-  // // symbol_code code()const
-  // CHECK_EQUAL( (symbol{sc0,0}.code()), sc0 )
-  // CHECK_EQUAL( (symbol{sc1,0}.code()), sc1 )
-  // CHECK_EQUAL( (symbol{sc2,0}.code()), sc2 )
-  // CHECK_EQUAL( (symbol{sc3,0}.code()), sc3 )
+  // -----------------------
+  // symbol_code code()const
+  expect( symbol( sc0, 0 ).code().isEqual( sc0 )).toBeTruthy();
+  expect( symbol( sc1, 0 ).code().isEqual( sc1 )).toBeTruthy();
+  expect( symbol( sc2, 0 ).code().isEqual( sc2 )).toBeTruthy();
+  expect( symbol( sc3, 0 ).code().isEqual( sc3 )).toBeTruthy();
 
-  // // ---------------------------------------
-  // // constexpr explicit operator bool()const
-  // CHECK_EQUAL( symbol{0}.operator bool()).toBeFalsy();
-  // CHECK_EQUAL( symbol{1}.operator bool()).toBeTruthy()
-  // CHECK_EQUAL( !symbol{0}.operator bool()).toBeTruthy()
-  // CHECK_EQUAL( !symbol{1}.operator bool()).toBeFalsy();
+  // ---------------------------------------
+  // constexpr explicit operator bool()const
+  expect( symbol( 0 ).bool()).toBeFalsy();
+  expect( symbol( 1 ).bool()).toBeTruthy()
+  expect( !symbol( 0 ).bool()).toBeTruthy()
+  expect( !symbol( 1 ).bool()).toBeFalsy();
 
-  // CHECK_EQUAL( (symbol{"", 0}.operator bool())).toBeFalsy();
-  // CHECK_EQUAL( (symbol{"SYMBOLL", 0}.operator bool())).toBeTruthy()
-  // CHECK_EQUAL( (!symbol{"", 0}.operator bool())).toBeTruthy()
-  // CHECK_EQUAL( (!symbol{"SYMBOLL", 0}.operator bool())).toBeFalsy();
+  expect( (symbol("", 0 ).bool())).toBeFalsy();
+  expect( (symbol("SYMBOLL", 0 ).bool())).toBeTruthy()
+  expect( (!symbol("", 0 ).bool())).toBeTruthy()
+  expect( (!symbol("SYMBOLL", 0 ).bool())).toBeFalsy();
 
   // // ---------------------
   // // void print(bool)const
@@ -80,24 +81,24 @@ test("symbol", () => {
   // CHECK_PRINT( "255,AAAAAAA", [&](){symbol{"AAAAAAA", 255}.print(true);} );
   // CHECK_PRINT( "255,ZZZZZZZ", [&](){symbol{"ZZZZZZZ", 255}.print(true);} );
 
-  // // --------------------------------------------------------------
-  // // friend constexpr bool operator==(const symbol&, const symbol&)
-  // CHECK_EQUAL( (symbol{sc0, 0} == symbol{sc0, 0})).toBeTruthy()
-  // CHECK_EQUAL( (symbol{sc1, 0} == symbol{sc1, 0})).toBeTruthy()
-  // CHECK_EQUAL( (symbol{sc2, 0} == symbol{sc2, 0})).toBeTruthy()
-  // CHECK_EQUAL( (symbol{sc3, 0} == symbol{sc3, 0})).toBeTruthy()
+  // --------------------------------------------------------------
+  // friend constexpr bool operator==(const symbol&, const symbol&)
+  expect( symbol(sc0, 0).isEqual( symbol( sc0, 0))).toBeTruthy()
+  expect( symbol(sc1, 0).isEqual( symbol( sc1, 0))).toBeTruthy()
+  expect( symbol(sc2, 0).isEqual( symbol( sc2, 0))).toBeTruthy()
+  expect( symbol(sc3, 0).isEqual( symbol( sc3, 0))).toBeTruthy()
 
-  // // --------------------------------------------------------------
-  // // friend constexpr bool operator!=(const symbol&, const symbol&)
-  // CHECK_EQUAL( (symbol{sc0, 0} != symbol{})).toBeTruthy()
-  // CHECK_EQUAL( (symbol{sc1, 0} != symbol{})).toBeTruthy()
-  // CHECK_EQUAL( (symbol{sc2, 0} != symbol{})).toBeTruthy()
-  // CHECK_EQUAL( (symbol{sc3, 0} != symbol{})).toBeTruthy()
+  // --------------------------------------------------------------
+  // friend constexpr bool operator!=(const symbol&, const symbol&)
+  expect( symbol(sc0, 0).isNotEqual( symbol())).toBeTruthy()
+  expect( symbol(sc1, 0).isNotEqual( symbol())).toBeTruthy()
+  expect( symbol(sc2, 0).isNotEqual( symbol())).toBeTruthy()
+  expect( symbol(sc3, 0).isNotEqual( symbol())).toBeTruthy()
 
-  // // --------------------------------------------------------------
-  // // friend constexpr bool operator<(const symbol&, const symbol&)
-  // CHECK_EQUAL( (symbol{} < symbol{sc0, 0})).toBeTruthy()
-  // CHECK_EQUAL( (symbol{} < symbol{sc1, 0})).toBeTruthy()
-  // CHECK_EQUAL( (symbol{} < symbol{sc2, 0})).toBeTruthy()
-  // CHECK_EQUAL( (symbol{} < symbol{sc3, 0})).toBeTruthy()
+  // --------------------------------------------------------------
+  // friend constexpr bool operator<(const symbol&, const symbol&)
+  expect( symbol().isLessThan( symbol( sc0, 0))).toBeTruthy()
+  expect( symbol().isLessThan( symbol( sc1, 0))).toBeTruthy()
+  expect( symbol().isLessThan( symbol( sc2, 0))).toBeTruthy()
+  expect( symbol().isLessThan( symbol( sc3, 0))).toBeTruthy()
 });

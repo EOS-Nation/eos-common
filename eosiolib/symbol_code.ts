@@ -6,7 +6,10 @@ import bigInt, { BigInteger } from "big-integer";
  * @brief Stores the symbol code as a uint64_t value
  */
 export class SymbolCode {
-    public typeof(): string { return 'symbol_code' }
+    get [Symbol.toStringTag](): string {
+        return 'symbol_code';
+    }
+    public get typeof(): string { return 'symbol_code' }
 
     private value = bigInt(0);
 

@@ -1,20 +1,21 @@
 import { symbol_code } from "..";
+import bigInt from "big-integer";
 
 test("symbol_code", () => {
    //// constexpr symbol_code()
    // constexpr uint64_t raw()const
-   expect( symbol_code().raw()).toBe( 0n );
+   expect( symbol_code().raw()).toStrictEqual( bigInt(0) );
 
    //// constexpr explicit symbol_code(uint64_t raw)
-   expect( symbol_code(0).raw()).toBe(0n);
-   expect( symbol_code(1).raw()).toBe(1n);
-   expect( symbol_code(BigInt(Number.MAX_SAFE_INTEGER)).raw()).toBe(BigInt(Number.MAX_SAFE_INTEGER) )
+   expect( symbol_code(0).raw()).toStrictEqual( bigInt(0) );
+   expect( symbol_code(1).raw()).toStrictEqual( bigInt(1) );
+   // expect( symbol_code(Number.MAX_SAFE_INTEGER).raw()).toStrictEqual(BigInt(Number.MAX_SAFE_INTEGER) )
 
    //// constexpr explicit symbol_code(string_view str)
-   expect( symbol_code("A").raw()).toBe( 65n )
-   expect( symbol_code("Z").raw()).toBe( 90n )
-   expect( symbol_code("AAAAAAA").raw()).toBe( 18367622009667905n )
-   expect( symbol_code("ZZZZZZZ").raw()).toBe( 25432092013386330n )
+   expect( symbol_code("A").raw()).toStrictEqual( bigInt(65) )
+   expect( symbol_code("Z").raw()).toStrictEqual( bigInt(90) )
+   expect( symbol_code("AAAAAAA").raw()).toStrictEqual( bigInt("18367622009667905") )
+   expect( symbol_code("ZZZZZZZ").raw()).toStrictEqual( bigInt("25432092013386330") )
 
    expect( () => symbol_code("ABCDEFGH")).toThrow("string is too long to be a valid symbol_code");
    expect( () => symbol_code("a")).toThrow("only uppercase letters allowed in symbol_code string");
@@ -24,13 +25,13 @@ test("symbol_code", () => {
 
    // ------------------------------
    // constexpr bool is_valid()const
-   expect( symbol_code(65).is_valid()).toBeTruthy() // "A"
-   expect( symbol_code(90).is_valid()).toBeTruthy() // "Z"
-   expect( symbol_code(18367622009667905n).is_valid()).toBeTruthy() // "AAAAAAA"
-   expect( symbol_code(25432092013386330n).is_valid()).toBeTruthy() // "ZZZZZZZ"
+   expect( symbol_code( 65 ).is_valid()).toBeTruthy() // "A"
+   expect( symbol_code( 90 ).is_valid()).toBeTruthy() // "Z"
+   expect( symbol_code(bigInt("18367622009667905")).is_valid()).toBeTruthy() // "AAAAAAA"
+   expect( symbol_code(bigInt("25432092013386330")).is_valid()).toBeTruthy() // "ZZZZZZZ"
 
    expect( symbol_code(64).is_valid()).toBeFalsy()
-   expect( symbol_code(25432092013386331).is_valid()).toBeFalsy()
+   expect( symbol_code(bigInt("25432092013386331")).is_valid()).toBeFalsy()
 
    // --------------------------------
    // constexpr uint32_t length()const
@@ -45,10 +46,10 @@ test("symbol_code", () => {
 
    // ---------------------------------------
    // constexpr explicit operator bool()const
-   expect( symbol_code(0).isTruthy()).toBeFalsy()
-   expect( symbol_code(1).isTruthy()).toBeTruthy()
-   expect( !symbol_code(0).isTruthy()).toBeTruthy()
-   expect( !symbol_code(1).isTruthy()).toBeFalsy()
+   expect( symbol_code( 0 ).isTruthy()).toBeFalsy()
+   expect( symbol_code( 1 ).isTruthy()).toBeTruthy()
+   expect( !symbol_code( 0 ).isTruthy()).toBeTruthy()
+   expect( !symbol_code( 1 ).isTruthy()).toBeFalsy()
 
    expect( symbol_code("").isTruthy()).toBeFalsy()
    expect( symbol_code("SYMBOL").isTruthy()).toBeTruthy()

@@ -1,5 +1,6 @@
 import { check } from "./check";
 import { SymbolCode } from "./symbol_code";
+import bigInt, { BigInteger } from "big-integer";
 
 function isNull( value: any ): boolean {
     return value == undefined || value == null
@@ -9,9 +10,9 @@ export class Sym {
     get [Symbol.toStringTag](): string {
         return 'symbol';
     }
-    public typeof(): string { return 'symbol' }
+    public get typeof(): string { return 'symbol' }
 
-    public value = BigInt(0);
+    public value = bigInt(0);
 
     /**
      * Symbol
@@ -26,12 +27,12 @@ export class Sym {
      * sym.code() //=> "EOS"
      * sym.precision //=> 4
      */
-    constructor ( sc?: string | Sym | SymbolCode | number | bigint, precision?: number | bigint ) {
+    constructor ( sc?: string | Sym | SymbolCode | number | BigInteger, precision?: number ) {
         if ( isNull(sc) && isNull( precision )) {
-            this.value = BigInt(0);
+            this.value = bigInt(0);
         }
         else if ( typeof sc == "number" || typeof sc == "bigint" ) {
-            this.value = BigInt(sc);
+            this.value = bigInt(sc);
         }
         else if ( typeof sc == "string" ) {
             // "precision,symbol_code" (ex: "4,EOS")
@@ -43,7 +44,7 @@ export class Sym {
                 check( !isNull(symcode_str), "[symcode] is required");
 
                 const symcode = new SymbolCode(symcode_str).raw();
-                this.value = BigInt(symcode) << BigInt(8) | BigInt(precision || Number( precision_str || "" ));
+                this.value = bigInt(symcode).shiftLeft(8).or(Number( precision_str || "" ));
             // "symbol_code" + @param: precision
             } else {
                 check( !isNaN( Number(precision) ), "[precision] must be number type");
@@ -51,13 +52,20 @@ export class Sym {
                 check( !isNull(sc), "[symcode] is required");
 
                 const symcode = new SymbolCode(sc).raw();
-                this.value = BigInt(symcode) << BigInt(8) | BigInt(precision);
+                this.value = bigInt(symcode).shiftLeft(8).or(precision || 0);
             }
         }
         else if ( typeof sc == "object" ) {
-            check( !isNull(precision), "[precision] is required");
             const symcode: any = sc;
-            this.value = BigInt(symcode.raw()) << BigInt(8) | BigInt(precision);
+
+            // symbol_code object
+            if ( symcode.typeof == "symbol_code") {
+                check( !isNull(precision), "[precision] is required");
+                this.value = bigInt(symcode.raw()).shiftLeft(8).or(precision || 0);
+            // bigInt object
+            } else {
+                this.value = symcode;
+            }
         } else {
             check( false, "invalid symbol parameters");
         }
@@ -74,20 +82,20 @@ export class Sym {
      * This symbol's precision
      */
     public precision(): number {
-        return Number(this.value & BigInt(0x00000000000000FF));
+        return Number(this.value.and("0x00000000000000FF"));
     }
 
     /**
      * Returns representation of symbol name
      */
     public code(): SymbolCode {
-        return new SymbolCode(this.value >> BigInt(8) );
+        return new SymbolCode(this.value.shiftRight(8) );
     }
 
     /**
      * Returns uint64_t repreresentation of the symbol
      */
-    public raw(): bigint {
+    public raw(): BigInteger {
         return this.value;
     }
 
@@ -97,18 +105,18 @@ export class Sym {
      * @return Returns true if the symbol is set to the default value of 0 else true.
      */
     public bool(): boolean {
-        return this.value != BigInt(0);
+        return this.value.notEquals(0);
     }
 
-    /**
-     * %Print the symbol
-     */
-    public print( show_precision = true ): void {
-        if ( show_precision ) {
-            process.stdout.write( String( this.precision() ) + "," );
-        }
-        process.stdout.write( this.code().to_string() );
-    }
+    // /**
+    //  * %Print the symbol
+    //  */
+    // public print( show_precision = true ): void {
+    //     if ( show_precision ) {
+    //         process.stdout.write( String( this.precision() ) + "," );
+    //     }
+    //     process.stdout.write( this.code().to_string() );
+    // }
 
     /**
      * Equivalency operator. Returns true if a == b (are the same)
@@ -116,11 +124,11 @@ export class Sym {
      * @return boolean - true if both provided symbol_codes are the same
      */
     public static isEqual( a: Sym, b: Sym ): boolean {
-        return a.raw() == b.raw();
+        return a.raw().equals( b.raw() );
     }
 
     public isEqual( a: Sym ): boolean {
-        return a.raw() == this.raw();
+        return a.raw().equals( this.raw() );
     }
 
     /**
@@ -129,11 +137,11 @@ export class Sym {
      * @return boolean - true if both provided symbol_codes are not the same
      */
     public static isNotEqual( a: Sym, b: Sym ): boolean {
-        return a.raw() != b.raw();
+        return a.raw().notEquals( b.raw() );
     }
 
     public isNotEqual( a: Sym ): boolean {
-        return a.raw() != this.raw();
+        return a.raw().notEquals( this.raw() );
     }
 
     /**
@@ -142,14 +150,14 @@ export class Sym {
      * @return boolean - true if symbol_code `a` is less than `b`
      */
     public static isLessThan( a: Sym, b: Sym ): boolean {
-        return a.raw() < b.raw();
+        return a.raw().lesser( b.raw() );
     }
 
     public isLessThan( a: Sym ): boolean {
-        return this.raw() < a.raw();
+        return this.raw().lesser( a.raw() );
     }
 }
 
-export function symbol( sc?: string | SymbolCode | number | bigint, precision?: number | bigint ): Sym {
+export function symbol( sc?: string | SymbolCode | number | BigInteger, precision?: number ): Sym {
     return new Sym( sc, precision );
 }
