@@ -34,5 +34,7 @@
     "ts-jest": "*",
     "typescript": "*"
   },
-  "dependencies": {}
+  "dependencies": {
+    "big-integer": "^1.6.48"
+  }
 }
