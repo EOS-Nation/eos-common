@@ -1,46 +1,47 @@
 import { name, Name } from "../";
+import bigInt from "big-integer";
 
 // const u64min = 0n;
-const u64max = 18446744073709551615n;
+const u64max = bigInt("18446744073709551615");
 
 test("name", () => {
    //// constexpr name()
-   expect( name().value).toBe( 0n )
+   expect( name().value).toStrictEqual( bigInt(0) )
 
    //// constexpr explicit name(uint64_t)
-   expect( name(0n).value).toBe( 0n )
-   expect( name(1n).value).toBe( 1n )
-   expect( name(u64max).value).toBe( u64max )
+   expect( name(0).value).toStrictEqual( bigInt(0) )
+   expect( name(1).value).toStrictEqual( bigInt(1) )
+   expect( name(u64max).value).toStrictEqual( u64max )
 
    //// constexpr explicit name(string_view)
    // Note:
    // These are the exact `uint64_t` value representations of the given string
-   expect( name("1").value).toBe( 576460752303423488n )
-   expect( name("5").value).toBe( 2882303761517117440n )
-   expect( name("a").value).toBe( 3458764513820540928n )
-   expect( name("z").value).toBe( 17870283321406128128n )
+   expect( name("1").value).toStrictEqual( bigInt("576460752303423488") )
+   expect( name("5").value).toStrictEqual( bigInt("2882303761517117440") )
+   expect( name("a").value).toStrictEqual( bigInt("3458764513820540928") )
+   expect( name("z").value).toStrictEqual( bigInt("17870283321406128128") )
 
 
-   expect( name("abc").value ).toBe( 3589368903014285312n )
-   expect( name("123").value ).toBe( 614178399182651392n )
+   expect( name("abc").value ).toStrictEqual( bigInt("3589368903014285312") )
+   expect( name("123").value ).toStrictEqual( bigInt("614178399182651392") )
 
-   expect( name(".abc").value ).toBe( 112167778219196416n )
-   expect( name(".........abc").value ).toBe( 102016n )
-   expect( name("123.").value ).toBe( 614178399182651392n )
-   expect( name("123.........").value ).toBe( 614178399182651392n )
-   expect( name(".a.b.c.1.2.3.").value ).toBe( 108209673814966320n )
+   expect( name(".abc").value ).toStrictEqual( bigInt("112167778219196416") )
+   expect( name(".........abc").value ).toStrictEqual( bigInt("102016") )
+   expect( name("123.").value ).toStrictEqual( bigInt("614178399182651392") )
+   expect( name("123.........").value ).toStrictEqual( bigInt("614178399182651392") )
+   expect( name(".a.b.c.1.2.3.").value ).toStrictEqual( bigInt("108209673814966320") )
 
-   expect( name("abc.123").value ).toBe( 3589369488740450304n )
-   expect( name("123.abc").value ).toBe( 614181822271586304n )
+   expect( name("abc.123").value ).toStrictEqual( bigInt("3589369488740450304") )
+   expect( name("123.abc").value ).toStrictEqual( bigInt("614181822271586304") )
 
-   expect( name("12345abcdefgj").value ).toBe( 614251623682315983n )
-   expect( name("hijklmnopqrsj").value ).toBe( 7754926748989239183n )
-   expect( name("tuvwxyz.1234j").value ).toBe( 14895601873741973071n )
+   expect( name("12345abcdefgj").value ).toStrictEqual( bigInt("614251623682315983") )
+   expect( name("hijklmnopqrsj").value ).toStrictEqual( bigInt("7754926748989239183") )
+   expect( name("tuvwxyz.1234j").value ).toStrictEqual( bigInt("14895601873741973071") )
 
-   expect( name("111111111111j").value ).toBe( 595056260442243615n )
-   expect( name("555555555555j").value ).toBe( 2975281302211218015n )
-   expect( name("aaaaaaaaaaaaj").value ).toBe( 3570337562653461615n )
-   expect( name("zzzzzzzzzzzzj").value ).toBe( u64max )
+   expect( name("111111111111j").value ).toStrictEqual( bigInt("595056260442243615") )
+   expect( name("555555555555j").value ).toStrictEqual( bigInt("2975281302211218015") )
+   expect( name("aaaaaaaaaaaaj").value ).toStrictEqual( bigInt("3570337562653461615") )
+   expect( name("zzzzzzzzzzzzj").value ).toStrictEqual( u64max )
 
    expect( () => name("-1") ).toThrow("character is not in allowed character set for names");
    expect( () => name("0") ).toThrow("character is not in allowed character set for names");
@@ -114,31 +115,31 @@ test("name", () => {
 
    // -----------------------------
    // constexpr operator raw()const
-   expect( name("1").raw() ).toBe( 576460752303423488n )
-   expect( name("5").raw() ).toBe( 2882303761517117440n )
-   expect( name("a").raw() ).toBe( 3458764513820540928n )
-   expect( name("z").raw() ).toBe( 17870283321406128128n )
+   expect( name("1").raw() ).toStrictEqual( bigInt("576460752303423488") )
+   expect( name("5").raw() ).toStrictEqual( bigInt("2882303761517117440") )
+   expect( name("a").raw() ).toStrictEqual( bigInt("3458764513820540928") )
+   expect( name("z").raw() ).toStrictEqual( bigInt("17870283321406128128") )
 
-   expect( name("abc").raw() ).toBe( 3589368903014285312n )
-   expect( name("123").raw() ).toBe( 614178399182651392n )
+   expect( name("abc").raw() ).toStrictEqual( bigInt("3589368903014285312") )
+   expect( name("123").raw() ).toStrictEqual( bigInt("614178399182651392") )
 
-   expect( name(".abc").raw() ).toBe( 112167778219196416n )
-   expect( name(".........abc").raw() ).toBe( 102016n )
-   expect( name("123.").raw() ).toBe( 614178399182651392n )
-   expect( name("123.........").raw() ).toBe( 614178399182651392n )
-   expect( name(".a.b.c.1.2.3.").raw() ).toBe( 108209673814966320n )
+   expect( name(".abc").raw() ).toStrictEqual( bigInt("112167778219196416") )
+   expect( name(".........abc").raw() ).toStrictEqual( bigInt("102016") )
+   expect( name("123.").raw() ).toStrictEqual( bigInt("614178399182651392") )
+   expect( name("123.........").raw() ).toStrictEqual( bigInt("614178399182651392") )
+   expect( name(".a.b.c.1.2.3.").raw() ).toStrictEqual( bigInt("108209673814966320") )
 
-   expect( name("abc.123").raw() ).toBe( 3589369488740450304n )
-   expect( name("123.abc").raw() ).toBe( 614181822271586304n )
+   expect( name("abc.123").raw() ).toStrictEqual( bigInt("3589369488740450304") )
+   expect( name("123.abc").raw() ).toStrictEqual( bigInt("614181822271586304") )
 
-   expect( name("12345abcdefgj").raw() ).toBe( 614251623682315983n )
-   expect( name("hijklmnopqrsj").raw() ).toBe( 7754926748989239183n )
-   expect( name("tuvwxyz.1234j").raw() ).toBe( 14895601873741973071n )
+   expect( name("12345abcdefgj").raw() ).toStrictEqual( bigInt("614251623682315983") )
+   expect( name("hijklmnopqrsj").raw() ).toStrictEqual( bigInt("7754926748989239183") )
+   expect( name("tuvwxyz.1234j").raw() ).toStrictEqual( bigInt("14895601873741973071") )
 
-   expect( name("111111111111j").raw() ).toBe( 595056260442243615n )
-   expect( name("555555555555j").raw() ).toBe( 2975281302211218015n )
-   expect( name("aaaaaaaaaaaaj").raw() ).toBe( 3570337562653461615n )
-   expect( name("zzzzzzzzzzzzj").raw() ).toBe( u64max )
+   expect( name("111111111111j").raw() ).toStrictEqual( bigInt("595056260442243615") )
+   expect( name("555555555555j").raw() ).toStrictEqual( bigInt("2975281302211218015") )
+   expect( name("aaaaaaaaaaaaj").raw() ).toStrictEqual( bigInt("3570337562653461615") )
+   expect( name("zzzzzzzzzzzzj").raw() ).toStrictEqual( u64max )
 
    // ---------------------------------------
    // constexpr explicit operator bool()const
