@@ -1,3 +1,5 @@
+import { BigInteger } from "big-integer";
+
 /**
 *  Writes a number as a string
 *
@@ -6,7 +8,7 @@
 *  @param num_decimal_places - The number of decimal places to shift the decimal point.
 *  @param negative - Whether to print a minus sign in the front.
 */
-export function write_decimal( number: bigint, num_decimal_places: number, negative: boolean ): string {
+export function write_decimal( number: BigInteger, num_decimal_places: number, negative: boolean ): string {
     let str = "";
     let num_digits = 0;
     let isNegative = false;

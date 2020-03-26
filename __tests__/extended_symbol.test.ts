@@ -1,7 +1,8 @@
 import { name, symbol, extended_symbol } from ".."
+import bigInt from "big-integer";
 
 // const u64min = 0n;
-const u64max = 18446744073709551615n;
+const u64max = bigInt("18446744073709551615");
 
 test("extended_symbol", () => {
     const n0 = name("1");
@@ -21,26 +22,26 @@ test("extended_symbol", () => {
     //// constexpr extended_symbol()
     // constexpr name get_symbol()
     // constexpr name get_contract()
-    expect( extended_symbol( ).get_symbol().raw() ).toBe( 0n )
-    expect( extended_symbol( ).get_contract().value ).toBe( 0n )
+    expect( extended_symbol( ).get_symbol().raw() ).toStrictEqual( bigInt("0") )
+    expect( extended_symbol( ).get_contract().value ).toStrictEqual( bigInt("0") )
 
     //// constexpr extended_symbol(symbol, name)
-    expect( extended_symbol( s0, n0 ).get_symbol().raw()).toBe( 16640n )
-    expect( extended_symbol( s0, n1 ).get_symbol().code().raw()).toBe( 65n )
-    expect( extended_symbol( s1, n2 ).get_symbol().raw()).toBe( 23040n )
-    expect( extended_symbol( s1, n3 ).get_symbol().code().raw()).toBe( 90n )
-    expect( extended_symbol( s0, n0 ).get_contract().value).toBe( 576460752303423488n )
-    expect( extended_symbol( s0, n1 ).get_contract().value).toBe( 2882303761517117440n )
-    expect( extended_symbol( s1, n2 ).get_contract().value).toBe( 3458764513820540928n )
-    expect( extended_symbol( s1, n3 ).get_contract().value).toBe( 17870283321406128128n )
-    expect( extended_symbol( s2, n4 ).get_symbol().raw()).toBe( 4702111234474983935n )
-    expect( extended_symbol( s2, n5 ).get_symbol().code().raw()).toBe( 18367622009667905n )
-    expect( extended_symbol( s3, n6 ).get_symbol().raw()).toBe( 6510615555426900735n )
-    expect( extended_symbol( s3, n7 ).get_symbol().code().raw()).toBe( 25432092013386330n )
-    expect( extended_symbol( s2, n4 ).get_contract().value).toBe( 595056260442243615n )
-    expect( extended_symbol( s2, n5 ).get_contract().value).toBe( 2975281302211218015n )
-    expect( extended_symbol( s3, n6 ).get_contract().value).toBe( 3570337562653461615n )
-    expect( extended_symbol( s3, n7 ).get_contract().value).toBe( u64max )
+    expect( extended_symbol( s0, n0 ).get_symbol().raw()).toStrictEqual( bigInt("16640") )
+    expect( extended_symbol( s0, n1 ).get_symbol().code().raw()).toStrictEqual( bigInt("65") )
+    expect( extended_symbol( s1, n2 ).get_symbol().raw()).toStrictEqual( bigInt("23040") )
+    expect( extended_symbol( s1, n3 ).get_symbol().code().raw()).toStrictEqual( bigInt("90") )
+    expect( extended_symbol( s0, n0 ).get_contract().value).toStrictEqual( bigInt("576460752303423488") )
+    expect( extended_symbol( s0, n1 ).get_contract().value).toStrictEqual( bigInt("2882303761517117440") )
+    expect( extended_symbol( s1, n2 ).get_contract().value).toStrictEqual( bigInt("3458764513820540928") )
+    expect( extended_symbol( s1, n3 ).get_contract().value).toStrictEqual( bigInt("17870283321406128128") )
+    expect( extended_symbol( s2, n4 ).get_symbol().raw()).toStrictEqual( bigInt("4702111234474983935") )
+    expect( extended_symbol( s2, n5 ).get_symbol().code().raw()).toStrictEqual( bigInt("18367622009667905") )
+    expect( extended_symbol( s3, n6 ).get_symbol().raw()).toStrictEqual( bigInt("6510615555426900735") )
+    expect( extended_symbol( s3, n7 ).get_symbol().code().raw()).toStrictEqual( bigInt("25432092013386330") )
+    expect( extended_symbol( s2, n4 ).get_contract().value).toStrictEqual( bigInt("595056260442243615") )
+    expect( extended_symbol( s2, n5 ).get_contract().value).toStrictEqual( bigInt("2975281302211218015") )
+    expect( extended_symbol( s3, n6 ).get_contract().value).toStrictEqual( bigInt("3570337562653461615") )
+    expect( extended_symbol( s3, n7 ).get_contract().value).toStrictEqual( u64max )
 
     // ---------------------
     // void print(bool)const
@@ -57,22 +58,22 @@ test("extended_symbol", () => {
 
     // -------------------------------------------------------------------------------
     // friend constexpr bool operator==(const extended_symbol&, const extended_symbol&)
-    expect( extended_symbol(s0, n0).isEqual( extended_symbol(s0, n0))).toBeTruthy()
-    expect( extended_symbol(s1, n3).isEqual( extended_symbol(s1, n3))).toBeTruthy()
-    expect( extended_symbol(s2, n4).isEqual( extended_symbol(s2, n4))).toBeTruthy()
-    expect( extended_symbol(s3, n7).isEqual( extended_symbol(s3, n7))).toBeTruthy()
+    expect( extended_symbol( s0, n0 ).isEqual( extended_symbol( s0, n0 ))).toBeTruthy()
+    expect( extended_symbol( s1, n3 ).isEqual( extended_symbol( s1, n3 ))).toBeTruthy()
+    expect( extended_symbol( s2, n4 ).isEqual( extended_symbol( s2, n4 ))).toBeTruthy()
+    expect( extended_symbol( s3, n7 ).isEqual( extended_symbol( s3, n7 ))).toBeTruthy()
 
     // -------------------------------------------------------------------------------
     // friend constexpr bool operator!=(const extended_symbol&, const extended_symbol&)
-    expect( extended_symbol().isNotEqual( extended_symbol( s0, undefined ))).toBeTruthy()
-    expect( extended_symbol(s0, undefined).isNotEqual( extended_symbol( s1, undefined ))).toBeTruthy()
-    expect( extended_symbol(s1, undefined).isNotEqual( extended_symbol( s2, undefined ))).toBeTruthy()
-    expect( extended_symbol(s2, undefined).isNotEqual( extended_symbol( s3, undefined ))).toBeTruthy()
+    expect( extended_symbol().isNotEqual( extended_symbol( s0 ))).toBeTruthy()
+    expect( extended_symbol( s0 ).isNotEqual( extended_symbol( s1 ))).toBeTruthy()
+    expect( extended_symbol( s1 ).isNotEqual( extended_symbol( s2 ))).toBeTruthy()
+    expect( extended_symbol( s2 ).isNotEqual( extended_symbol( s3 ))).toBeTruthy()
 
     // -------------------------------------------------------------------------------
     // friend constexpr bool operator<(const extended_symbol&, const extended_symbol&)
-    expect( extended_symbol().isLessThan( extended_symbol( s0, undefined ))).toBeTruthy()
-    expect( extended_symbol().isLessThan( extended_symbol( s1, undefined ))).toBeTruthy()
-    expect( extended_symbol().isLessThan( extended_symbol( s2, undefined ))).toBeTruthy()
-    expect( extended_symbol().isLessThan( extended_symbol( s3, undefined ))).toBeTruthy()
+    expect( extended_symbol().isLessThan( extended_symbol( s0 ))).toBeTruthy()
+    expect( extended_symbol().isLessThan( extended_symbol( s1 ))).toBeTruthy()
+    expect( extended_symbol().isLessThan( extended_symbol( s2 ))).toBeTruthy()
+    expect( extended_symbol().isLessThan( extended_symbol( s3 ))).toBeTruthy()
 })

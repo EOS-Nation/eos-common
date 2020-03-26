@@ -1,8 +1,9 @@
 import { asset, symbol } from "..";
+import bigInt from "big-integer";
 
-const asset_mask: bigint = (BigInt(1) << BigInt(62)) - BigInt(1);
-const asset_min: bigint = -asset_mask; // -4611686018427387903
-const asset_max: bigint = asset_mask; //  4611686018427387903
+const asset_mask = (bigInt(1).shiftLeft(62)).minus(1);
+const asset_min = asset_mask.multiply(-1); // -4611686018427387903
+const asset_max = asset_mask; //  4611686018427387903
 
 test("asset_type_test", () => {
     const s0 = symbol("A", 0);
@@ -13,31 +14,31 @@ test("asset_type_test", () => {
     const sym_prec = symbol("SYMBOLL", 63);   // Symbol with precision
 
     //// constexpr asset()
-    expect( asset().amount).toBe( 0n );
-    expect( asset().symbol.raw()).toBe( 0n );
+    expect( asset().amount).toStrictEqual( bigInt(0) );
+    expect( asset().symbol.raw()).toStrictEqual( bigInt(0) );
 
     //// constexpr asset(int64_t, symbol)
-    expect( asset(0n, s0).amount).toBe( 0n );
-    expect( asset(asset_min, s0).amount).toBe( asset_min );
-    expect( asset(asset_max, s0).amount).toBe( asset_max );
+    expect( asset( 0, s0).amount).toStrictEqual( bigInt(0) );
+    expect( asset( asset_min, s0).amount).toStrictEqual( asset_min );
+    expect( asset( asset_max, s0).amount).toStrictEqual( asset_max );
 
-    expect( asset(0n, s0).symbol.raw()).toBe( 16640n ) // "A", precision: 0
-    expect( asset(0n, s1).symbol.raw()).toBe( 23040n ) // "Z", precision: 0
-    expect( asset(0n, s2).symbol.raw()).toBe( 4702111234474983680n ) // "AAAAAAA", precision: 0
-    expect( asset(0n, s3).symbol.raw()).toBe( 6510615555426900480n ) // "ZZZZZZZ", precision: 0
+    expect( asset( 0, s0 ).symbol.raw()).toStrictEqual( bigInt("16640") ) // "A", precision: 0
+    expect( asset( 0, s1 ).symbol.raw()).toStrictEqual( bigInt("23040") ) // "Z", precision: 0
+    expect( asset( 0, s2 ).symbol.raw()).toStrictEqual( bigInt("4702111234474983680") ) // "AAAAAAA", precision: 0
+    expect( asset( 0, s3 ).symbol.raw()).toStrictEqual( bigInt("6510615555426900480") ) // "ZZZZZZZ", precision: 0
 
     // Note: there is an invariant established for `asset` that is not enforced for `symbol`
     // For example:
     // `symbol{};` // valid code
     // `asset{{}, symbol{}};` // throws "invalid symbol name"
 
-    expect( () => asset(0n, symbol( 0n ))).toThrow("invalid symbol name");
-    expect( () => asset(0n, symbol( 1n ))).toThrow("invalid symbol name");
-    expect( () => asset(0n, symbol( 16639n ))).toThrow("invalid symbol name");
-    expect( () => asset(0n, symbol( 6510615555426900736n ))).toThrow("invalid symbol name");
+    expect( () => asset(0, symbol( 0 ))).toThrow("invalid symbol name");
+    expect( () => asset(0, symbol( 1 ))).toThrow("invalid symbol name");
+    expect( () => asset(0, symbol( 16639 ))).toThrow("invalid symbol name");
+    expect( () => asset(0, symbol( bigInt("6510615555426900736") ))).toThrow("invalid symbol name");
 
-    expect( () => asset( asset_min - 1n, symbol() )).toThrow("magnitude of asset amount must be less than 2^62");
-    expect( () => asset( asset_max + 1n, symbol() )).toThrow("magnitude of asset amount must be less than 2^62");
+    expect( () => asset( asset_min.minus(1), symbol() )).toThrow("magnitude of asset amount must be less than 2^62");
+    expect( () => asset( asset_max.plus(1), symbol() )).toThrow("magnitude of asset amount must be less than 2^62");
 
     // ----------------------------------
     // bool is_amount_within_range()const
@@ -47,42 +48,42 @@ test("asset_type_test", () => {
     asset_check_amount.amount = asset_max;
     expect( asset_check_amount.is_amount_within_range()).toBeTruthy();
 
-    asset_check_amount.amount = asset_min - 1n;
+    asset_check_amount.amount = asset_min.minus(1);
     expect( asset_check_amount.is_amount_within_range()).toBeFalsy();
-    asset_check_amount.amount = asset_max + 1n;
+    asset_check_amount.amount = asset_max.plus(1);
     expect( asset_check_amount.is_amount_within_range()).toBeFalsy();
 
     // --------------------
     // bool is_valid()const
     const asset_valid = asset();
-    asset_valid.symbol = symbol(16640); // "A", precision: 0
+    asset_valid.symbol = symbol( 16640 ); // "A", precision: 0
     expect( asset_valid.is_valid() ).toBeTruthy();
-    asset_valid.symbol = symbol( 23040n ); // "Z", precision: 0
+    asset_valid.symbol = symbol( 23040 ); // "Z", precision: 0
     expect( asset_valid.is_valid() ).toBeTruthy();
-    asset_valid.symbol = symbol( 4702111234474983680n );
+    asset_valid.symbol = symbol( bigInt("4702111234474983680") );
     expect( asset_valid.is_valid() ).toBeTruthy(); // "AAAAAAA", precision: 0
-    asset_valid.symbol = symbol( 6510615555426900480n );
+    asset_valid.symbol = symbol( bigInt("6510615555426900480") );
     expect( asset_valid.is_valid() ).toBeTruthy(); // "ZZZZZZZ", precision: 0
 
-    asset_valid.symbol = symbol( 16639n );
+    asset_valid.symbol = symbol( bigInt("16639") );
     expect( asset_valid.is_valid() ).toBeFalsy();
-    asset_valid.symbol = symbol( 6510615555426900736n );
+    asset_valid.symbol = symbol( bigInt("6510615555426900736") );
     expect( asset_valid.is_valid() ).toBeFalsy();
 
     // ------------------------
     // void set_amount(int64_t)
-    const asset_set_amount = asset( 0n, sym_no_prec );
-    asset_set_amount.set_amount( 0n );
-    expect( asset_set_amount.amount ).toBe( 0n );
-    asset_set_amount.set_amount( 1n );
-    expect( asset_set_amount.amount).toBe( 1n );
+    const asset_set_amount = asset( 0, sym_no_prec );
+    asset_set_amount.set_amount( 0 );
+    expect( asset_set_amount.amount ).toStrictEqual( bigInt(0) );
+    asset_set_amount.set_amount( 1 );
+    expect( asset_set_amount.amount).toStrictEqual( bigInt(1) );
     asset_set_amount.set_amount( asset_min );
-    expect( asset_set_amount.amount ).toBe( asset_min )
+    expect( asset_set_amount.amount ).toStrictEqual( asset_min )
     asset_set_amount.set_amount( asset_max );
-    expect( asset_set_amount.amount).toBe( asset_max );
+    expect( asset_set_amount.amount).toStrictEqual( asset_max );
 
-    expect( () => asset_set_amount.set_amount( asset_min - 1n ) ).toThrow("magnitude of asset amount must be less than 2^62");
-    expect( () => asset_set_amount.set_amount( asset_max + 1n ) ).toThrow("magnitude of asset amount must be less than 2^62");
+    expect( () => asset_set_amount.set_amount( asset_min.minus(1) ) ).toThrow("magnitude of asset amount must be less than 2^62");
+    expect( () => asset_set_amount.set_amount( asset_max.plus(1) ) ).toThrow("magnitude of asset amount must be less than 2^62");
 
     // ---------------------
     // std::to_string()const
@@ -91,27 +92,27 @@ test("asset_type_test", () => {
     // This will trigger an error:
     // `asset{int64_t{1LL}, symbol{"SYMBOLL", 64}}.print();` // output: "Floating point exception: ..."
 
-    expect( asset( 0n, sym_no_prec).to_string()).toBe( "0 SYMBOLL" )
-    expect( asset(-0n, sym_no_prec).to_string()).toBe( "0 SYMBOLL" )
-    expect( asset( 0n, sym_prec).to_string()).toBe( "0.000000000000000000000000000000000000000000000000000000000000000 SYMBOLL" )
-    expect( asset(-0n, sym_prec).to_string()).toBe( "0.000000000000000000000000000000000000000000000000000000000000000 SYMBOLL" )
+    expect( asset( 0, sym_no_prec).to_string()).toBe( "0 SYMBOLL" )
+    expect( asset(-0, sym_no_prec).to_string()).toBe( "0 SYMBOLL" )
+    expect( asset( 0, sym_prec).to_string()).toBe( "0.000000000000000000000000000000000000000000000000000000000000000 SYMBOLL" )
+    expect( asset(-0, sym_prec).to_string()).toBe( "0.000000000000000000000000000000000000000000000000000000000000000 SYMBOLL" )
 
-    expect( asset(  1n, sym_no_prec).to_string() ).toBe(  "1 SYMBOLL" )
-    expect( asset( -1n, sym_no_prec).to_string() ).toBe( "-1 SYMBOLL" )
-    expect( asset( -1n, symbol("SYMBOLL", 1) ).to_string()).toBe( "-0.1 SYMBOLL" );
-    expect( asset(  1n, symbol("SYMBOLL", 1) ).to_string()).toBe(  "0.1 SYMBOLL" );
-    expect( asset( -12n, sym_no_prec).to_string() ).toBe( "-12 SYMBOLL" )
-    expect( asset(  12n, sym_no_prec).to_string() ).toBe(  "12 SYMBOLL" )
-    expect( asset( -123n, sym_no_prec).to_string() ).toBe( "-123 SYMBOLL" )
-    expect( asset(  123n, sym_no_prec).to_string() ).toBe(  "123 SYMBOLL" )
-    expect( asset( -12n, symbol("SYMBOLL", 2) ).to_string()).toBe( "-0.12 SYMBOLL" );
-    expect( asset(  12n, symbol("SYMBOLL", 2) ).to_string()).toBe(  "0.12 SYMBOLL" );
-    expect( asset( -12n, symbol("SYMBOLL", 1) ).to_string()).toBe( "-1.2 SYMBOLL" );
-    expect( asset(  12n, symbol("SYMBOLL", 1) ).to_string()).toBe(  "1.2 SYMBOLL" );
-    expect( asset( -123n, symbol("SYMBOLL", 2) ).to_string()).toBe( "-1.23 SYMBOLL" );
-    expect( asset(  123n, symbol("SYMBOLL", 2) ).to_string()).toBe(  "1.23 SYMBOLL" );
-    expect( asset(  1n, sym_prec).to_string() ).toBe( "0.000000000000000000000000000000000000000000000000000000000000001 SYMBOLL" )
-    expect( asset( -1n, sym_prec).to_string() ).toBe( "-0.000000000000000000000000000000000000000000000000000000000000001 SYMBOLL" )
+    expect( asset(  1, sym_no_prec).to_string() ).toBe(  "1 SYMBOLL" )
+    expect( asset( -1, sym_no_prec).to_string() ).toBe( "-1 SYMBOLL" )
+    expect( asset( -1, symbol("SYMBOLL", 1) ).to_string()).toBe( "-0.1 SYMBOLL" );
+    expect( asset(  1, symbol("SYMBOLL", 1) ).to_string()).toBe(  "0.1 SYMBOLL" );
+    expect( asset( -12, sym_no_prec).to_string() ).toBe( "-12 SYMBOLL" )
+    expect( asset(  12, sym_no_prec).to_string() ).toBe(  "12 SYMBOLL" )
+    expect( asset( -123, sym_no_prec).to_string() ).toBe( "-123 SYMBOLL" )
+    expect( asset(  123, sym_no_prec).to_string() ).toBe(  "123 SYMBOLL" )
+    expect( asset( -12, symbol("SYMBOLL", 2) ).to_string()).toBe( "-0.12 SYMBOLL" );
+    expect( asset(  12, symbol("SYMBOLL", 2) ).to_string()).toBe(  "0.12 SYMBOLL" );
+    expect( asset( -12, symbol("SYMBOLL", 1) ).to_string()).toBe( "-1.2 SYMBOLL" );
+    expect( asset(  12, symbol("SYMBOLL", 1) ).to_string()).toBe(  "1.2 SYMBOLL" );
+    expect( asset( -123, symbol("SYMBOLL", 2) ).to_string()).toBe( "-1.23 SYMBOLL" );
+    expect( asset(  123, symbol("SYMBOLL", 2) ).to_string()).toBe(  "1.23 SYMBOLL" );
+    expect( asset(  1, sym_prec).to_string() ).toBe( "0.000000000000000000000000000000000000000000000000000000000000001 SYMBOLL" )
+    expect( asset( -1, sym_prec).to_string() ).toBe( "-0.000000000000000000000000000000000000000000000000000000000000001 SYMBOLL" )
 
     expect( asset( asset_min, sym_no_prec).to_string() ).toBe( "-4611686018427387903 SYMBOLL" )
     expect( asset( asset_max, sym_no_prec).to_string() ).toBe(  "4611686018427387903 SYMBOLL" )
@@ -128,20 +129,20 @@ test("asset_type_test", () => {
 
     // ----------------------
     // asset operator-()const
-    expect( asset( 0, sym_no_prec).times( -1 ).amount ).toBe( asset( 0, sym_no_prec).amount );
-    expect( asset(-0, sym_no_prec).times( -1 ).amount ).toBe( asset( 0, sym_no_prec).amount );
-    expect( asset( 0, sym_prec).times( -1 ).amount ).toBe( asset( 0, sym_prec).amount );
-    expect( asset(-0, sym_prec).times( -1 ).amount ).toBe( asset( 0, sym_prec).amount );
+    expect( asset( 0, sym_no_prec).times( -1 ).amount ).toStrictEqual( asset( 0, sym_no_prec).amount );
+    expect( asset(-0, sym_no_prec).times( -1 ).amount ).toStrictEqual( asset( 0, sym_no_prec).amount );
+    expect( asset( 0, sym_prec).times( -1 ).amount ).toStrictEqual( asset( 0, sym_prec).amount );
+    expect( asset(-0, sym_prec).times( -1 ).amount ).toStrictEqual( asset( 0, sym_prec).amount );
 
-    expect( asset( 1, sym_no_prec).times( -1 ).amount ).toBe( asset( -1, sym_no_prec ).amount );
-    expect( asset(-1, sym_no_prec).times( -1 ).amount ).toBe( asset( 1, sym_no_prec ).amount );
-    expect( asset( 1, sym_prec).times( -1 ).amount ).toBe( asset( -1, sym_prec ).amount );
-    expect( asset(-1, sym_prec).times( -1 ).amount ).toBe( asset( 1, sym_prec ).amount );
+    expect( asset( 1, sym_no_prec).times( -1 ).amount ).toStrictEqual( asset( -1, sym_no_prec ).amount );
+    expect( asset(-1, sym_no_prec).times( -1 ).amount ).toStrictEqual( asset( 1, sym_no_prec ).amount );
+    expect( asset( 1, sym_prec).times( -1 ).amount ).toStrictEqual( asset( -1, sym_prec ).amount );
+    expect( asset(-1, sym_prec).times( -1 ).amount ).toStrictEqual( asset( 1, sym_prec ).amount );
 
-    expect( asset( asset_min, sym_no_prec).times( -1 ).amount).toBe( asset( asset_max, sym_no_prec ).amount )
-    expect( asset( asset_max, sym_no_prec).times( -1 ).amount).toBe( asset( asset_min, sym_no_prec ).amount )
-    expect( asset( asset_min, sym_prec).times( -1 ).amount).toBe( asset( asset_max, sym_prec ).amount )
-    expect( asset( asset_max, sym_prec).times( -1 ).amount).toBe( asset( asset_min, sym_prec ).amount )
+    expect( asset( asset_min, sym_no_prec).times( -1 ).amount).toStrictEqual( asset( asset_max, sym_no_prec ).amount )
+    expect( asset( asset_max, sym_no_prec).times( -1 ).amount).toStrictEqual( asset( asset_min, sym_no_prec ).amount )
+    expect( asset( asset_min, sym_prec).times( -1 ).amount).toStrictEqual( asset( asset_max, sym_prec ).amount )
+    expect( asset( asset_max, sym_prec).times( -1 ).amount).toStrictEqual( asset( asset_min, sym_prec ).amount )
 
     // ------------------------------------------------------------------------------------------
     // inline friend asset& operator+(const asset&, const asset&)/asset& operator+=(const asset&)
@@ -204,11 +205,11 @@ test("asset_type_test", () => {
 
     // ----------------------------------------------------
     // friend int64_t operator/(const asset&, const asset&)
-    expect( asset(  0, sym_no_prec ).div( asset( 1, sym_no_prec ) ).amount ).toBe( asset(  0, sym_no_prec ).amount )
-    expect( asset(  1, sym_no_prec ).div( asset( 1, sym_no_prec ) ).amount ).toBe( asset(  1, sym_no_prec ).amount )
-    expect( asset(  4, sym_no_prec ).div( asset( 2, sym_no_prec ) ).amount ).toBe( asset(  2, sym_no_prec ).amount )
-    expect( asset( -4, sym_no_prec ).div( asset( 2, sym_no_prec ) ).amount ).toBe( asset( -2, sym_no_prec ).amount )
-    expect( asset( -4, sym_no_prec ).div( asset( -2, sym_no_prec ) ).amount ).toBe( asset(  2, sym_no_prec ).amount )
+    expect( asset(  0, sym_no_prec ).div( asset( 1, sym_no_prec ) ).amount ).toStrictEqual( asset(  0, sym_no_prec ).amount )
+    expect( asset(  1, sym_no_prec ).div( asset( 1, sym_no_prec ) ).amount ).toStrictEqual( asset(  1, sym_no_prec ).amount )
+    expect( asset(  4, sym_no_prec ).div( asset( 2, sym_no_prec ) ).amount ).toStrictEqual( asset(  2, sym_no_prec ).amount )
+    expect( asset( -4, sym_no_prec ).div( asset( 2, sym_no_prec ) ).amount ).toStrictEqual( asset( -2, sym_no_prec ).amount )
+    expect( asset( -4, sym_no_prec ).div( asset( -2, sym_no_prec ) ).amount ).toStrictEqual( asset(  2, sym_no_prec ).amount )
 
     // ---------------------------------
     // friend asset& operator/=(int64_t)
@@ -247,8 +248,8 @@ test("asset_type_test", () => {
 
     // ---------------------------------------------------
     // friend bool operator!=( const asset&, const asset&)
-    expect( asset( asset_min, sym_no_prec ).isNotEqual( asset( asset_min * -1n, sym_no_prec ) )).toBeTruthy();
-    expect( asset( asset_max, sym_no_prec ).isNotEqual( asset( asset_max * -1n, sym_no_prec ) )).toBeTruthy();
+    expect( asset( asset_min, sym_no_prec ).isNotEqual( asset( asset_min.multiply(-1), sym_no_prec ) )).toBeTruthy();
+    expect( asset( asset_max, sym_no_prec ).isNotEqual( asset( asset_max.multiply(-1), sym_no_prec ) )).toBeTruthy();
 
     // -------------------------------------------------
     // friend bool operator<(const asset&, const asset&)

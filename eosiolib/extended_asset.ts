@@ -1,7 +1,39 @@
 import { Name } from "./name";
 import { Asset } from "./asset";
+// import { Sym } from "./symbol";
 import { ExtendedSymbol } from "./extended_symbol";
 import { check } from "./check";
+import bigInt, { BigInteger } from "big-integer";
+
+function getType( obj: any ): string {
+    if ( typeof obj == "object" && obj.typeof ) return obj.typeof;
+    return typeof obj;
+}
+
+function getAmount( obj: any ): BigInteger {
+    if ( obj.typeof == "asset" ) return obj.amount;
+    if ( obj.typeof == "extended_asset") return obj.quantity.amount;
+    if ( bigInt.isInstance( obj )) return obj;
+    if ( typeof obj == "number" ) return bigInt(obj);
+    if ( typeof obj == "bigint" ) return bigInt(obj);
+    if ( typeof obj == "string" ) return bigInt(obj);
+    throw new Error("invalid amount");
+}
+
+// function getSymbol( obj: any ): Sym | null {
+//     if ( obj.typeof == "extended_asset") return obj.quantity.symbol;
+//     if ( obj.typeof == "extended_symbol") return obj.get_symbol();
+//     if ( obj.typeof == "asset") return obj.symbol;
+//     if ( obj.typeof == "symbol") return obj;
+//     return null;
+// }
+
+function getContract( obj: any ): Name | null {
+    if ( obj.typeof == "extended_asset") return obj.contract;
+    if ( obj.typeof == "extended_symbol") return obj.get_contract();
+    if ( obj.typeof == "name") return obj;
+    return null;
+}
 
 /**
  * @class Stores the extended_asset
@@ -12,6 +44,8 @@ export class ExtendedAsset {
         return 'extended_asset';
     }
     public get typeof(): string { return 'extended_asset' }
+
+    public static isInstance( obj: any ): boolean { return obj instanceof ExtendedAsset; }
 
     /**
      * The asset
@@ -31,38 +65,30 @@ export class ExtendedAsset {
     public get_extended_symbol(): ExtendedSymbol { return new ExtendedSymbol( this.quantity.symbol, this.contract ); }
 
     /**
-     * Construct a new symbol_code object initialising symbol and contract with the passed in symbol and name
-     *
-     * @param sym - The symbol
-     * @param con - The name of the contract
+     * Extended asset which stores the information of the owner of the asset
      */
-    //    /**
-    //    * Construct a new extended asset given the amount and extended symbol
-    //    */
-    //   extended_asset( int64_t v, extended_symbol s ):quantity(v,s.get_symbol()),contract(s.get_contract()){}
-    //   /**
-    //    * Construct a new extended asset given the asset and owner name
-    //    */
-    //   extended_asset( asset a, name c ):quantity(a),contract(c){}
-    constructor ( options: {
-        amount?: number | bigint;
-        ext_sym?: ExtendedSymbol;
-        quantity?: Asset | string;
-        contract?: Name | string;
-    } = {} ) {
-        if ( (typeof options.amount == "number" || typeof options.amount == "bigint") && options.ext_sym ) {
-            this.quantity = new Asset( options.amount, options.ext_sym.get_symbol() )
-            this.contract = options.ext_sym.get_contract();
+    constructor ( a: Asset, c: Name )
+    constructor ( c: Name )
+    constructor ( v: number | bigint | BigInteger, s: ExtendedSymbol )
+    constructor ( s: ExtendedSymbol )
+    constructor ( obj1?: any, obj2?: any ) {
+        // Asset & Contract
+        if ( getType(obj1) == "asset" ) this.quantity = obj1;
+        if ( getType(obj2) == "name" ) this.contract = obj2;
+
+        // Contract
+        if ( getType(obj1) == "name" ) this.contract = obj1;
+
+        // Value & Extended Symbol
+        if ( getType(obj2) == "extended_symbol" ) {
+            this.quantity = new Asset( bigInt( obj1 || 0 ), obj2.get_symbol() );
+            this.contract = obj2.get_contract();
         }
-        if ( options.contract ) {
-            this.contract = typeof options.contract == "string" ? new Name( options.contract ) : options.contract;
-        }
-        if ( options.quantity ) {
-            this.quantity = typeof options.quantity == "string" ? new Asset( options.quantity ) : options.quantity;
-        }
-        if ( options.ext_sym ) {
-            this.quantity = new Asset( 0, options.ext_sym.get_symbol() )
-            this.contract = options.ext_sym.get_contract();
+
+        // Extended Symbol
+        if ( getType(obj1) == "extended_symbol" ) {
+            this.quantity = new Asset( 0, obj1.get_symbol() );
+            this.contract = obj1.get_contract();
         }
     }
 
@@ -77,89 +103,89 @@ export class ExtendedAsset {
     /// @cond OPERATORS
 
     // Multiplication assignment operator
-    public times(a: ExtendedAsset | number | bigint ): ExtendedAsset {
-        let amount: bigint;
-        if ( typeof a == "bigint" || typeof a == "number") {
-            amount = BigInt(a);
-        } else {
-            check( a.contract.raw() == this.contract.raw(), "type mismatch" );
-            amount = a.quantity.amount;
-        }
+    public times(a: ExtendedAsset | number | bigint | BigInteger ): ExtendedAsset {
+        const amount = getAmount( a );
+        const contract = getContract( a );
+
+        if ( contract ) check( contract.raw().equals( this.contract.raw() ), "type mismatch" );
         this.quantity.times( amount );
         return this;
     }
 
-    public static times(a: ExtendedAsset, b: ExtendedAsset | number | bigint ): ExtendedAsset {
-        if ( typeof b != "bigint" && typeof b != "number") check( a.contract.raw() == b.contract.raw(), "type mismatch" );
-        const result = new ExtendedAsset({ quantity: a.quantity, contract: a.contract });
-        result.times(b);
+    public static times(a: ExtendedAsset, b: ExtendedAsset | number | bigint | BigInteger ): ExtendedAsset {
+        const contract = getContract( a );
+
+        if ( contract ) check( a.contract.raw().equals( contract.raw() ), "type mismatch" );
+        const result = new ExtendedAsset( a.quantity, a.contract );
+        result.times( b );
         return result;
     }
 
     // Division operator
-    public div(a: ExtendedAsset | number | bigint ): ExtendedAsset {
-        let amount: bigint;
-        if ( typeof a == "bigint" || typeof a == "number") {
-            amount = BigInt(a);
-        } else {
-            check( a.contract.raw() == this.contract.raw(), "type mismatch" );
-            amount = a.quantity.amount;
-        }
+    public div(a: ExtendedAsset | number | bigint | BigInteger ): ExtendedAsset {
+        const amount = getAmount( a );
+        const contract = getContract( a );
+
+        if ( contract ) check( contract.raw().equals( this.contract.raw() ), "type mismatch" );
         this.quantity.div( amount );
         return this;
     }
 
-    public static div(a: ExtendedAsset, b: ExtendedAsset | number | bigint ): ExtendedAsset {
-        if ( typeof b != "bigint" && typeof b != "number") check( a.contract.raw() == b.contract.raw(), "type mismatch" );
-        const result = new ExtendedAsset({ quantity: a.quantity, contract: a.contract });
-        result.div(b);
+    public static div(a: ExtendedAsset, b: ExtendedAsset | number | bigint | BigInteger ): ExtendedAsset {
+        const contract = getContract( a );
+
+        if ( contract ) check( a.contract.raw().equals( contract.raw() ), "type mismatch" );
+        const result = new ExtendedAsset( a.quantity, a.contract );
+        result.div( b );
         return result;
     }
 
     // Subtraction operator
-    public minus( a: ExtendedAsset | number | bigint ): ExtendedAsset {
-        if ( typeof a == "bigint" || typeof a == "number") {
-            this.quantity.minus( a );
-        } else {
-            check( a.contract.raw() == this.contract.raw(), "type mismatch" );
-            this.quantity.minus( a.quantity );
-        }
+    public minus( a: ExtendedAsset | number | bigint | BigInteger ): ExtendedAsset {
+        const amount = getAmount( a );
+        const contract = getContract( a );
+
+        if ( contract ) check( contract.raw().equals( this.contract.raw() ), "type mismatch" );
+        this.quantity.minus( amount );
         return this;
     }
 
     public static minus(a: ExtendedAsset, b: ExtendedAsset | number | bigint ): ExtendedAsset {
-        if ( typeof b != "bigint" && typeof b != "number") check( a.contract.raw() == b.contract.raw(), "type mismatch" );
-        const result = new ExtendedAsset({ quantity: a.quantity, contract: a.contract });
-        result.minus(b);
+        const contract = getContract( a );
+
+        if ( contract ) check( a.contract.raw().equals( contract.raw() ), "type mismatch" );
+        const result = new ExtendedAsset( a.quantity, a.contract );
+        result.minus( b );
         return result;
     }
 
     // Addition operator
     public plus( a: ExtendedAsset | number | bigint ): ExtendedAsset {
-        if ( typeof a == "bigint" || typeof a == "number") {
-            this.quantity.plus( a );
-        } else {
-            check( a.contract.raw() == this.contract.raw(), "type mismatch" );
-            this.quantity.plus( a.quantity );
-        }
+        const amount = getAmount( a );
+        const contract = getContract( a );
+
+        if ( contract ) check( contract.raw().equals( this.contract.raw() ), "type mismatch" );
+        this.quantity.plus( amount );
         return this;
     }
 
     public static plus(a: ExtendedAsset, b: ExtendedAsset | number | bigint ): ExtendedAsset {
-        if ( typeof b != "bigint" && typeof b != "number") check( a.contract.raw() == b.contract.raw(), "type mismatch" );
-        const result = new ExtendedAsset({ quantity: a.quantity, contract: a.contract });
-        result.plus(b);
+        const contract = getContract( a );
+
+        if ( contract ) check( a.contract.raw().equals( contract.raw() ), "type mismatch" );
+        const result = new ExtendedAsset( a.quantity, a.contract );
+        result.plus( b );
         return result;
     }
 
     /// Less than operator
     public isLessThan( a: ExtendedAsset ): boolean {
-        check( a.contract.raw() == this.contract.raw(), "type mismatch" );
+        check( a.contract.raw().equals(this.contract.raw()), "type mismatch" );
         return this.quantity.isLessThan( a.quantity );
     }
 
     public static isLessThan( a: ExtendedAsset, b: ExtendedAsset ): boolean {
-        check( a.contract.raw() == b.contract.raw(), "type mismatch" );
+        check( a.contract.raw().equals(b.contract.raw()), "type mismatch" );
         return a.quantity.isLessThan( b.quantity );
     }
 
@@ -181,32 +207,63 @@ export class ExtendedAsset {
 
     /// Comparison operator
     public isLessThanOrEqual( a: ExtendedAsset ): boolean {
-        check( a.contract.raw() == this.contract.raw(), "type mismatch" );
+        check( a.contract.raw().equals(this.contract.raw()), "type mismatch" );
         return this.quantity.isLessThanOrEqual( a.quantity );
     }
 
     public static isLessThanOrEqual( a: ExtendedAsset, b: ExtendedAsset ): boolean {
-        check( a.contract.raw() == b.contract.raw(), "type mismatch" );
+        check( a.contract.raw().equals(b.contract.raw()), "type mismatch" );
         return a.quantity.isLessThanOrEqual( b.quantity );
     }
 
     /// Comparison operator
     public isGreaterThanOrEqual( a: ExtendedAsset ): boolean {
-        check( a.contract.raw() == this.contract.raw(), "type mismatch" );
+        check( a.contract.raw().equals( this.contract.raw()), "type mismatch" );
         return this.quantity.isGreaterThanOrEqual( a.quantity );
     }
 
     public static isGreaterThanOrEqual( a: ExtendedAsset, b: ExtendedAsset ): boolean {
-        check( a.contract.raw() == b.contract.raw(), "type mismatch" );
+        check( a.contract.raw().equals( b.contract.raw()), "type mismatch" );
         return a.quantity.isGreaterThanOrEqual( b.quantity );
     }
 }
 
-export function extended_asset( options: {
-    amount?: number | bigint;
-    ext_sym?: ExtendedSymbol;
-    quantity?: Asset | string;
-    contract?: Name | string;
-} = {} ): ExtendedAsset {
-    return new ExtendedAsset( options );
+export const extended_asset: {
+    /**
+     * Asset & Contract
+     *
+     * @example
+     *
+     * extended_asset( asset("1.0000 EOS"), name("eosio.token"))
+     */
+    ( a?: Asset, c?: Name ): ExtendedAsset;
+
+    /**
+     * Extended Symbol
+     *
+     * @example
+     *
+     * extended_asset( extended_symbol("4,EOS", "eosio.token") )
+     */
+    ( s?: ExtendedSymbol ): ExtendedAsset;
+
+    /**
+     * Contract
+     *
+     * @example
+     *
+     * extended_asset( name("eosio.token") )
+     */
+    ( c?: Name ): ExtendedAsset;
+
+    /**
+     * Value & Extended Symbol
+     *
+     * @example
+     *
+     * extended_asset( 10000, extended_symbol("4,EOS", "eosio.token"))
+     */
+    ( v?: number | bigint | BigInteger, s?: ExtendedSymbol ): ExtendedAsset;
+} = ( obj1?: any, obj2?: any ) => {
+    return new ExtendedAsset( obj1, obj2 );
 }

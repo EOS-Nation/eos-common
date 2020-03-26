@@ -1,15 +1,16 @@
 import { Sym } from "./symbol";
 import { Asset } from "./asset";
+import bigInt, { BigInteger } from "big-integer";
 
-export function asset_to_bigint( quantity: Asset ): bigint
+export function asset_to_bigint( quantity: Asset ): BigInteger
 {
-    if ( quantity.amount == BigInt(0) ) return BigInt(0.0);
-    return BigInt(quantity.amount) / BigInt( Math.pow(10, quantity.symbol.precision()) );
+    if ( quantity.amount == bigInt(0) ) return bigInt(0.0);
+    return bigInt(quantity.amount).divide( Math.pow(10, quantity.symbol.precision()) );
 }
 
-export function bigint_to_asset( amount: number | bigint, sym: Sym ): Asset
+export function bigint_to_asset( amount: number | BigInteger, sym: Sym ): Asset
 {
-    return new Asset( BigInt(amount) * BigInt(Math.pow(10, sym.precision())), sym );
+    return new Asset( amount, sym ).times(Math.pow(10, sym.precision()));
 }
 
 export function asset_to_number( quantity: Asset ): number

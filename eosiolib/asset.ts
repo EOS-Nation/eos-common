@@ -1,13 +1,26 @@
 import { Sym, symbol } from "./symbol";
 import { check } from "./check";
 import { write_decimal } from "./eosiolib";
+import bigInt, { BigInteger } from "big-integer";
 
-function number_to_bigint( num: number ): bigint {
-    return BigInt( num.toFixed(0) );
+function number_to_bigint( num: number ): BigInteger {
+    return bigInt( num.toFixed(0) );
 }
 
 function isNull( value: any ): boolean {
     return value == undefined || value == null
+}
+
+function getAmount( a: Asset | number | bigint | BigInteger ): BigInteger {
+    const obj: any = a;
+    if ( obj.typeof == "asset" ) return obj.amount;
+    return bigInt(obj);
+}
+
+function getSymbol( a: Asset | number | bigint | BigInteger ): Sym | null {
+    const obj: any = a;
+    if ( obj.typeof == "asset") return obj.symbol;
+    return null;
 }
 
 /**
@@ -33,12 +46,12 @@ export class Asset {
     /**
      * {constexpr int64_t} Maximum amount possible for this asset. It's capped to 2^62 - 1
      */
-    public static max_amount = (BigInt(1) << BigInt(62)) - BigInt(1);
+    public static max_amount = (bigInt(1).shiftLeft(62)).minus(1);
 
     /**
      * {int64_t} The amount of the asset
      */
-    public amount = BigInt(0);
+    public amount = bigInt(0);
 
     /**
      * {symbol} The symbol name of the asset
@@ -51,7 +64,7 @@ export class Asset {
      * @param amount - The amount of the asset
      * @param sym - The name of the symbol
      */
-    constructor ( amount?: string | number | bigint, sym?: Sym ) {
+    constructor ( amount?: string | number | BigInteger, sym?: Sym ) {
         if ( isNull(amount) && isNull(sym) ) {
             return;
         }
@@ -61,7 +74,7 @@ export class Asset {
             this.amount = number_to_bigint( Number(amount_str) * Math.pow(10, precision));
             this.symbol = new Sym( symbol_str, precision );
         } else if ( sym ) {
-            this.amount = (typeof amount == "number") ? number_to_bigint(amount) : BigInt(amount);
+            this.amount = (typeof amount == "number") ? number_to_bigint(amount) : amount || bigInt(0);
             this.symbol = sym;
         } else {
             throw new Error("[sym] is required");
@@ -78,7 +91,7 @@ export class Asset {
      * @return false - otherwise
      */
     public is_amount_within_range(): boolean {
-        return -BigInt(Asset.max_amount) <= BigInt(this.amount) && this.amount <= Asset.max_amount;
+        return (Asset.max_amount.multiply(-1)).lesserOrEquals(this.amount) && this.amount.lesserOrEquals(Asset.max_amount);
     }
 
     /**
@@ -96,8 +109,8 @@ export class Asset {
      *
      * @param a - New amount for the asset
      */
-    public set_amount( amount: bigint | number ): void {
-        this.amount = BigInt(amount);
+    public set_amount( amount: BigInteger | number ): void {
+        this.amount = typeof amount == "number" ? bigInt(amount) : amount;
         check( this.is_amount_within_range(), "magnitude of asset amount must be less than 2^62" );
     }
 
@@ -108,15 +121,14 @@ export class Asset {
      * @return asset& - Reference to this asset
      * @post The amount of this asset is subtracted by the amount of asset a
      */
-    public minus( a: Asset | number | bigint ): Asset {
-        if ( typeof a == "number" || typeof a == "bigint") {
-            this.amount -= BigInt( a );
-        } else {
-            check( a.symbol.isEqual( this.symbol ), "attempt to subtract asset with different symbol" );
-            this.amount -= a.amount;
-        }
-        check( -Asset.max_amount <= this.amount, "subtraction underflow" );
-        check( this.amount <= Asset.max_amount,  "subtraction overflow" );
+    public minus( a: Asset | number | bigint | BigInteger ): Asset {
+        const amount = getAmount( a );
+        const sym = getSymbol( a );
+        if ( sym ) check( sym.isEqual( this.symbol ), "attempt to subtract asset with different symbol" );
+
+        this.amount = this.amount.minus( amount );
+        check( Asset.max_amount.multiply(-1).lesserOrEquals(this.amount), "subtraction underflow" );
+        check( this.amount.lesserOrEquals(Asset.max_amount),  "subtraction overflow" );
         return this;
     }
 
@@ -127,15 +139,14 @@ export class Asset {
      * @return asset& - Reference to this asset
      * @post The amount of this asset is added with the amount of asset a
      */
-    public plus( a: Asset | number | bigint ): Asset {
-        if ( typeof a == "number" || typeof a == "bigint") {
-            this.amount += BigInt( a );
-        } else {
-            check( a.symbol.isEqual( this.symbol ), "attempt to add asset with different symbol" );
-            this.amount += a.amount;
-        }
-        check( -Asset.max_amount <= this.amount, "addition underflow" );
-        check( this.amount <= Asset.max_amount,  "addition overflow" );
+    public plus( a: Asset | number | bigint | BigInteger ): Asset {
+        const amount = getAmount( a );
+        const sym = getSymbol( a );
+        if ( sym ) check( sym.isEqual( this.symbol ), "attempt to add asset with different symbol" );
+
+        this.amount = this.amount.plus( amount );
+        check( Asset.max_amount.multiply(-1).lesserOrEquals(this.amount), "addition underflow" );
+        check( this.amount.lesserOrEquals( Asset.max_amount ),  "addition overflow" );
         return this;
     }
 
@@ -146,7 +157,7 @@ export class Asset {
      * @param b - The second asset to be added
      * @return asset - New asset as the result of addition
      */
-    public static plus( a: Asset, b: Asset ): Asset {
+    public static plus( a: Asset, b: Asset | number | bigint | BigInteger ): Asset {
         const result = new Asset(a.amount, a.symbol);
         result.plus( b );
         return result;
@@ -159,7 +170,7 @@ export class Asset {
      * @param b - The asset used to subtract
      * @return asset - New asset as the result of subtraction of a with b
      */
-    public static minus( a: Asset, b: Asset ): Asset {
+    public static minus( a: Asset, b: Asset | number | bigint | BigInteger ): Asset {
         const result = new Asset(a.amount, a.symbol);
         result.minus( b );
         return result;
@@ -173,17 +184,14 @@ export class Asset {
      * @return asset - Reference to this asset
      * @post The amount of this asset is multiplied by a
      */
-    public times( a: number | bigint | Asset ): Asset {
-        let amount: bigint;
-        if ( typeof a == "number" || typeof a == "bigint") {
-            amount = BigInt(a)
-        } else {
-            check( a.symbol.isEqual( this.symbol ), "comparison of assets with different symbols is not allowed" );
-            amount = a.amount;
-        }
-        const tmp = this.amount * amount;
-        check( tmp <= Asset.max_amount, "multiplication overflow" );
-        check( tmp >= -Asset.max_amount, "multiplication underflow" );
+    public times( a: Asset | number | bigint | BigInteger ): Asset {
+        const amount = getAmount( a );
+        const sym = getSymbol( a );
+        if ( sym ) check( sym.isEqual( this.symbol ), "comparison of assets with different symbols is not allowed" );
+
+        const tmp = this.amount.multiply(amount);
+        check( tmp.lesserOrEquals( Asset.max_amount), "multiplication overflow" );
+        check( tmp.greaterOrEquals(Asset.max_amount.multiply(-1)), "multiplication underflow" );
         this.amount = tmp;
         return this;
     }
@@ -196,7 +204,7 @@ export class Asset {
      * @param b - The multiplier for the asset's amount
      * @return asset - New asset as the result of multiplication
      */
-    public static times( a: Asset, b: number | bigint | Asset ): Asset {
+    public static times( a: Asset, b: Asset | number | bigint | BigInteger ): Asset {
         const result = new Asset(a.amount, a.symbol);
         result.times(b);
         return result;
@@ -210,17 +218,14 @@ export class Asset {
      * @return asset - Reference to this asset
      * @post The amount of this asset is divided by a
      */
-    public div( a: number | bigint | Asset ): Asset {
-        let amount: bigint;
-        if ( typeof a == "number" || typeof a == "bigint") {
-            amount = BigInt(a)
-        } else {
-            check( a.symbol.isEqual( this.symbol ), "comparison of assets with different symbols is not allowed" );
-            amount = a.amount;
-        }
-        check( amount != BigInt(0), "divide by zero" );
-        check( !(this.amount == -Asset.max_amount && amount == BigInt(-1)), "signed division overflow" );
-        this.amount /= amount;
+    public div( a: Asset | number | bigint | BigInteger ): Asset {
+        const amount = getAmount( a );
+        const sym = getSymbol( a );
+        if ( sym ) check( sym.isEqual( this.symbol ), "comparison of assets with different symbols is not allowed" );
+
+        check( amount.notEquals(0), "divide by zero" );
+        check( !(this.amount.equals(Asset.max_amount.multiply(-1)) && amount.equals(-1)), "signed division overflow" );
+        this.amount = this.amount.divide(amount);
         return this;
     }
 
@@ -231,7 +236,7 @@ export class Asset {
      * @param b - The divisor for the asset's amount
      * @return asset - New asset as the result of division
      */
-    public static div( a: Asset, b: number | bigint | Asset ): Asset {
+    public static div( a: Asset, b: Asset | number | bigint | BigInteger ): Asset {
         const result = new Asset( a.amount, a.symbol );
         result.div(b);
         return result;
@@ -248,12 +253,12 @@ export class Asset {
      */
     public static isEqual( a: Asset, b: Asset ): boolean {
         check( a.symbol.isEqual( b.symbol ), "comparison of assets with different symbols is not allowed" );
-        return a.amount == b.amount;
+        return a.amount.equals( b.amount );
     }
 
     public isEqual( a: Asset ): boolean {
         check( a.symbol.isEqual( this.symbol ), "comparison of assets with different symbols is not allowed" );
-        return a.amount == this.amount;
+        return a.amount.equals( this.amount );
     }
 
     /**
@@ -266,11 +271,11 @@ export class Asset {
      * @pre Both asset must have the same symbol
      */
     public static isNotEqual( a: Asset, b: Asset ): boolean {
-        return !( a == b);
+        return !( a.isEqual(b));
     }
 
     public isNotEqual( a: Asset ): boolean {
-        return !( a == this );
+        return !( a.isEqual(this) );
     }
 
     /**
@@ -284,12 +289,12 @@ export class Asset {
      */
     public static isLessThan( a: Asset, b: Asset ): boolean {
         check( a.symbol.isEqual( b.symbol ), "comparison of assets with different symbols is not allowed" );
-        return a.amount < b.amount;
+        return a.amount.lesser(b.amount);
     }
 
     public isLessThan( a: Asset ): boolean {
         check( a.symbol.isEqual( this.symbol ), "comparison of assets with different symbols is not allowed" );
-        return this.amount < a.amount;
+        return this.amount.lesser(a.amount);
     }
 
     /**
@@ -303,12 +308,12 @@ export class Asset {
      */
     public static isLessThanOrEqual( a: Asset, b: Asset ): boolean {
         check( a.symbol.isEqual( b.symbol ), "comparison of assets with different symbols is not allowed" );
-        return a.amount <= b.amount;
+        return a.amount.lesserOrEquals(b.amount);
     }
 
     public isLessThanOrEqual( a: Asset ): boolean {
         check( a.symbol.isEqual( this.symbol ), "comparison of assets with different symbols is not allowed" );
-        return this.amount <= a.amount;
+        return this.amount.lesserOrEquals(a.amount);
     }
 
     /**
@@ -322,12 +327,12 @@ export class Asset {
      */
     public static isGreaterThan( a: Asset, b: Asset ): boolean {
         check( a.symbol.isEqual( b.symbol ), "comparison of assets with different symbols is not allowed" );
-        return a.amount > b.amount;
+        return a.amount.greater( b.amount );
     }
 
     public isGreaterThan( a: Asset ): boolean {
         check( a.symbol.isEqual( this.symbol ), "comparison of assets with different symbols is not allowed" );
-        return this.amount > a.amount;
+        return this.amount.greater( a.amount );
     }
 
     /**
@@ -341,12 +346,12 @@ export class Asset {
      */
     public static isGreaterThanOrEqual( a: Asset, b: Asset ): boolean {
         check( a.symbol.isEqual( b.symbol ), "comparison of assets with different symbols is not allowed" );
-        return a.amount >= b.amount;
+        return a.amount.greaterOrEquals( b.amount );
     }
 
     public isGreaterThanOrEqual( a: Asset ): boolean {
         check( a.symbol.isEqual( this.symbol ), "comparison of assets with different symbols is not allowed" );
-        return this.amount >= a.amount;
+        return this.amount.greaterOrEquals( a.amount );
     }
 
     public to_string(): string {
@@ -365,6 +370,6 @@ export class Asset {
     // }
 }
 
-export function asset( amount?: string | number | bigint, sym?: Sym ): Asset {
+export function asset( amount?: string | number | BigInteger, sym?: Sym ): Asset {
     return new Asset( amount, sym );
 }

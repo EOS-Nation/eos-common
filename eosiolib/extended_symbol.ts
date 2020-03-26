@@ -21,11 +21,7 @@ export class ExtendedSymbol {
      * @param con - The name of the contract
      * @example
      *
-     * // string
-     * extended_symbol("EOS,4", "eosio.token")
-     *
-     * // class
-     * new ExtendedSymbol(new Sym("EOS", 4), new Name("eosio.token"))
+     * new ExtendedSymbol( symbol("4,EOS"), name("eosio.token") )
      */
     constructor ( sym?: Sym | string, contract?: Name | string ) {
         if ( sym ) this.sym = typeof sym == "string" ? new Sym( sym ) : sym;
@@ -62,11 +58,11 @@ export class ExtendedSymbol {
      * @return boolean - true if both provided name are the same
      */
     public static isEqual( a: ExtendedSymbol, b: ExtendedSymbol ): boolean {
-        return a.get_contract().raw() == b.get_contract().raw() && a.get_symbol().raw() == b.get_symbol().raw();
+        return a.get_contract().raw().equals( b.get_contract().raw() ) && a.get_symbol().raw().equals( b.get_symbol().raw() );
     }
 
     public isEqual( a: ExtendedSymbol ): boolean {
-        return a.get_contract().raw() == this.get_contract().raw() && a.get_symbol().raw() == this.get_symbol().raw();
+        return a.get_contract().raw().equals( this.get_contract().raw() ) && a.get_symbol().raw().equals( this.get_symbol().raw() );
     }
 
     /**
@@ -75,11 +71,11 @@ export class ExtendedSymbol {
      * @return boolean - true if both provided name are not the same
      */
     public static isNotEqual( a: ExtendedSymbol, b: ExtendedSymbol ): boolean {
-        return a.get_contract().raw() != b.get_contract().raw() || a.get_symbol().raw() != b.get_symbol().raw();
+        return a.get_contract().raw().notEquals( b.get_contract().raw() ) || a.get_symbol().raw().notEquals( b.get_symbol().raw() );
     }
 
     public isNotEqual( a: ExtendedSymbol ): boolean {
-        return a.get_contract().raw() != this.get_contract().raw() || a.get_symbol().raw() != this.get_symbol().raw();
+        return a.get_contract().raw().notEquals( this.get_contract().raw() ) || a.get_symbol().raw().notEquals( this.get_symbol().raw() );
     }
 
     /**
@@ -88,14 +84,21 @@ export class ExtendedSymbol {
      * @return boolean - true if name `a` is less than `b`
      */
     public static isLessThan( a: ExtendedSymbol, b: ExtendedSymbol ): boolean {
-        return a.get_contract().raw() < b.get_contract().raw() || a.get_symbol().raw() < b.get_symbol().raw();
+        return a.get_contract().raw().lesser(b.get_contract().raw()) || a.get_symbol().raw().lesser(b.get_symbol().raw() );
     }
 
     public isLessThan( a: ExtendedSymbol ): boolean {
-        return this.get_contract().raw() < a.get_contract().raw() || this.get_symbol().raw() < a.get_symbol().raw();
+        return this.get_contract().raw().lesser(a.get_contract().raw()) || this.get_symbol().raw().lesser(a.get_symbol().raw() );
     }
 }
 
+/**
+ * Extended Symbol
+ *
+ * @example
+ *
+ * extended_symbol( symbol("4,EOS"), name("eosio.token") )
+ */
 export function extended_symbol( sym?: Sym | string, contract?: Name | string ): ExtendedSymbol {
     return new ExtendedSymbol( sym, contract );
 }
