@@ -5,6 +5,14 @@ const asset_mask = (bigInt(1).shiftLeft(62)).minus(1);
 const asset_min = asset_mask.multiply(-1); // -4611686018427387903
 const asset_max = asset_mask; //  4611686018427387903
 
+function repeat( str: string, count: number ): string {
+    let result = "";
+    for ( let i = 0; i < count; i++) {
+        result += str;
+    }
+    return result;
+}
+
 test("asset_type_test", () => {
     const s0 = symbol("A", 0);
     const s1 = symbol("Z", 0);
@@ -124,7 +132,7 @@ test("asset_type_test", () => {
 
     // Printing symbols at every level of precision, starting at a precision of `1`
     for( let precision = 1; precision < 64; ++precision ) {
-        expect(asset(0, symbol("SYMBOLL", precision)).to_string()).toBe(`0.${ "0".repeat(precision) } SYMBOLL`)
+        expect(asset(0, symbol("SYMBOLL", precision)).to_string()).toBe(`0.${ repeat("0", precision) } SYMBOLL`)
     }
 
     // ----------------------

@@ -1,5 +1,13 @@
 import { BigInteger } from "big-integer";
 
+function repeat( str: string, count: number ): string {
+    let result = "";
+    for ( let i = 0; i < count; i++) {
+        result += str;
+    }
+    return result;
+}
+
 /**
 *  Writes a number as a string
 *
@@ -24,7 +32,7 @@ export function write_decimal( number: BigInteger, num_decimal_places: number, n
     }
 
     if ( num_digits == num_decimal_places ) str = "0." + str;
-    else if ( num_digits < num_decimal_places ) str = "0." + "0".repeat(num_decimal_places - num_digits) + str;
+    else if ( num_digits < num_decimal_places ) str = "0." + repeat("0", num_decimal_places - num_digits) + str;
     else if ( str[0] == "." ) str = "0" + str;
 
     if ( negative && isNegative ) str = "-" + str;
