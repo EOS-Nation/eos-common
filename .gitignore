@@ -3,6 +3,7 @@
 !jest.config.js
 !.eslintrc.js
 dist
+.vscode
 
 # Logs
 logs
