@@ -9,7 +9,15 @@ export class ExtendedSymbol {
     get [Symbol.toStringTag](): string {
         return 'extended_symbol';
     }
+    /**
+     * The typeof operator returns a string indicating the type of the unevaluated operand.
+     */
     public get typeof(): string { return 'extended_symbol' }
+
+    /**
+     * The isinstance() function returns True if the specified object is of the specified type, otherwise False.
+     */
+    public static isInstance( obj: any ): boolean { return obj instanceof ExtendedSymbol; }
 
     private sym = new Sym();
     private contract = new Name();
@@ -51,6 +59,13 @@ export class ExtendedSymbol {
     //     this.sym.print( show_precision );
     //     process.stdout.write("@" + this.contract.to_string() );
     // }
+
+    /**
+     * The toString() method returns the string representation of the object.
+     */
+    public toString( show_precision = true ): string {
+        return `${this.sym.toString( show_precision )}@${this.contract.to_string()}`
+    }
 
     /**
      * Equivalency operator. Returns true if a == b (are the same)

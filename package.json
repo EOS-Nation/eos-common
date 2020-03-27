@@ -1,6 +1,6 @@
 {
   "name": "eos-common",
-  "version": "0.6.3",
+  "version": "0.7.0",
   "description": "EOSIO Smart Contract common library used for Typescript",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -17,7 +17,7 @@
     "prepublishOnly": "npm run test && npm run build",
     "test": "jest --coverage",
     "posttest": "eslint . --ext .ts",
-    "docs": "tsc && documentation readme build/index.js -s API"
+    "docs": "tsc --target ES2019 && documentation readme dist/eosiolib/**.js -s API"
   },
   "repository": "git@github.com:EOS-Nation/eos-common.git",
   "engines": {

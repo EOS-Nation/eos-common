@@ -9,7 +9,15 @@ export class SymbolCode {
     get [Symbol.toStringTag](): string {
         return 'symbol_code';
     }
+    /**
+     * The typeof operator returns a string indicating the type of the unevaluated operand.
+     */
     public get typeof(): string { return 'symbol_code' }
+
+    /**
+     * The isinstance() function returns True if the specified object is of the specified type, otherwise False.
+     */
+    public static isInstance( obj: any ): boolean { return obj instanceof SymbolCode; }
 
     private value = bigInt(0);
 
@@ -56,6 +64,13 @@ export class SymbolCode {
         }
         return len;
      }
+
+    /**
+     * The toString() method returns the string representation of the object.
+     */
+    public toString(): string {
+        return this.to_string();
+    }
 
      public to_string(): string  {
         const mask = bigInt("0x00000000000000FF");

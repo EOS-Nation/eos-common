@@ -1,6 +1,5 @@
 import { Name } from "./name";
 import { Asset } from "./asset";
-// import { Sym } from "./symbol";
 import { ExtendedSymbol } from "./extended_symbol";
 import { check } from "./check";
 import bigInt, { BigInteger } from "big-integer";
@@ -20,14 +19,6 @@ function getAmount( obj: any ): BigInteger {
     throw new Error("invalid amount");
 }
 
-// function getSymbol( obj: any ): Sym | null {
-//     if ( obj.typeof == "extended_asset") return obj.quantity.symbol;
-//     if ( obj.typeof == "extended_symbol") return obj.get_symbol();
-//     if ( obj.typeof == "asset") return obj.symbol;
-//     if ( obj.typeof == "symbol") return obj;
-//     return null;
-// }
-
 function getContract( obj: any ): Name | null {
     if ( obj.typeof == "extended_asset") return obj.contract;
     if ( obj.typeof == "extended_symbol") return obj.get_contract();
@@ -43,8 +34,14 @@ export class ExtendedAsset {
     get [Symbol.toStringTag](): string {
         return 'extended_asset';
     }
+    /**
+     * The typeof operator returns a string indicating the type of the unevaluated operand.
+     */
     public get typeof(): string { return 'extended_asset' }
 
+    /**
+     * The isinstance() function returns True if the specified object is of the specified type, otherwise False.
+     */
     public static isInstance( obj: any ): boolean { return obj instanceof ExtendedAsset; }
 
     /**
@@ -100,9 +97,18 @@ export class ExtendedAsset {
     //     process.stdout.write("@" + this.contract.to_string());
     // }
 
+    /**
+     * The toString() method returns the string representation of the object.
+     */
+    public toString(): string {
+        return `${this.quantity.to_string()}@${this.contract.to_string()}`
+    }
+
     /// @cond OPERATORS
 
-    // Multiplication assignment operator
+    /**
+     * Multiplication assignment operator
+     */
     public times(a: ExtendedAsset | number | bigint | BigInteger ): ExtendedAsset {
         const amount = getAmount( a );
         const contract = getContract( a );
@@ -121,7 +127,9 @@ export class ExtendedAsset {
         return result;
     }
 
-    // Division operator
+    /**
+     * Division operator
+     */
     public div(a: ExtendedAsset | number | bigint | BigInteger ): ExtendedAsset {
         const amount = getAmount( a );
         const contract = getContract( a );
@@ -140,7 +148,9 @@ export class ExtendedAsset {
         return result;
     }
 
-    // Subtraction operator
+    /**
+     * Subtraction operator
+     */
     public minus( a: ExtendedAsset | number | bigint | BigInteger ): ExtendedAsset {
         const amount = getAmount( a );
         const contract = getContract( a );
@@ -159,7 +169,9 @@ export class ExtendedAsset {
         return result;
     }
 
-    // Addition operator
+    /**
+     * Addition operator
+     */
     public plus( a: ExtendedAsset | number | bigint ): ExtendedAsset {
         const amount = getAmount( a );
         const contract = getContract( a );
@@ -178,7 +190,9 @@ export class ExtendedAsset {
         return result;
     }
 
-    /// Less than operator
+    /**
+     * Less than operator
+     */
     public isLessThan( a: ExtendedAsset ): boolean {
         check( a.contract.raw().equals(this.contract.raw()), "type mismatch" );
         return this.quantity.isLessThan( a.quantity );
@@ -189,7 +203,9 @@ export class ExtendedAsset {
         return a.quantity.isLessThan( b.quantity );
     }
 
-    /// Comparison operator
+    /**
+     * Comparison operator
+     */
     public isEqual( a: ExtendedAsset ): boolean {
         return this.quantity.isEqual( a.quantity ) && this.contract.isEqual( a.contract );
     }
@@ -197,7 +213,9 @@ export class ExtendedAsset {
         return a.quantity.isEqual( b.quantity ) && a.contract.isEqual( b.contract );
     }
 
-    /// Comparison operator
+    /**
+     * Comparison operator
+     */
     public isNotEqual( a: ExtendedAsset ): boolean {
         return this.quantity.isNotEqual( a.quantity ) || this.contract.isNotEqual( a.contract );
     }
@@ -205,7 +223,9 @@ export class ExtendedAsset {
         return a.quantity.isNotEqual( b.quantity ) || a.contract.isNotEqual( b.contract );
     }
 
-    /// Comparison operator
+    /**
+     * Comparison operator
+     */
     public isLessThanOrEqual( a: ExtendedAsset ): boolean {
         check( a.contract.raw().equals(this.contract.raw()), "type mismatch" );
         return this.quantity.isLessThanOrEqual( a.quantity );
@@ -216,7 +236,9 @@ export class ExtendedAsset {
         return a.quantity.isLessThanOrEqual( b.quantity );
     }
 
-    /// Comparison operator
+    /**
+     * Comparison operator
+     */
     public isGreaterThanOrEqual( a: ExtendedAsset ): boolean {
         check( a.contract.raw().equals( this.contract.raw()), "type mismatch" );
         return this.quantity.isGreaterThanOrEqual( a.quantity );

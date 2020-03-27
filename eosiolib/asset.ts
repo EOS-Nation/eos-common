@@ -11,16 +11,20 @@ function isNull( value: any ): boolean {
     return value == undefined || value == null
 }
 
-function getAmount( a: Asset | number | bigint | BigInteger ): BigInteger {
-    const obj: any = a;
-    if ( obj.typeof == "asset" ) return obj.amount;
-    return bigInt(obj);
-}
-
 function getSymbol( a: Asset | number | bigint | BigInteger ): Sym | null {
     const obj: any = a;
     if ( obj.typeof == "asset") return obj.symbol;
     return null;
+}
+
+function getAmount( obj: any ): BigInteger {
+    if ( obj.typeof == "asset" ) return obj.amount;
+    if ( obj.typeof == "extended_asset") return obj.quantity.amount;
+    if ( bigInt.isInstance( obj )) return obj;
+    if ( typeof obj == "number" ) return bigInt(obj);
+    if ( typeof obj == "bigint" ) return bigInt(obj);
+    if ( typeof obj == "string" ) return bigInt(obj);
+    throw new Error("invalid amount");
 }
 
 /**
@@ -41,7 +45,15 @@ export class Asset {
     get [Symbol.toStringTag](): string {
         return 'asset';
     }
+    /**
+     * The typeof operator returns a string indicating the type of the unevaluated operand.
+     */
     public get typeof(): string { return 'asset' }
+
+    /**
+     * The isinstance() function returns True if the specified object is of the specified type, otherwise False.
+     */
+    public static isInstance( obj: any ): boolean { return obj instanceof Asset; }
 
     /**
      * {constexpr int64_t} Maximum amount possible for this asset. It's capped to 2^62 - 1
@@ -64,7 +76,7 @@ export class Asset {
      * @param amount - The amount of the asset
      * @param sym - The name of the symbol
      */
-    constructor ( amount?: string | number | BigInteger, sym?: Sym ) {
+    constructor ( amount?: string | number | BigInteger | bigint, sym?: Sym ) {
         if ( isNull(amount) && isNull(sym) ) {
             return;
         }
@@ -74,7 +86,7 @@ export class Asset {
             this.amount = number_to_bigint( Number(amount_str) * Math.pow(10, precision));
             this.symbol = new Sym( symbol_str, precision );
         } else if ( sym ) {
-            this.amount = (typeof amount == "number") ? number_to_bigint(amount) : amount || bigInt(0);
+            this.amount = getAmount(amount);
             this.symbol = sym;
         } else {
             throw new Error("[sym] is required");
@@ -352,6 +364,13 @@ export class Asset {
     public isGreaterThanOrEqual( a: Asset ): boolean {
         check( a.symbol.isEqual( this.symbol ), "comparison of assets with different symbols is not allowed" );
         return this.amount.greaterOrEquals( a.amount );
+    }
+
+    /**
+     * The toString() method returns the string representation of the object.
+     */
+    public toString(): string {
+        return this.to_string();
     }
 
     public to_string(): string {

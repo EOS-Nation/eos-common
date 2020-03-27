@@ -10,7 +10,15 @@ export class Sym {
     get [Symbol.toStringTag](): string {
         return 'symbol';
     }
+    /**
+     * The typeof operator returns a string indicating the type of the unevaluated operand.
+     */
     public get typeof(): string { return 'symbol' }
+
+    /**
+     * The isinstance() function returns True if the specified object is of the specified type, otherwise False.
+     */
+    public static isInstance( obj: any ): boolean { return obj instanceof Sym; }
 
     public value = bigInt(0);
 
@@ -117,6 +125,13 @@ export class Sym {
     //     }
     //     process.stdout.write( this.code().to_string() );
     // }
+
+    /**
+     * The toString() method returns the string representation of the object.
+     */
+    public toString( show_precision = true ): string {
+        return `${show_precision ? String( this.precision() ) + "," : ''}${this.code().to_string()}`
+    }
 
     /**
      * Equivalency operator. Returns true if a == b (are the same)

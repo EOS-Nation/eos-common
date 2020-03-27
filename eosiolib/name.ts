@@ -9,7 +9,15 @@ export class Name {
     get [Symbol.toStringTag](): string {
         return 'name';
     }
+    /**
+     * The typeof operator returns a string indicating the type of the unevaluated operand.
+     */
     public get typeof(): string { return 'name' }
+
+    /**
+     * The isinstance() function returns True if the specified object is of the specified type, otherwise False.
+     */
+    public static isInstance( obj: any ): boolean { return obj instanceof Name; }
 
     readonly value = bigInt(0);
 
@@ -132,10 +140,12 @@ export class Name {
     }
 
     /**
-     *  Returns the name as a string.
-     *
-     *  @brief Returns the name value as a string by calling write_as_string() and returning the buffer produced by write_as_string()
+     * The toString() method returns the string representation of the object.
      */
+    public toString(): string {
+        return this.to_string();
+    }
+
     public to_string(): string{
         const charmap = ".12345abcdefghijklmnopqrstuvwxyz";
         const mask = bigInt(0xF800000000000000);
