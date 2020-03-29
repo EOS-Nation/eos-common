@@ -3,28 +3,7 @@ import { Asset } from "./asset";
 import { ExtendedSymbol } from "./extended_symbol";
 import { check } from "./check";
 import bigInt, { BigInteger } from "big-integer";
-
-function getType( obj: any ): string {
-    if ( typeof obj == "object" && obj.typeof ) return obj.typeof;
-    return typeof obj;
-}
-
-function getAmount( obj: any ): BigInteger {
-    if ( obj.typeof == "asset" ) return obj.amount;
-    if ( obj.typeof == "extended_asset") return obj.quantity.amount;
-    if ( bigInt.isInstance( obj )) return obj;
-    if ( typeof obj == "number" ) return bigInt(obj);
-    if ( typeof obj == "bigint" ) return bigInt(obj);
-    if ( typeof obj == "string" ) return bigInt(obj);
-    throw new Error("invalid amount");
-}
-
-function getContract( obj: any ): Name | null {
-    if ( obj.typeof == "extended_asset") return obj.contract;
-    if ( obj.typeof == "extended_symbol") return obj.get_contract();
-    if ( obj.typeof == "name") return obj;
-    return null;
-}
+import { getType, getAmount, getContract } from "./utils";
 
 /**
  * @class Stores the extended_asset

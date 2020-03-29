@@ -8,3 +8,4 @@ export * from "./eosiolib/time";
 export * from "./eosiolib/name";
 export * from "./eosiolib/voting";
 export * from "./eosiolib/eosiolib";
+export * from "./eosiolib/utils";

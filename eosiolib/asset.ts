@@ -1,31 +1,8 @@
 import { Sym, symbol } from "./symbol";
 import { check } from "./check";
 import { write_decimal } from "./eosiolib";
+import { getSymbol, getAmount, isNull, number_to_bigint } from "./utils";
 import bigInt, { BigInteger } from "big-integer";
-
-function number_to_bigint( num: number ): BigInteger {
-    return bigInt( num.toFixed(0) );
-}
-
-function isNull( value: any ): boolean {
-    return value == undefined || value == null
-}
-
-function getSymbol( a: Asset | number | bigint | BigInteger ): Sym | null {
-    const obj: any = a;
-    if ( obj.typeof == "asset") return obj.symbol;
-    return null;
-}
-
-function getAmount( obj: any ): BigInteger {
-    if ( obj.typeof == "asset" ) return obj.amount;
-    if ( obj.typeof == "extended_asset") return obj.quantity.amount;
-    if ( bigInt.isInstance( obj )) return obj;
-    if ( typeof obj == "number" ) return bigInt(obj);
-    if ( typeof obj == "bigint" ) return bigInt(obj);
-    if ( typeof obj == "string" ) return bigInt(obj);
-    throw new Error("invalid amount");
-}
 
 /**
  * Asset

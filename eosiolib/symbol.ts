@@ -1,10 +1,7 @@
 import { check } from "./check";
 import { SymbolCode } from "./symbol_code";
 import bigInt, { BigInteger } from "big-integer";
-
-function isNull( value: any ): boolean {
-    return value == undefined || value == null
-}
+import { isNull } from "./utils";
 
 export class Sym {
     get [Symbol.toStringTag](): string {
