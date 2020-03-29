@@ -56,6 +56,6 @@ export function number_to_asset( num: number | bigint | BigInteger, sym: Sym | E
     if ( !symbol ) throw new Error("invalid sym");
     const exp = Math.pow( 10, symbol.precision() );
 
-    if ( typeof num == "number" ) return new Asset( num * exp, symbol );
+    if ( typeof num == "number" ) return new Asset( Math.floor(num * exp), symbol );
     return new Asset( getAmount( num ).multiply( exp ), symbol );
 }
