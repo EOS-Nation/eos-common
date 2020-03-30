@@ -13,7 +13,11 @@ function repeat( str: string, count: number ): string {
     return result;
 }
 
-test("asset_type_test", () => {
+test("asset::extra", () => {
+    expect( Number(asset(1.123, symbol("4,EOS")).amount) ).toBe(1);
+});
+
+test("asset::eosiolib", () => {
     const s0 = symbol("A", 0);
     const s1 = symbol("Z", 0);
     const s2 = symbol("AAAAAAA", 0);

@@ -60,10 +60,10 @@ export class Asset {
         else if ( typeof amount == "string") {
             const [amount_str, symbol_str] = amount.split(" ");
             const precision = (amount_str.split(".")[1] || []).length;
-            this.amount = number_to_bigint( Number(amount_str) * Math.pow(10, precision));
+            this.amount = number_to_bigint( Number( amount_str ) * Math.pow(10, precision));
             this.symbol = new Sym( symbol_str, precision );
         } else if ( sym ) {
-            this.amount = getAmount(amount);
+            this.amount = getAmount( amount );
             this.symbol = sym;
         } else {
             throw new Error("[sym] is required");

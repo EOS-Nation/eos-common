@@ -11,7 +11,7 @@ export function getType( obj: any ): string {
 }
 
 export function number_to_bigint( num: number ): BigInteger {
-    return bigInt( num.toFixed(0) );
+    return bigInt( Math.floor( num ) );
 }
 
 export function isNull( value: any ): boolean {
@@ -22,9 +22,9 @@ export function getAmount( obj: any ): BigInteger {
     if ( obj.typeof == "asset" ) return obj.amount;
     if ( obj.typeof == "extended_asset") return obj.quantity.amount;
     if ( bigInt.isInstance( obj )) return obj;
-    if ( typeof obj == "number" ) return bigInt(obj);
-    if ( typeof obj == "bigint" ) return bigInt(obj);
-    if ( typeof obj == "string" ) return bigInt(obj);
+    if ( typeof obj == "number" ) return number_to_bigint( obj );
+    if ( typeof obj == "bigint" ) return bigInt( obj );
+    if ( typeof obj == "string" ) return number_to_bigint( Number(obj) );
     throw new Error("invalid getAmount param");
 }
 
