@@ -1,7 +1,7 @@
 import { Sym, symbol } from "./symbol";
 import { check } from "./check";
 import { write_decimal } from "./eosiolib";
-import { getSymbol, getAmount, isNull, number_to_bigint } from "./utils";
+import { getSymbol, getAmount, isNull, number_to_bigint, getType } from "./utils";
 import bigInt, { BigInteger } from "big-integer";
 
 /**
@@ -49,22 +49,25 @@ export class Asset {
 
     /**
      * Construct a new asset given the symbol name and the amount
-     *
-     * @param amount - The amount of the asset
-     * @param sym - The name of the symbol
      */
-    constructor ( amount?: string | number | BigInteger | bigint, sym?: Sym ) {
-        if ( isNull(amount) && isNull(sym) ) {
+    constructor ( obj1?: string | number | BigInteger | bigint | Asset, obj2?: Sym ) {
+        if ( isNull(obj1) && isNull(obj2) ) {
             return;
         }
-        else if ( typeof amount == "string") {
-            const [amount_str, symbol_str] = amount.split(" ");
+        if ( typeof obj1 == "string" ) {
+            const [amount_str, symbol_str] = obj1.split(" ");
             const precision = (amount_str.split(".")[1] || []).length;
             this.amount = number_to_bigint( Number( amount_str ) * Math.pow(10, precision));
             this.symbol = new Sym( symbol_str, precision );
-        } else if ( sym ) {
-            this.amount = getAmount( amount );
-            this.symbol = sym;
+        } else if ( getType( obj1 ) == "asset") {
+            const _sym = getSymbol( obj1 );
+            if ( !_sym ) throw new Error("[sym] is required");
+
+            this.amount = getAmount( obj1 );
+            this.symbol = _sym;
+        } else if ( obj2 ) {
+            this.amount = getAmount( obj1 );
+            this.symbol = obj2;
         } else {
             throw new Error("[sym] is required");
         }
@@ -366,6 +369,34 @@ export class Asset {
     // }
 }
 
-export function asset( amount?: string | number | BigInteger, sym?: Sym ): Asset {
-    return new Asset( amount, sym );
+
+export const asset: {
+    /**
+     * String
+     *
+     * @example
+     *
+     * asset("1.0000 EOS")
+     */
+    ( asset?: string ): Asset;
+
+    /**
+     * Asset
+     *
+     * @example
+     *
+     * asset( asset("1.0000 EOS") )
+     */
+    ( asset?: Asset ): Asset;
+
+    /**
+     * Amount & Sym
+     *
+     * @example
+     *
+     * asset( 10000, symbol("4,EOS") )
+     */
+    ( amount?: number | bigint | BigInteger, sym?: Sym ): Asset;
+} = ( obj1?: any, obj2?: any ) => {
+    return new Asset( obj1, obj2 );
 }

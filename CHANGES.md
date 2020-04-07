@@ -1,6 +1,6 @@
-## TO-DO
+## 2020-04-06
 
-- add test cases for `Symbol`
+- support adding `asset` as param to `asset`
 
 ## 2020-03-07
 
