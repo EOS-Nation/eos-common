@@ -375,18 +375,10 @@ export const asset: {
      *
      * @example
      *
-     * asset("1.0000 EOS")
+     * const quantity = asset( "1.0000 EOS" )
+     * asset( quantity )
      */
-    ( asset?: string ): Asset;
-
-    /**
-     * Asset
-     *
-     * @example
-     *
-     * asset( asset("1.0000 EOS") )
-     */
-    ( asset?: Asset ): Asset;
+    ( asset?: Asset | string ): Asset;
 
     /**
      * Amount & Sym

@@ -174,31 +174,15 @@ export class Sym {
 
 export const symbol: {
     /**
-     * Symbol
+     * Symbol & String & Raw
      *
      * @example
      *
-     * symbol( symbol("4,EOS") )
-     */
-    ( sym?: Sym ): Sym;
-
-    /**
-     * String
-     *
-     * @example
-     *
-     * symbol("4,EOS")
-     */
-    ( sym?: string ): Sym;
-
-    /**
-     * Raw
-     *
-     * @example
-     *
+     * const sym = symbol("4,EOS")
+     * symbol( sym )
      * symbol( 0 )
      */
-    ( sym?: number | BigInteger ): Sym;
+    ( sym?: Sym | string | number | BigInteger ): Sym;
 
     /**
      * SymbolCode & Precision
