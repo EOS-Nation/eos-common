@@ -369,7 +369,6 @@ export class Asset {
     // }
 }
 
-
 export const asset: {
     /**
      * String

@@ -1,7 +1,7 @@
 import { check } from "./check";
 import { SymbolCode } from "./symbol_code";
 import bigInt, { BigInteger } from "big-integer";
-import { isNull } from "./utils";
+import { isNull, getType } from "./utils";
 
 export class Sym {
     get [Symbol.toStringTag](): string {
@@ -35,9 +35,15 @@ export class Sym {
     constructor ( sc?: string | Sym | SymbolCode | number | BigInteger, precision?: number ) {
         if ( isNull(sc) && isNull( precision )) {
             this.value = bigInt(0);
+            return;
         }
+        // Number
         else if ( typeof sc == "number" || typeof sc == "bigint" ) {
             this.value = bigInt(sc);
+        }
+        // BigInt
+        else if ( bigInt.isInstance( sc ) ) {
+            this.value = sc;
         }
         else if ( typeof sc == "string" ) {
             // "precision,symbol_code" (ex: "4,EOS")
@@ -60,17 +66,13 @@ export class Sym {
                 this.value = bigInt(symcode).shiftLeft(8).or(precision || 0);
             }
         }
-        else if ( typeof sc == "object" ) {
+        else if ( getType( sc ) == "symbol" ) {
+            const sym: any = sc;
+            this.value = sym.raw();
+        } else if ( getType( sc ) == "symbol_code" ) {
             const symcode: any = sc;
-
-            // symbol_code object
-            if ( symcode.typeof == "symbol_code") {
-                check( !isNull(precision), "[precision] is required");
-                this.value = bigInt(symcode.raw()).shiftLeft(8).or(precision || 0);
-            // bigInt object
-            } else {
-                this.value = symcode;
-            }
+            check( !isNull(precision), "[precision] is required");
+            this.value = bigInt(symcode.raw()).shiftLeft(8).or(precision || 0);
         } else {
             check( false, "invalid symbol parameters");
         }
@@ -170,6 +172,42 @@ export class Sym {
     }
 }
 
-export function symbol( sc?: string | SymbolCode | number | BigInteger, precision?: number ): Sym {
-    return new Sym( sc, precision );
+export const symbol: {
+    /**
+     * Symbol
+     *
+     * @example
+     *
+     * symbol( symbol("4,EOS") )
+     */
+    ( sym?: Sym ): Sym;
+
+    /**
+     * String
+     *
+     * @example
+     *
+     * symbol("4,EOS")
+     */
+    ( sym?: string ): Sym;
+
+    /**
+     * Raw
+     *
+     * @example
+     *
+     * symbol( 0 )
+     */
+    ( sym?: number | BigInteger ): Sym;
+
+    /**
+     * SymbolCode & Precision
+     *
+     * @example
+     *
+     * symbol( "EOS", 4 )
+     */
+    ( sc?: string | SymbolCode, precision?: number ): Sym;
+} = ( obj1?: any, obj2?: any ) => {
+    return new Sym( obj1, obj2 );
 }

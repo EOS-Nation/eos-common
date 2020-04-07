@@ -1,5 +1,6 @@
 import { check } from "./check";
 import bigInt, { BigInteger } from "big-integer";
+import { getType } from "./utils";
 
 /**
  * @class Stores the symbol code
@@ -22,15 +23,21 @@ export class SymbolCode {
     private value = bigInt(0);
 
     // constructor()
-    constructor( str?: string | number | BigInteger ) {
-        if (typeof str == "number" || typeof str == 'bigint') {
-            this.value = bigInt(str);
-        } else if ( str && typeof str == "string" ) {
+    constructor( obj?: string | number | BigInteger | SymbolCode ) {
+        // SymbolCode
+        if ( getType( obj ) == "symbol_code") {
+            const symcode: any = obj;
+            this.value = symcode.raw();
+        // Number
+        } else if (typeof obj == "number" || typeof obj == 'bigint') {
+            this.value = bigInt(obj);
+        // String
+        } else if ( obj && typeof obj == "string" ) {
             let value = bigInt(0);
-            if ( str.length > 7 ) {
+            if ( obj.length > 7 ) {
                 check( false, "string is too long to be a valid symbol_code" );
             }
-            for ( const itr of str.split("").reverse().join("") ) {
+            for ( const itr of obj.split("").reverse().join("") ) {
                 if ( itr < 'A' || itr > 'Z') {
                     check( false, "only uppercase letters allowed in symbol_code string" );
                 }
@@ -38,8 +45,9 @@ export class SymbolCode {
                 value = value.or(bigInt(itr.charCodeAt(0)));
             }
             this.value = value;
-        } else if ( typeof str == "object") {
-            this.value = str;
+        // BigInteger
+        } else if ( bigInt.isInstance( obj ) ) {
+            this.value = obj;
         }
     }
 
@@ -131,6 +139,6 @@ export class SymbolCode {
     }
 }
 
-export function symbol_code( str?: string | number | BigInteger ): SymbolCode {
-    return new SymbolCode(str);
+export function symbol_code( obj?: string | number | BigInteger | SymbolCode ): SymbolCode {
+    return new SymbolCode( obj );
 }

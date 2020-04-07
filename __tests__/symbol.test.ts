@@ -4,6 +4,13 @@ import bigInt from "big-integer";
 // const u64min = 0n;
 const u64max = bigInt("18446744073709551615");
 
+
+test("symbol::extra", () => {
+  symbol(symbol("4,EOS"));
+  expect(true).toBeTruthy();
+});
+
+
 test("symbol", () => {
   const sc0 = symbol_code("A");
   const sc1 = symbol_code("Z");

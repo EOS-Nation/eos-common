@@ -1,6 +1,11 @@
 import { symbol_code } from "..";
 import bigInt from "big-integer";
 
+test("symbol::extra", () => {
+   symbol_code(symbol_code("EOS"));
+   expect(true).toBeTruthy();
+ });
+
 test("symbol_code", () => {
    //// constexpr symbol_code()
    // constexpr uint64_t raw()const
