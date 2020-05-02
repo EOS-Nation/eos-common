@@ -1,5 +1,6 @@
 import { Name } from "./name";
 import { Sym } from "./symbol";
+import { BigInteger } from "big-integer";
 
 /**
  * @class Stores the extended_symbol
@@ -65,6 +66,13 @@ export class ExtendedSymbol {
      */
     public toString( show_precision = true ): string {
         return `${this.sym.toString( show_precision )}@${this.contract.to_string()}`
+    }
+
+    /**
+     * Returns uint128_t repreresentation of the extended symbol
+     */
+    public raw(): BigInteger {
+        return this.contract.value.shiftLeft( 64 ).or( this.sym.code().raw() );
     }
 
     /**

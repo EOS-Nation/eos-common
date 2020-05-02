@@ -4,6 +4,13 @@ import bigInt from "big-integer";
 // const u64min = 0n;
 const u64max = bigInt("18446744073709551615");
 
+test("extended_symbol::extra", () => {
+    const n = name("eosio.token");
+    const s = symbol("EOS", 4);
+
+    expect( extended_symbol( s, n ).raw() ).toEqual( bigInt("113238356228710427736761282112575983429") )
+});
+
 test("extended_symbol", () => {
     const n0 = name("1");
     const n1 = name("5");

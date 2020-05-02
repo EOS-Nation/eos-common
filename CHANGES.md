@@ -1,3 +1,7 @@
+## 2020-05-01
+
+- add `extended_symbol.raw()`
+
 ## 2020-04-06
 
 - support adding `asset` as param to `asset`
