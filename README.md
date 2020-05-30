@@ -8,12 +8,12 @@
 
 Implements most commonly used EOSIO C++ Classes into Typescript:
 
--   [asset](https://github.com/EOSIO/eosio.cdt/blob/master/libraries/eosiolib/asset.hpp)
--   [symbol](https://github.com/EOSIO/eosio.cdt/blob/master/libraries/eosiolib/symbol.hpp)
--   [symbol_code](https://github.com/EOSIO/eosio.cdt/blob/master/libraries/eosiolib/symbol.hpp)
--   [name](https://github.com/EOSIO/eosio.cdt/blob/master/libraries/eosiolib/name.hpp)
--   [extended_asset](https://github.com/EOSIO/eosio.cdt/blob/master/libraries/eosiolib/asset.hpp)
--   [extended_symbol](https://github.com/EOSIO/eosio.cdt/blob/master/libraries/eosiolib/symbol.hpp)
+-   [asset](https://github.com/EOSIO/eosio.cdt/blob/master/libraries/eosiolib/core/eosio/asset.hpp)
+-   [symbol](https://github.com/EOSIO/eosio.cdt/blob/master/libraries/eosiolib/core/eosio/symbol.hpp)
+-   [symbol_code](https://github.com/EOSIO/eosio.cdt/blob/master/libraries/eosiolib/core/eosio/symbol.hpp)
+-   [name](https://github.com/EOSIO/eosio.cdt/blob/master/libraries/eosiolib/core/eosio/name.hpp)
+-   [extended_asset](https://github.com/EOSIO/eosio.cdt/blob/master/libraries/eosiolib/core/eosio/asset.hpp)
+-   [extended_symbol](https://github.com/EOSIO/eosio.cdt/blob/master/libraries/eosiolib/core/eosio/symbol.hpp)
 
 ## Installation
 
