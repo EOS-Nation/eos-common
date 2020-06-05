@@ -15,6 +15,7 @@ function repeat( str: string, count: number ): string {
 
 test("asset::extra", () => {
     expect( Number(asset(1.123, symbol("4,EOS")).amount) ).toBe(1);
+    expect( Number(asset("0.5730 EOS").amount) ).toBe(5730);
     asset(asset("1.0000 EOS"));
 });
 

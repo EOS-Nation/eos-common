@@ -11,7 +11,7 @@ export function getType( obj: any ): string {
 }
 
 export function number_to_bigint( num: number ): BigInteger {
-    return bigInt( Math.floor( num ) );
+    return bigInt( Math.floor( Number(num.toFixed(0)) ) );
 }
 
 export function isNull( value: any ): boolean {
