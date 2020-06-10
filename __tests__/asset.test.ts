@@ -1,4 +1,4 @@
-import { asset, symbol } from "..";
+import { asset, symbol, Asset, asset_to_number } from "..";
 import bigInt from "big-integer";
 
 const asset_mask = (bigInt(1).shiftLeft(62)).minus(1);
@@ -17,6 +17,14 @@ test("asset::extra", () => {
     expect( Number(asset(1.123, symbol("4,EOS")).amount) ).toBe(1);
     expect( Number(asset("0.5730 EOS").amount) ).toBe(5730);
     asset(asset("1.0000 EOS"));
+});
+
+test("asset::divide", () => {
+    const asset1 = new Asset('1.0000 EOS');
+    const asset2 = new Asset('2.0000 EOS');
+
+    const result = Asset.div(asset1, asset_to_number(asset2));
+    expect(asset_to_number(result)).toBe(0.5);
 });
 
 test("asset::eosiolib", () => {
