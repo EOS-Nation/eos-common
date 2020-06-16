@@ -59,3 +59,8 @@ export function number_to_asset( num: number | bigint | BigInteger, sym: Sym | E
     if ( typeof num == "number" ) return new Asset( Math.floor(num * exp), symbol );
     return new Asset( getAmount( num ).multiply( exp ), symbol );
 }
+
+export function asset_to_precision( quantity: Asset, precision: number ): Asset
+{
+    return number_to_asset( asset_to_number( quantity ), new Sym( quantity.symbol.code(), precision ));
+}
