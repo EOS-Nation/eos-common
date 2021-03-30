@@ -28,6 +28,7 @@
     "@types/jest": "*",
     "@typescript-eslint/eslint-plugin": "^2.20.0",
     "@typescript-eslint/parser": "*",
+    "documentation": "*",
     "eslint": "*",
     "eslint-plugin-jest": "*",
     "jest": "*",
