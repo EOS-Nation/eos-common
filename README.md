@@ -129,6 +129,7 @@ quantity.symbol.precision() //=> 4
     -   [get_contract](#get_contract)
     -   [toString](#tostring-2)
         -   [Parameters](#parameters-31)
+    -   [raw](#raw)
     -   [isInstance](#isinstance-2)
         -   [Parameters](#parameters-32)
     -   [isEqual](#isequal-2)
@@ -145,7 +146,7 @@ quantity.symbol.precision() //=> 4
     -   [typeof](#typeof-3)
     -   [length](#length)
     -   [suffix](#suffix)
-    -   [raw](#raw)
+    -   [raw](#raw-1)
     -   [bool](#bool)
     -   [toString](#tostring-3)
     -   [isInstance](#isinstance-3)
@@ -177,7 +178,7 @@ quantity.symbol.precision() //=> 4
 -   [is_valid](#is_valid-1)
 -   [precision](#precision)
 -   [code](#code)
--   [raw](#raw-1)
+-   [raw](#raw-2)
 -   [bool](#bool-1)
 -   [toString](#tostring-5)
     -   [Parameters](#parameters-49)
@@ -598,6 +599,10 @@ The toString() method returns the string representation of the object.
 
 -   `show_precision`   (optional, default `true`)
 
+#### raw
+
+Returns uint128_t repreresentation of the extended symbol
+
 #### isInstance
 
 The isinstance() function returns True if the specified object is of the specified type, otherwise False.
@@ -741,7 +746,7 @@ Returns **any** boolean - true if name `a` is less than `b`
 
 #### Parameters
 
--   `str`  
+-   `obj`  
 
 #### typeof
 
