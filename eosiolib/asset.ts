@@ -177,6 +177,7 @@ export class Asset {
      * @post The amount of this asset is multiplied by a
      */
     public times( a: Asset | number | bigint | BigInteger ): Asset {
+        if ( typeof a == "number" ) check( Number.isInteger(a), "multiplicand must be integer" )
         const amount = getAmount( a );
         const sym = getSymbol( a );
         if ( sym ) check( sym.isEqual( this.symbol ), "comparison of assets with different symbols is not allowed" );
@@ -211,6 +212,7 @@ export class Asset {
      * @post The amount of this asset is divided by a
      */
     public div( a: Asset | number | bigint | BigInteger ): Asset {
+        if ( typeof a == "number" ) check( Number.isInteger(a), "divisor must be integer" )
         const amount = getAmount( a );
         const sym = getSymbol( a );
         if ( sym ) check( sym.isEqual( this.symbol ), "comparison of assets with different symbols is not allowed" );
