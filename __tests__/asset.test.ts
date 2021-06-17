@@ -217,6 +217,10 @@ test("asset::eosiolib", () => {
         asset( asset_max, sym_no_prec ).times( 2 );
     }).toThrow( "multiplication overflow");
 
+    expect(() => {
+        asset( 1, sym_no_prec ).times( 0.5 );
+    }).toThrow( "multiplicand must be integer");
+
     // ---------------------------------------------
     // friend asset operator/(const asset&, int64_t)
     expect( asset(  0, sym_no_prec ).div( 1 )).toStrictEqual( asset( 0, sym_no_prec) )
@@ -257,6 +261,10 @@ test("asset::eosiolib", () => {
     expect(() => {
         asset( 1, s0 ).div( asset( 1, s1 ) );
     }).toThrow( "comparison of assets with different symbols is not allowed" );
+
+    expect(() => {
+        asset( 1, sym_no_prec ).div( 1.5 );
+    }).toThrow( "divisor must be integer" );
 
     // --------------------------------------------------
     // friend bool operator==(const asset&, const asset&)
