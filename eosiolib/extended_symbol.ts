@@ -1,6 +1,7 @@
 import { Name } from "./name";
 import { Sym } from "./symbol";
 import { BigInteger } from "big-integer";
+import { getType } from "./utils";
 
 /**
  * @class Stores the extended_symbol
@@ -32,9 +33,21 @@ export class ExtendedSymbol {
      *
      * new ExtendedSymbol( symbol("4,EOS"), name("eosio.token") )
      */
-    constructor ( sym?: Sym | string, contract?: Name | string ) {
-        if ( sym ) this.sym = typeof sym == "string" ? new Sym( sym ) : sym;
-        if ( contract ) this.contract = typeof contract == "string" ? new Name( contract ) : contract;
+    constructor ( json: { contract: string; sym: string } )
+    constructor ( sym: Sym | string, contract: Name | string )
+    constructor ( obj1?: any, obj2?: any ) {
+        // parse JSON
+        if ( obj1?.sym && obj1?.contract ) {
+            obj2 = obj1.contract;
+            obj1 = obj1.sym;
+        }
+
+        // Symbol & Contract
+        if ( getType(obj1) == "symbol" ) this.sym = obj1;
+        else this.sym = new Sym( obj1 );
+
+        if ( getType(obj2) == "name" ) this.contract = obj2;
+        else this.contract = new Name( obj2 );
     }
 
     /**
@@ -66,6 +79,13 @@ export class ExtendedSymbol {
      */
     public toString( show_precision = true ): string {
         return `${this.sym.toString( show_precision )}@${this.contract.to_string()}`
+    }
+
+    /**
+     * The toJSON() method returns the JSON representation of the object.
+     */
+     public toJSON( show_precision = true ): { sym: string; contract: string } {
+        return {sym: this.sym.toString( show_precision ), contract: this.contract.to_string()}
     }
 
     /**
@@ -122,6 +142,24 @@ export class ExtendedSymbol {
  *
  * extended_symbol( symbol("4,EOS"), name("eosio.token") )
  */
-export function extended_symbol( sym?: Sym | string, contract?: Name | string ): ExtendedSymbol {
-    return new ExtendedSymbol( sym, contract );
+export const extended_symbol: {
+    /**
+     * Symbol & Contract
+     *
+     * @example
+     *
+     * extended_symbol( symbol("4,EOS"), name("eosio.token") )
+     */
+    ( sym?: Sym | string, contract?: Name | string ): ExtendedSymbol;
+
+    /**
+     * JSON
+     *
+     * @example
+     *
+     * extended_symbol({"sym": "4,EOS", "contract": "eosio.token"})
+     */
+    ( json?: { contract: string; sym: string } ): ExtendedSymbol;
+} = ( obj1?: any, obj2?: any ) => {
+    return new ExtendedSymbol( obj1, obj2 );
 }

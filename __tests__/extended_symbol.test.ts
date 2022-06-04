@@ -11,6 +11,14 @@ test("extended_symbol::extra", () => {
     expect( extended_symbol( s, n ).raw() ).toEqual( bigInt("113238356228710427736761282112575983429") )
 });
 
+test("extended_symbol::json", () => {
+    const ext_sym = extended_symbol({contract: "eosio.token", sym: "4,EOS"});
+    const { contract, sym } = ext_sym.toJSON();
+
+    expect( contract ).toStrictEqual("eosio.token");
+    expect( sym ).toStrictEqual("4,EOS");
+});
+
 test("extended_symbol", () => {
     const n0 = name("1");
     const n1 = name("5");

@@ -102,6 +102,7 @@ quantity.symbol.precision() //=> 4
     -   [typeof](#typeof-1)
     -   [get_extended_symbol](#get_extended_symbol)
     -   [toString](#tostring-1)
+    -   [toJSON](#tojson)
     -   [times](#times-2)
         -   [Parameters](#parameters-20)
     -   [div](#div-2)
@@ -122,27 +123,32 @@ quantity.symbol.precision() //=> 4
         -   [Parameters](#parameters-28)
     -   [isInstance](#isinstance-1)
         -   [Parameters](#parameters-29)
--   [ExtendedSymbol](#extendedsymbol)
+-   [extended_asset](#extended_asset)
     -   [Parameters](#parameters-30)
+    -   [Examples](#examples-2)
+-   [ExtendedSymbol](#extendedsymbol)
+    -   [Parameters](#parameters-31)
     -   [typeof](#typeof-2)
     -   [get_symbol](#get_symbol)
     -   [get_contract](#get_contract)
     -   [toString](#tostring-2)
-        -   [Parameters](#parameters-31)
+        -   [Parameters](#parameters-32)
+    -   [toJSON](#tojson-1)
+        -   [Parameters](#parameters-33)
     -   [raw](#raw)
     -   [isInstance](#isinstance-2)
-        -   [Parameters](#parameters-32)
-    -   [isEqual](#isequal-2)
-        -   [Parameters](#parameters-33)
-    -   [isNotEqual](#isnotequal-2)
         -   [Parameters](#parameters-34)
-    -   [isLessThan](#islessthan-2)
+    -   [isEqual](#isequal-2)
         -   [Parameters](#parameters-35)
+    -   [isNotEqual](#isnotequal-2)
+        -   [Parameters](#parameters-36)
+    -   [isLessThan](#islessthan-2)
+        -   [Parameters](#parameters-37)
 -   [extended_symbol](#extended_symbol)
-    -   [Parameters](#parameters-36)
-    -   [Examples](#examples-2)
+    -   [Parameters](#parameters-38)
+    -   [Examples](#examples-3)
 -   [Name](#name)
-    -   [Parameters](#parameters-37)
+    -   [Parameters](#parameters-39)
     -   [typeof](#typeof-3)
     -   [length](#length)
     -   [suffix](#suffix)
@@ -150,30 +156,30 @@ quantity.symbol.precision() //=> 4
     -   [bool](#bool)
     -   [toString](#tostring-3)
     -   [isInstance](#isinstance-3)
-        -   [Parameters](#parameters-38)
-    -   [char_to_value](#char_to_value)
-        -   [Parameters](#parameters-39)
-    -   [isEqual](#isequal-3)
         -   [Parameters](#parameters-40)
-    -   [isNotEqual](#isnotequal-3)
+    -   [char_to_value](#char_to_value)
         -   [Parameters](#parameters-41)
-    -   [isLessThan](#islessthan-3)
+    -   [isEqual](#isequal-3)
         -   [Parameters](#parameters-42)
+    -   [isNotEqual](#isnotequal-3)
+        -   [Parameters](#parameters-43)
+    -   [isLessThan](#islessthan-3)
+        -   [Parameters](#parameters-44)
 -   [SymbolCode](#symbolcode)
-    -   [Parameters](#parameters-43)
+    -   [Parameters](#parameters-45)
     -   [typeof](#typeof-4)
     -   [toString](#tostring-4)
     -   [isEqual](#isequal-4)
-        -   [Parameters](#parameters-44)
-    -   [isNotEqual](#isnotequal-4)
-        -   [Parameters](#parameters-45)
-    -   [isLessThan](#islessthan-4)
         -   [Parameters](#parameters-46)
-    -   [isInstance](#isinstance-4)
+    -   [isNotEqual](#isnotequal-4)
         -   [Parameters](#parameters-47)
+    -   [isLessThan](#islessthan-4)
+        -   [Parameters](#parameters-48)
+    -   [isInstance](#isinstance-4)
+        -   [Parameters](#parameters-49)
 -   [Symbol](#symbol-1)
-    -   [Parameters](#parameters-48)
-    -   [Examples](#examples-3)
+    -   [Parameters](#parameters-50)
+    -   [Examples](#examples-4)
 -   [typeof](#typeof-5)
 -   [is_valid](#is_valid-1)
 -   [precision](#precision)
@@ -181,22 +187,22 @@ quantity.symbol.precision() //=> 4
 -   [raw](#raw-2)
 -   [bool](#bool-1)
 -   [toString](#tostring-5)
-    -   [Parameters](#parameters-49)
--   [isInstance](#isinstance-5)
-    -   [Parameters](#parameters-50)
--   [isEqual](#isequal-5)
     -   [Parameters](#parameters-51)
--   [isNotEqual](#isnotequal-5)
+-   [isInstance](#isinstance-5)
     -   [Parameters](#parameters-52)
--   [isLessThan](#islessthan-5)
+-   [isEqual](#isequal-5)
     -   [Parameters](#parameters-53)
+-   [isNotEqual](#isnotequal-5)
+    -   [Parameters](#parameters-54)
+-   [isLessThan](#islessthan-5)
+    -   [Parameters](#parameters-55)
 -   [voteWeightToday](#voteweighttoday)
 -   [stake2vote](#stake2vote)
-    -   [Parameters](#parameters-54)
--   [vote2stake](#vote2stake)
-    -   [Parameters](#parameters-55)
--   [calculate_producer_per_vote_pay](#calculate_producer_per_vote_pay)
     -   [Parameters](#parameters-56)
+-   [vote2stake](#vote2stake)
+    -   [Parameters](#parameters-57)
+-   [calculate_producer_per_vote_pay](#calculate_producer_per_vote_pay)
+    -   [Parameters](#parameters-58)
 
 ### Asset
 
@@ -487,6 +493,10 @@ Returns **any** extended_symbol - The extended symbol of the asset
 
 The toString() method returns the string representation of the object.
 
+#### toJSON
+
+The toJSON() method returns the JSON representation of the object.
+
 #### times
 
 Multiplication assignment operator
@@ -567,13 +577,27 @@ The isinstance() function returns True if the specified object is of the specifi
 
 -   `obj`  
 
+### extended_asset
+
+Extended Asset
+
+#### Parameters
+
+-   `obj1`  
+-   `obj2`  
+
+#### Examples
+
+```javascript
+extended_asset( asset("1.0000 EOS"), name("eosio.token"))
+```
+
 ### ExtendedSymbol
 
 #### Parameters
 
--   `sym`  The symbol
--   `contract`  
--   `con`  The name of the contract
+-   `obj1`  
+-   `obj2`  
 
 #### typeof
 
@@ -594,6 +618,14 @@ Returns **any** name
 #### toString
 
 The toString() method returns the string representation of the object.
+
+##### Parameters
+
+-   `show_precision`   (optional, default `true`)
+
+#### toJSON
+
+The toJSON() method returns the JSON representation of the object.
 
 ##### Parameters
 
@@ -650,8 +682,8 @@ Extended Symbol
 
 #### Parameters
 
--   `sym`  
--   `contract`  
+-   `obj1`  
+-   `obj2`  
 
 #### Examples
 

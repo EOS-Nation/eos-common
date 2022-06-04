@@ -43,11 +43,16 @@ export class ExtendedAsset {
     /**
      * Extended asset which stores the information of the owner of the asset
      */
+    constructor ( json: { contract: string; quantity: string } )
     constructor ( a: Asset, c: Name )
     constructor ( c: Name )
     constructor ( v: number | bigint | BigInteger, s: ExtendedSymbol )
     constructor ( s: ExtendedSymbol )
     constructor ( obj1?: any, obj2?: any ) {
+        if ( obj1?.quantity && obj1?.contract ) {
+            obj2 = new Name(obj1.contract);
+            obj1 = new Asset(obj1.quantity);
+        }
         // Asset & Contract
         if ( getType(obj1) == "asset" ) this.quantity = obj1;
         if ( getType(obj2) == "name" ) this.contract = obj2;
@@ -81,6 +86,13 @@ export class ExtendedAsset {
      */
     public toString(): string {
         return `${this.quantity.to_string()}@${this.contract.to_string()}`
+    }
+
+    /**
+     * The toJSON() method returns the JSON representation of the object.
+     */
+     public toJSON(): { quantity: string; contract: string } {
+        return {quantity: this.quantity.toString(), contract: this.contract.to_string()}
     }
 
     /// @cond OPERATORS
@@ -229,6 +241,13 @@ export class ExtendedAsset {
     }
 }
 
+/**
+ * Extended Asset
+ *
+ * @example
+ *
+ * extended_asset( asset("1.0000 EOS"), name("eosio.token"))
+ */
 export const extended_asset: {
     /**
      * Asset & Contract
@@ -265,6 +284,16 @@ export const extended_asset: {
      * extended_asset( 10000, extended_symbol("4,EOS", "eosio.token"))
      */
     ( v?: number | bigint | BigInteger, s?: ExtendedSymbol ): ExtendedAsset;
+
+    /**
+     * JSON
+     *
+     * @example
+     *
+     * extended_asset({"quantity": "1.0000 EOS", "contract": "eosio.token"})
+     */
+     ( json?: { contract: string; quantity: string } ): ExtendedAsset;
+
 } = ( obj1?: any, obj2?: any ) => {
     return new ExtendedAsset( obj1, obj2 );
 }
