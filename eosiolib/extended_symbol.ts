@@ -50,6 +50,10 @@ export class ExtendedSymbol {
         else this.contract = new Name( obj2 );
     }
 
+    static from( obj1?: any, obj2?: any ): ExtendedSymbol {
+        return new ExtendedSymbol(obj1, obj2);
+    }
+
     /**
      * Returns the symbol in the extended_contract
      *

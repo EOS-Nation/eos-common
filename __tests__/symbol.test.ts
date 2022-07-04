@@ -1,9 +1,14 @@
-import { symbol, symbol_code } from "..";
+import { symbol, symbol_code, Sym } from "..";
 import bigInt from "big-integer";
 
 // const u64min = 0n;
 const u64max = bigInt("18446744073709551615");
 
+test("symbol::from", () => {
+  const sym = Sym.from("4,EOS");
+  expect( Number(sym.precision()) ).toBe(4);
+  expect( sym.code().toString() ).toBe("EOS");
+});
 
 test("symbol::extra", () => {
   symbol(symbol("4,EOS"));

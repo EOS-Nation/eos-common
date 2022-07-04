@@ -51,6 +51,10 @@ export class Name {
         }
     }
 
+    static from( str?: string | number | BigInteger ): Name {
+        return new Name(str);
+    }
+
     /**
      *  Converts a %name Base32 symbol into its corresponding value
      *

@@ -1,5 +1,9 @@
-import { symbol_code } from "..";
+import { symbol_code, SymbolCode } from "..";
 import bigInt from "big-integer";
+
+test("symbol_code::from", () => {
+   expect( SymbolCode.from("EOS").toString() ).toBe("EOS");
+ });
 
 test("symbol::extra", () => {
    symbol_code(symbol_code("EOS"));

@@ -51,6 +51,10 @@ export class SymbolCode {
         }
     }
 
+    static from( obj?: string | number | BigInteger | SymbolCode ): SymbolCode {
+        return new SymbolCode(obj);
+    }
+
     public raw(): BigInteger {
         return this.value;
     }

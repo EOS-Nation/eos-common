@@ -73,6 +73,10 @@ export class ExtendedAsset {
         }
     }
 
+    static from( obj1?: any, obj2?: any ): ExtendedAsset {
+        return new ExtendedAsset(obj1, obj2);
+    }
+
     // /**
     //  * %Print the extended asset
     //  */

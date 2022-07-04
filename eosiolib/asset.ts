@@ -76,6 +76,10 @@ export class Asset {
         check( this.symbol.is_valid(), "invalid symbol name" );
     }
 
+    static from( obj1?: string | number | BigInteger | bigint | Asset, obj2?: Sym ): Asset {
+        return new Asset(obj1, obj2);
+    }
+
     /**
      * Check if the amount doesn't exceed the max amount
      *

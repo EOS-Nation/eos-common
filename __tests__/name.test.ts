@@ -4,6 +4,10 @@ import bigInt from "big-integer";
 // const u64min = 0n;
 const u64max = bigInt("18446744073709551615");
 
+test("name::from", () => {
+   expect( Name.from("foobar").toString() ).toBe("foobar");
+});
+
 test("name", () => {
    //// constexpr name()
    expect( name().value).toStrictEqual( bigInt(0) )

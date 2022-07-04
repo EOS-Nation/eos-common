@@ -1,10 +1,17 @@
-import { name, extended_symbol, extended_asset, asset, symbol } from "..";
+import { name, extended_symbol, extended_asset, asset, symbol, ExtendedAsset } from "..";
 import bigInt from "big-integer";
 
 const asset_mask = (bigInt(1).shiftLeft(62)).minus(1);
 const asset_min = asset_mask.multiply(-1); // -4611686018427387903
 const asset_max = asset_mask; //  4611686018427387903
 
+test("extended_symbol::from", () => {
+    const ext_sym = ExtendedAsset.from({contract: "eosio.token", quantity: "1.0000 EOS"});
+    expect( Number(ext_sym.quantity.amount) ).toBe(10000);
+    expect( Number(ext_sym.quantity.symbol.precision()) ).toBe(4);
+    expect( ext_sym.quantity.symbol.code().toString() ).toBe("EOS");
+    expect( ext_sym.contract.toString() ).toBe("eosio.token");
+});
 
 test("extended_asset::json", () => {
     const ext_asset = extended_asset({contract: "eosio.token", quantity: "1.0000 EOS"});

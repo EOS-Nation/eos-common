@@ -13,6 +13,10 @@ function repeat( str: string, count: number ): string {
     return result;
 }
 
+test("asset::from", () => {
+    expect( Number(Asset.from("0.5730 EOS").amount) ).toBe(5730);
+});
+
 test("asset::extra", () => {
     expect( Number(asset(1.123, symbol("4,EOS")).amount) ).toBe(1);
     expect( Number(asset("0.5730 EOS").amount) ).toBe(5730);

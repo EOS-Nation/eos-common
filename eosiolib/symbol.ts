@@ -78,6 +78,10 @@ export class Sym {
         }
     }
 
+    static from( sc?: string | Sym | SymbolCode | number | BigInteger, precision?: number ): Sym {
+        return new Sym(sc, precision);
+    }
+
     /**
      * Is this symbol valid
      */

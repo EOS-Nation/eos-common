@@ -1,8 +1,15 @@
-import { name, symbol, extended_symbol } from ".."
+import { name, symbol, extended_symbol, ExtendedSymbol } from ".."
 import bigInt from "big-integer";
 
 // const u64min = 0n;
 const u64max = bigInt("18446744073709551615");
+
+test("extended_symbol::from", () => {
+    const ext_sym = ExtendedSymbol.from({contract: "eosio.token", sym: "4,EOS"});
+    expect( Number(ext_sym.get_symbol().precision()) ).toBe(4);
+    expect( ext_sym.get_symbol().code().toString() ).toBe("EOS");
+    expect( ext_sym.get_contract().toString() ).toBe("eosio.token");
+});
 
 test("extended_symbol::extra", () => {
     const n = name("eosio.token");
