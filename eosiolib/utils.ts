@@ -10,7 +10,8 @@ export function getType( obj: any ): string {
     return typeof obj;
 }
 
-export function number_to_bigint( num: number ): BigInteger {
+export function number_to_bigint( num: number | string ): BigInteger {
+    if ( typeof num == "string") return bigInt( num.replace(".", "") );
     return bigInt( Math.floor( Number(num.toFixed(0)) ) );
 }
 
@@ -24,7 +25,7 @@ export function getAmount( obj: any ): BigInteger {
     if ( bigInt.isInstance( obj )) return obj;
     if ( typeof obj == "number" ) return number_to_bigint( obj );
     if ( typeof obj == "bigint" ) return bigInt( obj );
-    if ( typeof obj == "string" ) return number_to_bigint( Number(obj) );
+    if ( typeof obj == "string" ) return number_to_bigint( obj );
     throw new Error("invalid getAmount param");
 }
 

@@ -1,6 +1,6 @@
 {
   "name": "eos-common",
-  "version": "0.10.0",
+  "version": "0.11.0",
   "description": "EOSIO Smart Contract common library used for Typescript",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -9,7 +9,9 @@
   ],
   "author": "Denis Carriere <@DenisCarriere>",
   "contributors": [
-    "John Williamson <@Velua>"
+    "John Williamson <@Velua>",
+    "Yaro <@YaroShkvorets>",
+    "Artem <@Avm07>"
   ],
   "license": "MIT",
   "scripts": {
@@ -26,7 +28,7 @@
   },
   "devDependencies": {
     "@types/jest": "*",
-    "@typescript-eslint/eslint-plugin": "^2.20.0",
+    "@typescript-eslint/eslint-plugin": "*",
     "@typescript-eslint/parser": "*",
     "documentation": "*",
     "eslint": "*",
@@ -36,6 +38,6 @@
     "typescript": "*"
   },
   "dependencies": {
-    "big-integer": "^1.6.48"
+    "big-integer": "1.x"
   }
 }

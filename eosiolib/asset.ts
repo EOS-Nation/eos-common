@@ -1,7 +1,7 @@
 import { Sym, symbol } from "./symbol";
 import { check } from "./check";
 import { write_decimal } from "./eosiolib";
-import { getSymbol, getAmount, isNull, number_to_bigint, getType } from "./utils";
+import { getSymbol, getAmount, isNull, getType, number_to_bigint } from "./utils";
 import bigInt, { BigInteger } from "big-integer";
 
 /**
@@ -57,7 +57,7 @@ export class Asset {
         if ( typeof obj1 == "string" ) {
             const [amount_str, symbol_str] = obj1.split(" ");
             const precision = (amount_str.split(".")[1] || []).length;
-            this.amount = number_to_bigint( Number( amount_str ) * Math.pow(10, precision));
+            this.amount = number_to_bigint( amount_str );
             this.symbol = new Sym( symbol_str, precision );
         } else if ( getType( obj1 ) == "asset") {
             const _sym = getSymbol( obj1 );

@@ -13,6 +13,14 @@ function repeat( str: string, count: number ): string {
     return result;
 }
 
+test("asset::magnitude of asset", () => {
+    const s0 = symbol("A", 0);
+    const { max_amount } = Asset;
+    expect( new Asset(`4611686018427387903 A`).amount ).toStrictEqual(max_amount);
+    expect( new Asset(`${max_amount} A`).amount ).toStrictEqual(max_amount);
+    expect( new Asset(max_amount, s0).amount ).toStrictEqual(max_amount);
+});
+
 test("asset::from", () => {
     expect( Number(Asset.from("0.5730 EOS").amount) ).toBe(5730);
 });
