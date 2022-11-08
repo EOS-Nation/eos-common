@@ -42,6 +42,12 @@ export function getContract( obj: any ): Name | null {
     return null;
 }
 
+export function getQuantity( obj: any ): Asset | null {
+    if ( obj.typeof == "extended_asset") return obj.quantity;
+    if ( obj.typeof == "asset") return obj;
+    return null;
+}
+
 export function asset_to_number( quantity: Asset | ExtendedAsset ): number
 {
     const amount = getAmount( quantity );

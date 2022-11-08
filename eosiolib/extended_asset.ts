@@ -3,7 +3,7 @@ import { Asset } from "./asset";
 import { ExtendedSymbol } from "./extended_symbol";
 import { check } from "./check";
 import bigInt, { BigInteger } from "big-integer";
-import { getType, getAmount, getContract } from "./utils";
+import { getType, getAmount, getContract, getQuantity } from "./utils";
 
 /**
  * @class Stores the extended_asset
@@ -107,16 +107,14 @@ export class ExtendedAsset {
     public times(a: ExtendedAsset | number | bigint | BigInteger ): ExtendedAsset {
         const amount = getAmount( a );
         const contract = getContract( a );
+        const quantity = getQuantity( a );
 
         if ( contract ) check( contract.raw().equals( this.contract.raw() ), "type mismatch" );
-        this.quantity.times( amount );
+        this.quantity.times( quantity ?? amount );
         return this;
     }
 
     public static times(a: ExtendedAsset, b: ExtendedAsset | number | bigint | BigInteger ): ExtendedAsset {
-        const contract = getContract( a );
-
-        if ( contract ) check( a.contract.raw().equals( contract.raw() ), "type mismatch" );
         const result = new ExtendedAsset( a.quantity, a.contract );
         result.times( b );
         return result;
@@ -128,16 +126,14 @@ export class ExtendedAsset {
     public div(a: ExtendedAsset | number | bigint | BigInteger ): ExtendedAsset {
         const amount = getAmount( a );
         const contract = getContract( a );
+        const quantity = getQuantity( a );
 
         if ( contract ) check( contract.raw().equals( this.contract.raw() ), "type mismatch" );
-        this.quantity.div( amount );
+        this.quantity.div( quantity ?? amount );
         return this;
     }
 
     public static div(a: ExtendedAsset, b: ExtendedAsset | number | bigint | BigInteger ): ExtendedAsset {
-        const contract = getContract( a );
-
-        if ( contract ) check( a.contract.raw().equals( contract.raw() ), "type mismatch" );
         const result = new ExtendedAsset( a.quantity, a.contract );
         result.div( b );
         return result;
@@ -149,16 +145,14 @@ export class ExtendedAsset {
     public minus( a: ExtendedAsset | number | bigint | BigInteger ): ExtendedAsset {
         const amount = getAmount( a );
         const contract = getContract( a );
+        const quantity = getQuantity( a );
 
         if ( contract ) check( contract.raw().equals( this.contract.raw() ), "type mismatch" );
-        this.quantity.minus( amount );
+        this.quantity.minus( quantity ?? amount );
         return this;
     }
 
     public static minus(a: ExtendedAsset, b: ExtendedAsset | number | bigint ): ExtendedAsset {
-        const contract = getContract( a );
-
-        if ( contract ) check( a.contract.raw().equals( contract.raw() ), "type mismatch" );
         const result = new ExtendedAsset( a.quantity, a.contract );
         result.minus( b );
         return result;
@@ -170,16 +164,14 @@ export class ExtendedAsset {
     public plus( a: ExtendedAsset | number | bigint ): ExtendedAsset {
         const amount = getAmount( a );
         const contract = getContract( a );
+        const quantity = getQuantity( a );
 
         if ( contract ) check( contract.raw().equals( this.contract.raw() ), "type mismatch" );
-        this.quantity.plus( amount );
+        this.quantity.plus( quantity ?? amount );
         return this;
     }
 
     public static plus(a: ExtendedAsset, b: ExtendedAsset | number | bigint ): ExtendedAsset {
-        const contract = getContract( a );
-
-        if ( contract ) check( a.contract.raw().equals( contract.raw() ), "type mismatch" );
         const result = new ExtendedAsset( a.quantity, a.contract );
         result.plus( b );
         return result;

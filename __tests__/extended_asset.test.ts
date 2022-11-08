@@ -5,6 +5,39 @@ const asset_mask = (bigInt(1).shiftLeft(62)).minus(1);
 const asset_min = asset_mask.multiply(-1); // -4611686018427387903
 const asset_max = asset_mask; //  4611686018427387903
 
+test("extended_symbol::error: type mismatch", () => {
+    const error = "type mismatch";
+    const a = ExtendedAsset.from({contract: "eosio.token", quantity: "1.0000 EOS"});
+    const b = ExtendedAsset.from({contract: "foo.bar", quantity: "1.0000 EOS"});
+
+    expect( () => ExtendedAsset.times(a, b) ).toThrow(error);
+    expect( () => ExtendedAsset.times(b, a) ).toThrow(error);
+    expect( () => a.times(b) ).toThrow(error);
+    expect( () => b.times(a) ).toThrow(error);
+
+    expect( () => ExtendedAsset.div(a, b) ).toThrow(error);
+    expect( () => ExtendedAsset.div(b, a) ).toThrow(error);
+    expect( () => a.div(b) ).toThrow(error);
+    expect( () => b.div(a) ).toThrow(error);
+});
+
+
+test("extended_symbol::error: comparison of assets with different symbols is not allowed", () => {
+    const error = "comparison of assets with different symbols is not allowed";
+    const a = ExtendedAsset.from({contract: "eosio.token", quantity: "1.0000 EOS"});
+    const c = ExtendedAsset.from({contract: "eosio.token", quantity: "1.0000 FOO"});
+
+    expect( () => ExtendedAsset.times(a, c) ).toThrow(error);
+    expect( () => ExtendedAsset.times(c, a) ).toThrow(error);
+    expect( () => a.times(c) ).toThrow(error);
+    expect( () => c.times(a) ).toThrow(error);
+
+    expect( () => ExtendedAsset.div(a, c) ).toThrow(error);
+    expect( () => ExtendedAsset.div(c, a) ).toThrow(error);
+    expect( () => a.div(c) ).toThrow(error);
+    expect( () => c.div(a) ).toThrow(error);
+});
+
 test("extended_symbol::from", () => {
     const ext_sym = ExtendedAsset.from({contract: "eosio.token", quantity: "1.0000 EOS"});
     expect( Number(ext_sym.quantity.amount) ).toBe(10000);
