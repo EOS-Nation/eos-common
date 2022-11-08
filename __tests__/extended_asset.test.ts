@@ -5,6 +5,20 @@ const asset_mask = (bigInt(1).shiftLeft(62)).minus(1);
 const asset_min = asset_mask.multiply(-1); // -4611686018427387903
 const asset_max = asset_mask; //  4611686018427387903
 
+test("asset::prevent mutation side effects", () => {
+    const amount = bigInt(10000);
+    const extQuantity = ExtendedAsset.from({contract: "eosio.token", quantity: "1.0000 EOS"});
+    expect( extQuantity.quantity.amount ).toStrictEqual(amount);
+    ExtendedAsset.times(extQuantity, 2);
+    expect( extQuantity.quantity.amount ).toStrictEqual(amount);
+    ExtendedAsset.div(extQuantity, 4);
+    expect( extQuantity.quantity.amount ).toStrictEqual(amount);
+    ExtendedAsset.plus(extQuantity, 500);
+    expect( extQuantity.quantity.amount ).toStrictEqual(amount);
+    ExtendedAsset.minus(extQuantity, 4000);
+    expect( extQuantity.quantity.amount ).toStrictEqual(amount);
+});
+
 test("extended_symbol::error: type mismatch", () => {
     const error = "type mismatch";
     const a = ExtendedAsset.from({contract: "eosio.token", quantity: "1.0000 EOS"});

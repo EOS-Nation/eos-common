@@ -115,7 +115,7 @@ export class ExtendedAsset {
     }
 
     public static times(a: ExtendedAsset, b: ExtendedAsset | number | bigint | BigInteger ): ExtendedAsset {
-        const result = new ExtendedAsset( a.quantity, a.contract );
+        const result = new ExtendedAsset( new Asset(a.quantity), a.contract );
         result.times( b );
         return result;
     }
@@ -134,7 +134,7 @@ export class ExtendedAsset {
     }
 
     public static div(a: ExtendedAsset, b: ExtendedAsset | number | bigint | BigInteger ): ExtendedAsset {
-        const result = new ExtendedAsset( a.quantity, a.contract );
+        const result = new ExtendedAsset( new Asset(a.quantity), a.contract );
         result.div( b );
         return result;
     }
@@ -153,7 +153,7 @@ export class ExtendedAsset {
     }
 
     public static minus(a: ExtendedAsset, b: ExtendedAsset | number | bigint ): ExtendedAsset {
-        const result = new ExtendedAsset( a.quantity, a.contract );
+        const result = new ExtendedAsset( new Asset(a.quantity), a.contract );
         result.minus( b );
         return result;
     }
@@ -172,7 +172,7 @@ export class ExtendedAsset {
     }
 
     public static plus(a: ExtendedAsset, b: ExtendedAsset | number | bigint ): ExtendedAsset {
-        const result = new ExtendedAsset( a.quantity, a.contract );
+        const result = new ExtendedAsset( new Asset(a.quantity), a.contract );
         result.plus( b );
         return result;
     }

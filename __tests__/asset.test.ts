@@ -13,6 +13,21 @@ function repeat( str: string, count: number ): string {
     return result;
 }
 
+
+test("asset::prevent mutation side effects", () => {
+    const amount = bigInt(10000);
+    const quantity = new Asset(amount, symbol("4,EOS"));
+    expect( quantity.amount ).toStrictEqual(amount);
+    Asset.times(quantity, 2);
+    expect( quantity.amount ).toStrictEqual(amount);
+    Asset.div(quantity, 4);
+    expect( quantity.amount ).toStrictEqual(amount);
+    Asset.plus(quantity, 500);
+    expect( quantity.amount ).toStrictEqual(amount);
+    Asset.minus(quantity, 4000);
+    expect( quantity.amount ).toStrictEqual(amount);
+});
+
 test("asset::magnitude of asset", () => {
     const s0 = symbol("A", 0);
     const { max_amount } = Asset;
