@@ -1,6 +1,6 @@
 # `eos-common`
 
-[![Build Status](https://github.com/EOS-Nation/eos-common/eos-common/actions/workflows/test.yml/badge.svg)](https://github.com/EOS-Nation/eos-common/actions/workflows/test.yml)
+[![Build Status](https://github.com/EOS-Nation/eos-common/actions/workflows/test.yml/badge.svg)](https://github.com/EOS-Nation/eos-common/actions/workflows/test.yml)
 [![npm version](https://badge.fury.io/js/eos-common.svg)](https://badge.fury.io/js/eos-common)
 [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/EOS-Nation/eos-common/master/LICENSE)
 
