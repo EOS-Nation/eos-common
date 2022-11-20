@@ -18,7 +18,6 @@
     "build": "tsc",
     "prepublishOnly": "npm run test && npm run build",
     "test": "jest --coverage",
-    "posttest": "eslint . --ext .ts",
     "docs": "tsc --target ES2019 && documentation readme dist/eosiolib/**.js -s API"
   },
   "repository": "git@github.com:EOS-Nation/eos-common.git",
@@ -28,11 +27,6 @@
   },
   "devDependencies": {
     "@types/jest": "*",
-    "@typescript-eslint/eslint-plugin": "*",
-    "@typescript-eslint/parser": "*",
-    "documentation": "*",
-    "eslint": "*",
-    "eslint-plugin-jest": "*",
     "jest": "*",
     "ts-jest": "*",
     "typescript": "*"
