@@ -1,4 +1,4 @@
-import { write_decimal } from "..";
+import { write_decimal } from "../dist";
 import bigInt from "big-integer";
 
 test("eosiolib.write_decimal", () => {

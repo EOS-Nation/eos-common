@@ -1,4 +1,4 @@
-import { asset, symbol, Asset, asset_to_number } from "..";
+import { asset, symbol, Asset, asset_to_number } from "../dist";
 import bigInt from "big-integer";
 
 const asset_mask = (bigInt(1).shiftLeft(62)).minus(1);

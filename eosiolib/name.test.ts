@@ -1,4 +1,4 @@
-import { name, Name } from "../";
+import { name, Name } from "../dist";
 import bigInt from "big-integer";
 
 // const u64min = 0n;

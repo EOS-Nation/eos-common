@@ -1,4 +1,4 @@
-import { name, symbol, extended_symbol, ExtendedSymbol } from ".."
+import { name, symbol, extended_symbol, ExtendedSymbol } from "../dist"
 import bigInt from "big-integer";
 
 // const u64min = 0n;

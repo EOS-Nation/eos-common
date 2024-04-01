@@ -3,9 +3,10 @@
  */
 export function voteWeightToday(): number {
   const seconds_per_day = 86400;
-  const block_timestamp_epoch = new Date(Date.UTC(2000, 0, 1, 0, 0, 0, 0)).getTime();
+  const block_timestamp_epoch = new Date(Date.UTC(2000, 0, 1, 0, 0, 0, 0)).getTime() / 1000;
+  const now = Date.now() / 1000;
 
-  return Math.floor( (Date.now() - block_timestamp_epoch) / 1000 / (seconds_per_day * 7)) / 52;
+  return Math.floor((now - block_timestamp_epoch) / (seconds_per_day * 7)) / 52;
 }
 
 /**

@@ -1,4 +1,4 @@
-import { number_to_asset, asset_to_number, asset_to_precision, symbol } from "../";
+import { number_to_asset, asset_to_number, asset_to_precision, symbol } from "../dist";
 import bigInt from "big-integer";
 
 test("utils", () => {

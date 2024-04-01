@@ -1,4 +1,4 @@
-import { symbol_code, SymbolCode } from "..";
+import { symbol_code, SymbolCode } from "../dist";
 import bigInt from "big-integer";
 
 test("symbol_code::from", () => {
